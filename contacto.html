@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - FullStreamRec</title>
+
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .navbar a{
+        text-decoration: none;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: black;
+      font-weight: 500;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background-color: black;
+    }
+
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background-color: white;
+      padding: 1rem;
+    }
+
+    .mobile-menu a {
+      margin-bottom: 1rem;
+      text-decoration: none;
+      color: black;
+      padding: 1rem 1rem;
+      outline: #000 solid 1px;
+      border-radius: 4px;
+    }
+    .mobile-menu a:hover {
+      margin-bottom: 1rem;
+      text-decoration: none;
+      color: black;
+      
+    }
+
+    main {
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .imgheader{
+        width: 50%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+
+    }
+    .imgheader img{
+        width: 100%;
+        border-radius: 50%;
+    }
+    footer {
+      background-color: #000;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 4rem;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-menu.show {
+        display: flex;
+      }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+          <div class="logo">FullStreamRec</div>
+          <nav>
+    
+            <a href="index.html">Inicio - Servicios</a>
+          </nav>
+          <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+          <a href="index.html">Inicio - Servicios</a>
+        </div>
+      </header>
+    
+      <main id="products-container">
+        <div class="imgheader">
+            <img src="img/logo.jpg" alt="">
+        </div>
+        <h2 style="text-align: center;">Contáctanos</h2>
+    <p>¿Tienes dudas, deseas hacer una compra o necesitas soporte? Estamos aquí para ayudarte.</p>
+    <p><strong>WhatsApp:</strong> <a style="text-decoration: none; color: rgb(2, 219, 2);" href="https://wa.me/593978652638" target="_blank">+593 978 652 638 (Haz click aqui)</a></p>
+    <p><strong>Email:</strong> contacto@fullstreamrec.com</p>
+    <p>Atendemos de lunes a Domingos de <strong> 9:00 AM a 21:30 PM </strong>. ¡Tu experiencia es nuestra prioridad!</p>
+      </main>
+    
+      <footer>
+        <p>&copy; 2025 FullStreamRec. Todos los derechos reservados.</p>
+        <p>Contáctanos en <a href="mailto:info@fullstreamrec.com" style="color: #ff5e66;">info@fullstreamrec.com</a></p>
+      </footer>
+    
+
+      <script>
+         // Menú hamburguesa
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('show');
+    });
+      </script>
+</body>
+</html>
