@@ -295,7 +295,8 @@
 
             const updateLink = () => {
               const [planName, planPrice] = select.value.split("|");
-              const message = encodeURIComponent(`Hola, quiero ${product.name} - ${planName} (${planPrice})`);
+              const message = encodeURIComponent(`*Nuevo Pedido*\n*Producto:* ${product.name} - ${planName}\n*Precio:* ${planPrice}`);
+
               const phone = "593978652638";
               button.href = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
             };
