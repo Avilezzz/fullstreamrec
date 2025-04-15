@@ -3,6 +3,7 @@
     {
       "name": "Netflix",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Perfil Compartido 1 perfil 1 mes",
@@ -21,6 +22,7 @@
     {
       "name": "Prime Video",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Cuenta Completa 1 mes",
@@ -31,6 +33,7 @@
     {
       "name": "Max (HBO)",
       "logo": "https://elborissan.com/media/detalleproducto/InCollage_20250303_160828441.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Perfil 30 Días",
@@ -49,6 +52,7 @@
     {
       "name": "Vix",
       "logo": "https://elborissan.com/media/detalleproducto/1740413903728.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "  Perfil - 30 Días",
@@ -63,6 +67,7 @@
     {
       "name": "Crunchyroll MEGAFAN",
       "logo": "https://logolook.net/wp-content/uploads/2023/10/Crunchyroll-Logo-2018.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Perfil - 30 Días",
@@ -97,6 +102,7 @@
     {
       "name": "Paramount+",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Paramount%2B_logo.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Perfil - 30 Días",
@@ -111,6 +117,7 @@
     {
       "name": "Disney+",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Cuenta Completa",
@@ -121,6 +128,7 @@
     {
       "name": "Plex",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Plex_logo_2022.svg/2560px-Plex_logo_2022.svg.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "Cuenta Completa - 1 Mes",
@@ -139,6 +147,7 @@
     {
       "name": "APPLE TV+",
       "logo": "https://elborissan.com/media/detalleproducto/Apple-TV-logo.png",
+      "category": "Streaming de Video",
       "plans": [
         {
           "name": "3  MESES - APPLE TV+",
@@ -147,8 +156,20 @@
       ]
     },
     {
+      "name": "MUBI",
+      "logo": "https://mubi.com/MUBI-logo.png",
+      "category": "Streaming de Video",
+      "plans": [
+        {
+          "name": "3 MESES - MUBI PREMIUM ",
+          "price": "$7.00"
+        }
+      ]
+    },
+    {
       "name": "Stella TV",
       "logo": "https://stellatvpa.com/image/stella1.webp",
+      "category": "IPTV",
       "plans": [
         {
           "name": "1 MES - 3 DISPOSITIVOS",
@@ -171,6 +192,7 @@
     {
       "name": "FLujo TV",
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBvlvImGf-UNHrqzgKhpG_4wtCkpvVxXzvPg&s",
+      "category": "IPTV",
       "plans": [
         {
           "name": "Cuenta Completa - 1 MES",
@@ -190,10 +212,10 @@
         }
       ]
     },
-   
     {
       "name": "FLujo TV - Panel",
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6Vy29qj_jXuTMvoUW0jvY8183kuShCJoHeg&s",
+      "category": "IPTV",
       "plans": [
         {
           "name": "30 Créditos ✖️ $ 2,50 - ⭐️ Panel Básico ✨",
@@ -216,6 +238,7 @@
     {
       "name": "Tele Latino",
       "logo": "https://img1.elyerromenu.com/images/xtreamcell/tele-latino-w/img.webp",
+      "category": "IPTV",
       "plans": [
         {
           "name": " Cuenta Completa - 30 Días",
@@ -238,6 +261,7 @@
     {
       "name": "IPTV Smarters Pro",
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6DTulaUFIKq21Q5fM7m997zXAh_ibXTgTg&s",
+      "category": "IPTV",
       "plans": [
         {
           "name": " Perfil - 30 Días",
@@ -265,11 +289,10 @@
         }
       ]
     },
-    
-   
     {
       "name": "El Canal del Fútbol (ECDF)",
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTObRZFRKLb_dNSecoJDWLsTRbxRJA8lyD9PA&s",
+      "category": "IPTV",
       "plans": [
         {
           "name": "Cuenta Completa - 1 Mes - ECDF - ⚽ YOUTUBE ⚽ -  INCLUYE  ELIMINATORIA",
@@ -281,20 +304,10 @@
         }
       ]
     },
-   
-    {
-      "name": "MUBI",
-      "logo": "https://mubi.com/MUBI-logo.png",
-      "plans": [
-        {
-          "name": "3 MESES - MUBI PREMIUM ",
-          "price": "$7.00"
-        }
-      ]
-    },
     {
       "name": "Spotify Plan Individual",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/800px-Spotify_logo_with_text.svg.png",
+      "category": "Música",
       "plans": [
         {
           "name": "1 Mes",
@@ -305,6 +318,7 @@
     {
       "name": "Amazon Music",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Amazon_Music_logo.svg/1200px-Amazon_Music_logo.svg.png",
+      "category": "Música",
       "plans": [
         {
           "name": "30 Dias - 3 DISPOSITIVOS 👨‍👩‍👧‍👦",
@@ -315,6 +329,7 @@
     {
       "name": "Deezer Premium",
       "logo": "https://brandlogos.net/wp-content/uploads/2022/01/deezer-logo-brandlogo.net_.png",
+      "category": "Música",
       "plans": [
         {
           "name": " 1 Mes - INDIVIDUAL 👤",
@@ -342,12 +357,10 @@
         }
       ]
     },
-    
-   
-    
     {
       "name": "Tidal",
       "logo": "https://routenote.com/es/blog/wp-content/uploads/2023/11/9-1.png",
+      "category": "Música",
       "plans": [
         {
           "name": "1 Mes - INDIVIDUAL 👤",
@@ -366,6 +379,7 @@
     {
       "name": "YouTube Premium + Music",
       "logo": "https://routenote.com/blog/wp-content/uploads/2022/11/YouTubes.png",
+      "category": "Música",
       "plans": [
         {
           "name": "30 Días - YOUTUBE PREMIUM - FACTURACIÓN INDIVIDUAL👤",
@@ -395,12 +409,12 @@
           "name": "  30 dias - Nueva - YOUTUBE PREMIUM  ",
           "price": "$6.00"
         }
-        
       ]
     },
     {
       "name": "Free Fire",
       "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/3/38/Free_Fire_New_Logo.svg/2560px-Free_Fire_New_Logo.svg.png",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": "100 + 10 DIAMANTES 💎",
@@ -439,6 +453,7 @@
     {
       "name": "Call of Duty: Mobile",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Call_of_Duty_Mobile_Logo.png",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": " 88 CP 🪙",
@@ -469,6 +484,7 @@
     {
       "name": "Genshin Impact",
       "logo": "https://1000logos.net/wp-content/uploads/2021/08/Genshin-Impact-Logo.png",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": "60 Genesis Crystals ✨",
@@ -491,6 +507,7 @@
     {
       "name": "PUBG Mobile",
       "logo": "https://cdn.pixabay.com/photo/2021/08/28/09/27/pubg-mobile-logo-6580513_1280.png",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": "60 UC",
@@ -517,6 +534,7 @@
     {
       "name": "Roblox",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Roblox_Logo_Black.svg/1280px-Roblox_Logo_Black.svg.png",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": " 80 Robux 💰",
@@ -554,12 +572,12 @@
           "name": " Premium 2200 al Mes - ROBLOX PRREMIUM 💰💸",
           "price": "Desde $26.00"
         }
-        
       ]
     },
     {
       "name": "Clash Royale",
       "logo": "https://logos-world.net/wp-content/uploads/2023/05/Clash-Royale-Logo.png",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": " 80 Gemas - Puñado de gemas 💎ᴠɪᴘ",
@@ -594,6 +612,7 @@
     {
       "name": "Brawl Stars",
       "logo": "https://media.printables.com/media/prints/922838/images/7041191_b7198afe-1abe-4789-8d7e-b031a77b5b42_3224d22a-8d0f-4043-99b0-2ca09420fc4a/thumbs/inside/1280x960/png/logo_of_brawl_starssvg-removebg-preview.webp",
+      "category": "Videojuegos",
       "plans": [
         {
           "name": " 30 Gemas ❇️",
@@ -632,6 +651,7 @@
     {
       "name": "Canva Pro Edu",
       "logo": "https://acdn-us.mitiendanube.com/stores/004/384/271/products/diseno-sin-titulo-78-092a1c711be9666f1e17246998999745-1024-1024.png",
+      "category": "Herramientas Creativas",
       "plans": [
         {
           "name": " 1 Mes - CANVA PRO EDU 🎨",
@@ -654,6 +674,7 @@
     {
       "name": "CapCut PRO ",
       "logo": "https://productimages.hepsiburada.net/s/777/375-375/110000843746986.jpg",
+      "category": "Herramientas Creativas",
       "plans": [
         {
           "name": " 1 usuario - CapCut PRO ",
@@ -664,6 +685,7 @@
     {
       "name": "Chat Gpt ",
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG97vMXheB3UwDVfkjVB99JWdSK4kCqhcBcw&s",
+      "category": "Herramientas Creativas",
       "plans": [
         {
           "name": "  1 Usuario - ChatGPT ",
@@ -671,6 +693,5 @@
         }
       ]
     }
-
   ]
 }

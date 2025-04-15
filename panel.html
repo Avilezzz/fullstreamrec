@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - FullStreamRec</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #ff5e66;
+      --dark: #1a1a1a;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --danger: #dc3545;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    /* Layout */
+    .admin-container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      background-color: var(--dark);
+      color: white;
+      padding: 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logo i {
+      color: var(--primary);
+    }
+    
+    .nav-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+    
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--primary);
+    }
+    
+    .nav-link i {
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+    }
+    
+    /* Header */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    /* Products Table */
+    .products-table-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .table-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .search-box {
+      position: relative;
+    }
+    
+    .search-box input {
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      width: 250px;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #e04b5a;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--gray);
+      color: var(--gray);
+    }
+    
+    .btn-outline:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    th {
+      font-weight: 600;
+      color: var(--gray);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+    
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .product-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .badge-primary {
+      background-color: rgba(255, 94, 102, 0.1);
+      color: var(--primary);
+    }
+    
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    
+    .modal.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 0.5rem;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transform: translateY(-20px);
+      transition: transform 0.3s;
+    }
+    
+    .modal.show .modal-content {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      font-family: inherit;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .plans-container {
+      margin-top: 1rem;
+    }
+    
+    .plan-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      border-radius: 0.5rem;
+    }
+    
+    .plan-item input {
+      flex: 1;
+    }
+    
+    .add-plan-btn {
+      margin-top: 0.5rem;
+    }
+    
+    .remove-plan-btn {
+      background-color: var(--danger);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      .admin-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        height: auto;
+        position: static;
+      }
+      
+      .nav-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .nav-item {
+        margin-bottom: 0;
+      }
+      
+      .nav-link {
+        padding: 0.5rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .user-info {
+        margin-left: auto;
+      }
+      
+      .search-box input {
+        width: 200px;
+      }
+      
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 1rem;
+      }
+      
+      .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .table-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+      
+      .search-box input {
+        width: 100%;
+      }
+      
+      .modal-content {
+        margin: 1rem;
+        width: calc(100% - 2rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar Simplificada -->
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fas fa-stream"></i>
+        <span>FullStreamRec</span>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="#" class="nav-link active">
+            <i class="fas fa-box"></i>
+            <span>Productos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" id="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar Sesión</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="admin-header">
+        <h1 class="page-title">Administrar Productos</h1>
+        <div class="user-info">
+          <span id="user-email">admin@fullstreamrec.com</span>
+          <div class="user-avatar" id="user-avatar">A</div>
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="products-table-container">
+        <div class="table-header">
+          <h2>Lista de Productos</h2>
+          <div class="table-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="search-input" placeholder="Buscar productos...">
+            </div>
+            <button class="btn btn-primary" id="add-product-btn">
+              <i class="fas fa-plus"></i>
+              <span>Nuevo Producto</span>
+            </button>
+          </div>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Logo</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Planes</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="products-table-body">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Product Modal -->
+  <div class="modal" id="product-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Agregar Producto</h3>
+        <button class="close-btn" id="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="product-form">
+          <input type="hidden" id="product-id">
+          <div class="form-group">
+            <label for="product-name">Nombre del Producto</label>
+            <input type="text" id="product-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="product-logo">URL del Logo</label>
+            <input type="url" id="product-logo" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="product-category">Categoría</label>
+            <select id="product-category" class="form-control" required>
+                <option value="">Seleccionar categoría</option>
+                <option value="Streaming de Video">Streaming de Video</option>
+                <option value="IPTV">IPTV</option>
+                <option value="Música">Música</option>
+                <option value="Videojuegos">Videojuegos</option>
+                <option value="Herramientas Creativas">Herramientas Creativas</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <label>Planes</label>
+            <div class="plans-container" id="plans-container">
+              <!-- Los planes se agregarán aquí dinámicamente -->
+            </div>
+            <button type="button" class="btn btn-outline add-plan-btn" id="add-plan-btn">
+              <i class="fas fa-plus"></i>
+              <span>Agregar Plan</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancel-btn">Cancelar</button>
+        <button class="btn btn-primary" id="save-btn">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+
+  <script>
+    // Configuración de Firebase con tus datos
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
+      authDomain: "site-fullstreamrec.firebaseapp.com",
+      projectId: "site-fullstreamrec",
+      storageBucket: "site-fullstreamrec.appspot.com",
+      messagingSenderId: "161679433276",
+      appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39",
+      measurementId: "G-X06BGV5ZRJ"
+    };
+
+    // Inicializa Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Datos y elementos del DOM
+    let products = [];
+    let currentProductId = null;
+    let isEditing = false;
+
+    const productsTableBody = document.getElementById('products-table-body');
+    const searchInput = document.getElementById('search-input');
+    const addProductBtn = document.getElementById('add-product-btn');
+    const productModal = document.getElementById('product-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const productForm = document.getElementById('product-form');
+    const modalTitle = document.getElementById('modal-title');
+    const productIdInput = document.getElementById('product-id');
+    const productNameInput = document.getElementById('product-name');
+    const productLogoInput = document.getElementById('product-logo');
+    const productCategorySelect = document.getElementById('product-category');
+    const plansContainer = document.getElementById('plans-container');
+    const addPlanBtn = document.getElementById('add-plan-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userEmailSpan = document.getElementById('user-email');
+    const userAvatar = document.getElementById('user-avatar');
+
+    // Función para cargar productos desde Firestore
+    async function loadProducts() {
+      try {
+        productsTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Cargando productos...</td></tr>';
+        
+        const snapshot = await db.collection("products").get();
+        products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        renderProducts();
+      } catch (error) {
+        console.error("Error cargando productos:", error);
+        productsTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Error cargando productos</td></tr>';
+      }
+    }
+
+    // Función para renderizar productos en la tabla
+    function renderProducts(filteredProducts = null) {
+      const productsToRender = filteredProducts || products;
+      productsTableBody.innerHTML = '';
+
+      if (productsToRender.length === 0) {
+        productsTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay productos disponibles</td></tr>';
+        return;
+      }
+
+      productsToRender.forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><img src="${product.logo}" alt="${product.name}" class="product-logo" onerror="this.src='https://via.placeholder.com/40'"></td>
+          <td>${product.name}</td>
+          <td><span class="badge badge-primary">${product.category}</span></td>
+          <td>${product.plans.length} planes</td>
+          <td>
+            <div class="action-btns">
+              <button class="btn btn-outline btn-sm edit-btn" data-id="${product.id}">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-outline btn-sm delete-btn" data-id="${product.id}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        productsTableBody.appendChild(row);
+      });
+
+      // Agregar event listeners a los botones
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => editProduct(btn.dataset.id));
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteProduct(btn.dataset.id));
+      });
+    }
+
+    // Función para filtrar productos
+    function filterProducts() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchTerm) || 
+        product.category.toLowerCase().includes(searchTerm)
+      );
+      renderProducts(filteredProducts);
+    }
+
+    // Función para mostrar el modal de agregar/editar producto
+    function showAddProductModal() {
+      isEditing = false;
+      currentProductId = null;
+      modalTitle.textContent = 'Agregar Producto';
+      productForm.reset();
+      plansContainer.innerHTML = '';
+      productModal.classList.add('show');
+    }
+
+    // Función para editar un producto
+    async function editProduct(productId) {
+      try {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
+        isEditing = true;
+        currentProductId = productId;
+        modalTitle.textContent = 'Editar Producto';
+        
+        // Llenar el formulario
+        productIdInput.value = product.id;
+        productNameInput.value = product.name;
+        productLogoInput.value = product.logo;
+        productCategorySelect.value = product.category;
+        
+        // Llenar los planes
+        plansContainer.innerHTML = '';
+        product.plans.forEach(plan => {
+          addPlanToForm(plan.name, plan.price);
+        });
+        
+        productModal.classList.add('show');
+      } catch (error) {
+        console.error("Error al editar producto:", error);
+        alert("Error al cargar el producto para editar");
+      }
+    }
+
+    // Función para agregar un plan al formulario
+    function addPlanToForm(name = '', price = '') {
+      const planDiv = document.createElement('div');
+      planDiv.className = 'plan-item';
+      planDiv.innerHTML = `
+        <input type="text" class="form-control plan-name" placeholder="Nombre del plan" value="${name}" required>
+        <input type="text" class="form-control plan-price" placeholder="Precio" value="${price}" required>
+        <button type="button" class="remove-plan-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      plansContainer.appendChild(planDiv);
+      
+      // Agregar event listener al botón de eliminar
+      planDiv.querySelector('.remove-plan-btn').addEventListener('click', () => {
+        planDiv.remove();
+      });
+    }
+
+    // Función para guardar un producto
+    async function saveProduct() {
+      if (!productForm.checkValidity()) {
+        productForm.reportValidity();
+        return;
+      }
+
+      // Obtener datos del formulario
+      const name = productNameInput.value;
+      const logo = productLogoInput.value;
+      const category = productCategorySelect.value;
+      
+      // Obtener planes
+      const plans = [];
+      const planItems = plansContainer.querySelectorAll('.plan-item');
+      planItems.forEach(item => {
+        const planName = item.querySelector('.plan-name').value;
+        const planPrice = item.querySelector('.plan-price').value;
+        if (planName && planPrice) {
+          plans.push({ name: planName, price: planPrice });
+        }
+      });
+
+      if (plans.length === 0) {
+        alert('Debe agregar al menos un plan');
+        return;
+      }
+
+      const productData = {
+        name,
+        logo,
+        category,
+        plans,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        if (isEditing) {
+          // Actualizar producto existente
+          await db.collection("products").doc(currentProductId).update(productData);
+        } else {
+          // Agregar nuevo producto
+          await db.collection("products").add(productData);
+        }
+        
+        productModal.classList.remove('show');
+        await loadProducts(); // Recargar la lista de productos
+      } catch (error) {
+        console.error("Error guardando producto:", error);
+        alert("Error al guardar el producto: " + error.message);
+      }
+    }
+
+    // Función para eliminar un producto
+    async function deleteProduct(productId) {
+      if (!confirm('¿Estás seguro de que quieres eliminar este producto?')) return;
+      
+      try {
+        await db.collection("products").doc(productId).delete();
+        await loadProducts(); // Recargar la lista de productos
+      } catch (error) {
+        console.error("Error eliminando producto:", error);
+        alert("Error al eliminar el producto: " + error.message);
+      }
+    }
+
+    // Función para manejar el logout
+    function handleLogout() {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html'; // Redirigir a página de login
+      }).catch(error => {
+        console.error("Error al cerrar sesión:", error);
+      });
+    }
+
+    // Verificar autenticación al cargar
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // Usuario autenticado
+        userEmailSpan.textContent = user.email;
+        userAvatar.textContent = user.email.charAt(0).toUpperCase();
+        loadProducts();
+      } else {
+        // Redirigir a página de login
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Verificación de autenticación se maneja en onAuthStateChanged
+    });
+
+    searchInput.addEventListener('input', filterProducts);
+    addProductBtn.addEventListener('click', showAddProductModal);
+    closeModalBtn.addEventListener('click', () => productModal.classList.remove('show'));
+    cancelBtn.addEventListener('click', () => productModal.classList.remove('show'));
+    saveBtn.addEventListener('click', saveProduct);
+    addPlanBtn.addEventListener('click', () => addPlanToForm());
+    logoutBtn.addEventListener('click', handleLogout);
+
+    // Cerrar modal al hacer clic fuera
+    productModal.addEventListener('click', (e) => {
+      if (e.target === productModal) {
+        productModal.classList.remove('show');
+      }
+    });
+
+
+ 
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - FullStreamRec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <style>
+    :root {
+      --primary: #ff5e66;
+      --primary-light: #ff8a8a;
+      --primary-dark: #850007;
+      --dark: #121212;
+      --darker: #0a0a0a;
+      --light: #f5f5f5;
+      --gray: #888;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    .login-container {
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 3rem 3rem 2.5rem;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      animation: fadeIn 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,94,102,0.1) 0%, rgba(0,0,0,0) 70%);
+      z-index: -1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .logo p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3.2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--light);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 94, 102, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .input-group input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 1rem;
+      top: 55%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.1rem;
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember-me input {
+      margin-right: 0.5rem;
+      accent-color: var(--primary);
+    }
+
+    .forgot-password a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .forgot-password a:hover {
+      color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 15px rgba(255, 94, 102, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 94, 102, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 2rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+    }
+
+    .footer-text a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Loader */
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .login-container {
+        padding: 2.5rem 2rem;
+      }
+      
+      .logo h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles-js"></div>
+
+  <div class="login-container">
+    <div class="logo">
+      <h1>FullStreamRec</h1>
+      <p>Panel de administración</p>
+    </div>
+    
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="email">Correo electrónico</label>
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="password">Contraseña</label>
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+      
+      <div class="options">
+        <div class="remember-me">
+          <input type="checkbox" id="remember">
+          <label for="remember">Recordarme</label>
+        </div>
+        <div class="forgot-password">
+          <a href="#" id="forgotPassword">¿Olvidaste tu contraseña?</a>
+        </div>
+      </div>
+      
+      <button type="button" class="btn" onclick="login()" id="loginBtn">
+        <span>Ingresar</span>
+      </button>
+    </form>
+    
+    <p class="footer-text">
+      ¿No tienes una cuenta? <a href="#" id="registerLink">Contacta al administrador</a>
+    </p>
+  </div>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
+      authDomain: "site-fullstreamrec.firebaseapp.com",
+      projectId: "site-fullstreamrec",
+      storageBucket: "site-fullstreamrec.appspot.com",
+      messagingSenderId: "161679433276",
+      appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39",
+      measurementId: "G-X06BGV5ZRJ"
+    };
+    
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    // Verificar si hay credenciales guardadas
+    document.addEventListener('DOMContentLoaded', () => {
+      const rememberCheckbox = document.getElementById('remember');
+      const emailInput = document.getElementById('email');
+      
+      if (localStorage.getItem('rememberEmail') && localStorage.getItem('rememberEmail') === 'true') {
+        rememberCheckbox.checked = true;
+        emailInput.value = localStorage.getItem('email') || '';
+      }
+    });
+    
+    // Función de login
+    async function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+      const loginBtn = document.getElementById('loginBtn');
+      
+      // Validación
+      if (!email || !password) {
+        showAlert('Por favor complete todos los campos', 'error');
+        return;
+      }
+      
+      // Mostrar loader
+      loginBtn.innerHTML = '<div class="loader"></div><span>Ingresando...</span>';
+      loginBtn.disabled = true;
+      
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        
+        // Guardar email si "Recordarme" está marcado
+        if (remember) {
+          localStorage.setItem('rememberEmail', 'true');
+          localStorage.setItem('email', email);
+        } else {
+          localStorage.removeItem('rememberEmail');
+          localStorage.removeItem('email');
+        }
+        
+        // Redirigir al panel
+        window.location.href = 'panel.html';
+      } catch (error) {
+        let message = "Error al iniciar sesión";
+        switch(error.code) {
+          case "auth/user-not-found":
+            message = "Usuario no encontrado";
+            break;
+          case "auth/wrong-password":
+            message = "Contraseña incorrecta";
+            break;
+          case "auth/invalid-email":
+            message = "Email inválido";
+            break;
+          case "auth/too-many-requests":
+            message = "Demasiados intentos. Cuenta temporalmente bloqueada";
+            break;
+          case "auth/user-disabled":
+            message = "Cuenta deshabilitada";
+            break;
+        }
+        showAlert(message, 'error');
+      } finally {
+        loginBtn.innerHTML = '<span>Ingresar</span>';
+        loginBtn.disabled = false;
+      }
+    }
+    
+    // Recuperación de contraseña
+    document.getElementById('forgotPassword').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      
+      if (!email) {
+        showAlert('Por favor ingrese su correo electrónico', 'error');
+        return;
+      }
+      
+      try {
+        await auth.sendPasswordResetEmail(email);
+        showAlert('Se ha enviado un correo para restablecer tu contraseña', 'success');
+      } catch (error) {
+        showAlert('Error al enviar correo de recuperación: ' + error.message, 'error');
+      }
+    });
+    
+    // Mostrar alerta
+    function showAlert(message, type) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert ${type}`;
+      alertDiv.textContent = message;
+      
+      // Estilo dinámico para la alerta
+      alertDiv.style.position = 'fixed';
+      alertDiv.style.top = '20px';
+      alertDiv.style.left = '50%';
+      alertDiv.style.transform = 'translateX(-50%)';
+      alertDiv.style.padding = '15px 25px';
+      alertDiv.style.borderRadius = '8px';
+      alertDiv.style.color = 'white';
+      alertDiv.style.fontWeight = '500';
+      alertDiv.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+      alertDiv.style.zIndex = '1000';
+      alertDiv.style.animation = 'fadeIn 0.3s ease-out';
+      
+      if (type === 'error') {
+        alertDiv.style.background = 'linear-gradient(to right, #ff5e66, #850007)';
+      } else {
+        alertDiv.style.background = 'linear-gradient(to right, #4CAF50, #2E7D32)';
+      }
+      
+      document.body.appendChild(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => alertDiv.remove(), 300);
+      }, 3000);
+    }
+    
+    // Permitir login con Enter
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        login();
+      }
+    });
+    
+    // Enlace de registro modificado
+    document.getElementById('registerLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAlert('Contacta al administrador para crear una cuenta', 'info');
+    });
+  </script>
+  
+  <!-- Script para partículas -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    // Inicializar partículas
+    if (document.getElementById('particles-js')) {
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 70, density: { enable: true, value_area: 800 } },
+          color: { value: "#ff5e66" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#ff5e66", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
