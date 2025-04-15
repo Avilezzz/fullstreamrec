@@ -699,6 +699,7 @@ main {
 
 <script>
   
+  
   // Menú hamburguesa
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -762,7 +763,7 @@ main {
   }
   const db = firebase.firestore();
   
-  // Función para actualizar el enlace de WhatsApp (ÁMBITO GLOBAL)
+  // Función para actualizar el enlace de WhatsApp y mostrar plan seleccionado
   function updateWhatsAppLink(productId, productName, planData) {
     const [planName, planPrice] = planData.split("|");
     const message = encodeURIComponent(
@@ -772,13 +773,27 @@ main {
       `*Precio:* ${planPrice}\n` +
       `\nPor favor confirma disponibilidad.`
     );
+    
+    // Actualizar enlace de WhatsApp
     const whatsappBtn = document.getElementById(`btn-${productId}`);
     if (whatsappBtn) {
       whatsappBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${message}`;
     }
+    
+    // Mostrar el plan seleccionado en la card
+    const selectedPlanElement = document.getElementById(`selected-plan-${productId}`);
+    if (selectedPlanElement) {
+      selectedPlanElement.innerHTML = `
+        <div class="selected-plan">
+          <span class="selected-plan-name">${planName}</span>
+          <span class="selected-plan-price">${planPrice}</span>
+        </div>
+      `;
+      selectedPlanElement.style.display = 'block';
+    }
   }
 
-  // Crear modal global (mejorado)
+  // Crear modal global
   const globalModal = document.createElement('div');
   globalModal.className = 'global-modal';
   globalModal.innerHTML = `
@@ -793,7 +808,7 @@ main {
   `;
   document.body.appendChild(globalModal);
 
-  // Funciones para manejar el modal (mejoradas)
+  // Funciones para manejar el modal
   function showGlobalModal(product) {
     const modalLogo = document.getElementById('global-modal-logo');
     const modalTitle = document.getElementById('global-modal-title');
@@ -831,7 +846,7 @@ main {
     globalModal.classList.remove('show');
   }
 
-  // Eventos del modal (optimizados)
+  // Eventos del modal
   document.querySelector('.global-modal-close').addEventListener('click', hideGlobalModal);
   globalModal.addEventListener('click', (e) => e.target === globalModal && hideGlobalModal());
 
@@ -846,7 +861,7 @@ main {
     }
   });
 
-  // Carga de productos (versión final optimizada)
+  // Carga de productos
   document.addEventListener("DOMContentLoaded", () => {
     type();
 
@@ -890,6 +905,9 @@ main {
                 <img src="${product.logo}" alt="${product.name}" 
                      loading="lazy" onerror="this.src='https://via.placeholder.com/135?text=Logo'" />
                 <h2>${product.name}</h2>
+                <div id="selected-plan-${product.id}" class="selected-plan-container" style="display: none;">
+                  <!-- Aquí aparecerá el plan seleccionado -->
+                </div>
                 <button class="card-btn see-plans-btn" 
                         data-product-id="${product.id}">
                   Ver Planes
@@ -899,15 +917,6 @@ main {
                 </a>
               `;
               container.appendChild(card);
-
-              // Configurar primer plan por defecto
-              if (product.plans.length > 0) {
-                updateWhatsAppLink(
-                  product.id, 
-                  product.name, 
-                  `${product.plans[0].name}|${product.plans[0].price}`
-                );
-              }
             });
           }
         });
@@ -934,110 +943,171 @@ main {
           </p>`;
       });
   });
+
 </script>
-</script>
+
 
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script src="particles-config.js"></script>
 
 <style>
-  /* Estilos para el modal global */
+  /* Estilos para el plan seleccionado */
+  .selected-plan-container {
+    margin: 0.5rem 0;
+    min-height: 40px;
+  }
+  
+  .selected-plan {
+    background-color: rgba(255, 94, 102, 0.1);
+    border-radius: 6px;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ff5e66;
+  }
+  
+  .selected-plan-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+  }
+  
+  .selected-plan-price {
+    font-weight: 700;
+    color: #ff5e66;
+    font-size: 1rem;
+  }
+  
+  /* Ajustar el espaciado en las cards */
+  .card h2 {
+    margin-bottom: 0.3rem;
+  }
+  
+  .card-btn {
+    margin-top: 0.8rem;
+  }
+
+  /* Estilos del modal (se mantienen igual) */
   .global-modal {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
   }
-
+  
   .global-modal.show {
-    opacity: 1;
-    pointer-events: auto;
+    display: flex;
+    animation: fadeIn 0.3s;
   }
-
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
   .global-modal-content {
-    background-color: #fff;
+    background: white;
     border-radius: 12px;
-    padding: 2rem;
-    width: 90%;
+    width: 100%;
     max-width: 500px;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-20px);
+    transition: transform 0.3s;
   }
-
+  
+  .global-modal.show .global-modal-content {
+    transform: translateY(0);
+  }
+  
   .global-modal-close {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 15px;
+    right: 15px;
     background: none;
     border: none;
-    font-size: 1.8rem;
+    font-size: 24px;
     cursor: pointer;
     color: #ff5e66;
   }
-
+  
   .global-modal-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 15px;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
   }
-
+  
   .global-modal-logo {
     width: 60px;
     height: 60px;
     object-fit: contain;
     border-radius: 8px;
   }
-
+  
   .global-modal-title {
     margin: 0;
     color: #ff5e66;
+    font-size: 1.3rem;
   }
-
+  
   .global-plans-container {
+    padding: 20px;
     display: grid;
-    gap: 1rem;
+    gap: 15px;
   }
-
+  
   .global-plan-item {
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    padding: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #eee;
   }
-
+  
+  .plan-info {
+    flex: 1;
+  }
+  
   .global-plan-name {
-    font-weight: bold;
+    font-weight: 600;
+    margin-bottom: 5px;
   }
-
+  
   .global-plan-price {
     color: #ff5e66;
-    font-weight: bold;
+    font-weight: 700;
   }
-
+  
   .global-plan-select-btn {
-    background-color: #ff5e66;
+    background: #ff5e66;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 8px 15px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background 0.2s;
   }
-
+  
+  .global-plan-select-btn:hover {
+    background: #e04b5a;
+  }
+  
   body.modal-open {
     overflow: hidden;
   }
