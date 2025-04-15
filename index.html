@@ -86,6 +86,228 @@
       font-weight: 500;
     }
 
+    /* modal */
+/* Agrega esto en tu sección de estilos */
+/* .plan-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.plan-modal.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.plan-modal-content {
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.plan-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #ff5e66;
+}
+
+.plan-modal-title {
+  margin-top: 0;
+  color: #ff5e66;
+  text-align: center;
+}
+
+.plan-item {
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-name {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.plan-price {
+  color: #ff5e66;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.plan-select-btn {
+  background-color: #ff5e66;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.plan-select-btn:hover {
+  background-color: #e04b5a;
+}
+
+.card-btn {
+  background-color: #000;
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.card-btn:hover {
+  background-color: #ff5e66;
+  box-shadow: 0 0 10px rgba(255, 94, 102, 0.5);
+}
+
+.see-plans-btn {
+  background-color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.see-plans-btn:hover {
+  background-color: #555;
+} */
+
+
+/* Elimina los estilos anteriores del modal y reemplázalos con estos: */
+
+/* Modal que cubre toda la pantalla */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.fullscreen-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #ff5e66;
+  transition: transform 0.2s;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  transform: scale(1.2);
+}
+
+/* Evitar scroll del body cuando el modal está abierto */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Estilos para el contenido dentro del modal */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.plans-container {
+  display: grid;
+  gap: 1rem;
+}
+
+.plan-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #eee;
+}
+
+.plan-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
     .hamburger {
       display: none;
       flex-direction: column;
@@ -476,6 +698,7 @@ main {
 </script> -->
 
 <script>
+  
   // Menú hamburguesa
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -539,37 +762,110 @@ main {
   }
   const db = firebase.firestore();
   
+  // Función para actualizar el enlace de WhatsApp (ÁMBITO GLOBAL)
+  function updateWhatsAppLink(productId, productName, planData) {
+    const [planName, planPrice] = planData.split("|");
+    const message = encodeURIComponent(
+      `*Nuevo Pedido*\n` +
+      `*Producto:* ${productName}\n` +
+      `*Plan:* ${planName}\n` +
+      `*Precio:* ${planPrice}\n` +
+      `\nPor favor confirma disponibilidad.`
+    );
+    const whatsappBtn = document.getElementById(`btn-${productId}`);
+    if (whatsappBtn) {
+      whatsappBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${message}`;
+    }
+  }
 
+  // Crear modal global (mejorado)
+  const globalModal = document.createElement('div');
+  globalModal.className = 'global-modal';
+  globalModal.innerHTML = `
+    <div class="global-modal-content">
+      <button class="global-modal-close">&times;</button>
+      <div class="global-modal-header">
+        <img id="global-modal-logo" src="" alt="" class="global-modal-logo" onerror="this.src='https://via.placeholder.com/80?text=Logo'" />
+        <h3 class="global-modal-title" id="global-modal-title"></h3>
+      </div>
+      <div class="global-plans-container" id="global-plans-container"></div>
+    </div>
+  `;
+  document.body.appendChild(globalModal);
+
+  // Funciones para manejar el modal (mejoradas)
+  function showGlobalModal(product) {
+    const modalLogo = document.getElementById('global-modal-logo');
+    const modalTitle = document.getElementById('global-modal-title');
+    const plansContainer = document.getElementById('global-plans-container');
+    
+    modalLogo.src = product.logo;
+    modalLogo.alt = product.name;
+    modalTitle.textContent = `Planes de ${product.name}`;
+    
+    plansContainer.innerHTML = '';
+    product.plans.forEach(plan => {
+      const planItem = document.createElement('div');
+      planItem.className = 'global-plan-item';
+      planItem.innerHTML = `
+        <div class="plan-info">
+          <div class="global-plan-name">${plan.name}</div>
+          <div class="global-plan-price">${plan.price}</div>
+        </div>
+        <button class="global-plan-select-btn" 
+                data-product-id="${product.id}"
+                data-product-name="${product.name}"
+                data-plan="${plan.name}|${plan.price}">
+          Seleccionar
+        </button>
+      `;
+      plansContainer.appendChild(planItem);
+    });
+    
+    document.body.classList.add('modal-open');
+    globalModal.classList.add('show');
+  }
+
+  function hideGlobalModal() {
+    document.body.classList.remove('modal-open');
+    globalModal.classList.remove('show');
+  }
+
+  // Eventos del modal (optimizados)
+  document.querySelector('.global-modal-close').addEventListener('click', hideGlobalModal);
+  globalModal.addEventListener('click', (e) => e.target === globalModal && hideGlobalModal());
+
+  // Delegación de eventos para los botones de selección
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('global-plan-select-btn')) {
+      const productId = e.target.dataset.productId;
+      const productName = e.target.dataset.productName;
+      const planData = e.target.dataset.plan;
+      updateWhatsAppLink(productId, productName, planData);
+      hideGlobalModal();
+    }
+  });
+
+  // Carga de productos (versión final optimizada)
   document.addEventListener("DOMContentLoaded", () => {
-    type(); // Iniciar efecto máquina de escribir
+    type();
 
     const container = document.getElementById("products-container");
-
-    // Definir el orden deseado de las categorías
     const categoryOrder = [
-      "Streaming de Video",
-      "IPTV",
-      "Música",
-      "Videojuegos",
-      "Herramientas Creativas"
+      "Streaming de Video", "IPTV", "Música", 
+      "Videojuegos", "Herramientas Creativas"
     ];
 
-    // Mostrar indicador de carga
     container.innerHTML = `<p style="color: white; text-align: center;">Cargando productos...</p>`;
 
-    // Cargar SOLO productos visibles (visible == true o no definido)
-    db.collection("products").where("visible", "!=", false).get()
+    db.collection("products").where("visible", "in", [true, null]).get()
       .then(snapshot => {
         const productsByCategory = {};
         
-        // Agrupar productos por categoría
         snapshot.docs.forEach(doc => {
           const product = doc.data();
-          // Verificación adicional por si acaso
           if (product.visible !== false) {
-            if (!productsByCategory[product.category]) {
-              productsByCategory[product.category] = [];
-            }
+            productsByCategory[product.category] = productsByCategory[product.category] || [];
             productsByCategory[product.category].push({
               id: doc.id,
               ...product
@@ -577,85 +873,174 @@ main {
           }
         });
 
-        // Limpiar contenedor
         container.innerHTML = "";
 
-        // Crear secciones por categoría en el orden definido
         categoryOrder.forEach(category => {
-          if (productsByCategory[category] && productsByCategory[category].length > 0) {
+          if (productsByCategory[category]?.length > 0) {
             const categoryTitle = document.createElement("h2");
             categoryTitle.className = "category-title";
             categoryTitle.textContent = category;
             categoryTitle.style.color = "white";
-            categoryTitle.style.marginTop = "2rem";
-            categoryTitle.style.marginBottom = "1rem";
-            categoryTitle.style.paddingLeft = "1rem";
             container.appendChild(categoryTitle);
 
-            productsByCategory[category].forEach((product, index) => {
+            productsByCategory[category].forEach(product => {
               const card = document.createElement("div");
               card.className = "card";
-
-              const selectId = `select-${category.replace(/\s+/g, '-')}-${index}`;
-              const buttonId = `btn-${category.replace(/\s+/g, '-')}-${index}`;
-
               card.innerHTML = `
-                <img src="${product.logo}" alt="${product.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/135'" />
+                <img src="${product.logo}" alt="${product.name}" 
+                     loading="lazy" onerror="this.src='https://via.placeholder.com/135?text=Logo'" />
                 <h2>${product.name}</h2>
-                <select id="${selectId}">
-                  ${product.plans.map(plan => `<option value="${plan.name}|${plan.price}">${plan.name} - ${plan.price}</option>`).join('')}
-                </select>
-                <a id="${buttonId}" target="_blank" href="#" rel="noopener">
-                  <button>Comprar Ahora</button>
+                <button class="card-btn see-plans-btn" 
+                        data-product-id="${product.id}">
+                  Ver Planes
+                </button>
+                <a id="btn-${product.id}" target="_blank" href="#" rel="noopener">
+                  <button class="card-btn">Comprar Ahora</button>
                 </a>
               `;
-
               container.appendChild(card);
 
-              const select = card.querySelector(`#${selectId}`);
-              const button = card.querySelector(`#${buttonId}`);
-
-              const updateLink = () => {
-                const [planName, planPrice] = select.value.split("|");
-                const message = encodeURIComponent(
-                  `*Nuevo Pedido*\n` +
-                  `*Producto:* ${product.name}\n` +
-                  `*Plan:* ${planName}\n` +
-                  `*Precio:* ${planPrice}\n` +
-                  `\nPor favor confirma disponibilidad.`
+              // Configurar primer plan por defecto
+              if (product.plans.length > 0) {
+                updateWhatsAppLink(
+                  product.id, 
+                  product.name, 
+                  `${product.plans[0].name}|${product.plans[0].price}`
                 );
-                button.href = `https://api.whatsapp.com/send?phone=593978652638&text=${message}`;
-              };
-
-              select.addEventListener("change", updateLink);
-              updateLink(); // Inicializar el enlace
+              }
             });
           }
         });
 
+        // Delegación de eventos para los botones "Ver Planes"
+        container.addEventListener('click', (e) => {
+          if (e.target.classList.contains('see-plans-btn')) {
+            const productId = e.target.dataset.productId;
+            const product = [...snapshot.docs]
+              .find(doc => doc.id === productId)?.data();
+            if (product) showGlobalModal({ id: productId, ...product });
+          }
+        });
+
         // Observador de cards
-        const cards = document.querySelectorAll(".card");
-        if (cards.length > 0) {
-          cards.forEach(card => observer.observe(card));
-        } else {
-          container.innerHTML = `<p style="color: white; text-align: center;">No hay productos disponibles en este momento.</p>`;
-        }
+        document.querySelectorAll(".card").forEach(card => observer.observe(card));
       })
       .catch(error => {
-        console.error("Error cargando productos:", error);
+        console.error("Error:", error);
         container.innerHTML = `
           <p style="color: red; text-align: center;">
-            Error al cargar productos. Por favor, intenta de nuevo o contáctanos en 
+            Error al cargar productos. Contáctanos por 
             <a href="https://wa.me/593978652638" style="color: #ff5e66;">WhatsApp</a>.
           </p>`;
       });
   });
+</script>
 </script>
 
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script src="particles-config.js"></script>
 
+<style>
+  /* Estilos para el modal global */
+  .global-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
 
+  .global-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .global-modal-content {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .global-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #ff5e66;
+  }
+
+  .global-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .global-modal-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .global-modal-title {
+    margin: 0;
+    color: #ff5e66;
+  }
+
+  .global-plans-container {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .global-plan-item {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .global-plan-name {
+    font-weight: bold;
+  }
+
+  .global-plan-price {
+    color: #ff5e66;
+    font-weight: bold;
+  }
+
+  .global-plan-select-btn {
+    background-color: #ff5e66;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  body.modal-open {
+    overflow: hidden;
+  }
+</style>
 </body>
 </html>
