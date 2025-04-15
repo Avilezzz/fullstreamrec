@@ -8,7 +8,7 @@ particlesJS('particles-js', {
         }
       },
       color: {
-        value: '#ffffff' // Color de las partículas (blanco, puedes cambiarlo)
+        value: '#ff5e66' // Color de las partículas (blanco, puedes cambiarlo)
       },
       shape: {
         type: 'circle', // Forma: 'circle', 'edge', 'triangle', 'star', o 'polygon'
