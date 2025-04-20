@@ -621,15 +621,36 @@ if (btnElement) {
     // Mostrar el plan seleccionado en la card
     const selectedPlanElement = document.getElementById(`selected-plan-${productId}`);
     if (selectedPlanElement) {
-      selectedPlanElement.innerHTML = `
-        <div class="selected-plan">
-          <span class="selected-plan-name">${planName}</span>
-          <span class="selected-plan-price">${planPrice}</span>
-        </div>
-      `;
-      selectedPlanElement.style.display = 'block';
+  selectedPlanElement.style.display = 'block';
+  selectedPlanElement.querySelector('.selected-plan-name').textContent = planName;
+  selectedPlanElement.querySelector('.selected-plan-price').textContent = planPrice;
+}
+
+  }
+  // evento de la X de quitar el plan-----------------------------------------------
+  document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('remove-plan-btn')) {
+    const productId = e.target.dataset.productId;
+
+    // Ocultar el contenedor del plan
+    const selectedPlanElement = document.getElementById(`selected-plan-${productId}`);
+    if (selectedPlanElement) {
+      selectedPlanElement.style.display = 'none';
+    }
+
+    // Desactivar el botón de compra
+    const buyBtn = document.getElementById(`buy-btn-${productId}`);
+    if (buyBtn) {
+      buyBtn.disabled = true;
+    }
+
+    // Limpiar el enlace de WhatsApp
+    const whatsappBtn = document.getElementById(`btn-${productId}`);
+    if (whatsappBtn) {
+      whatsappBtn.href = '#';
     }
   }
+});
 
   // Crear modal global
   const globalModal = document.createElement('div');
@@ -743,7 +764,16 @@ if (btnElement) {
                 <img src="${product.logo}" alt="${product.name}" 
                      loading="lazy" onerror="this.src='https://fakeimg.pl/400x200?text=IMAGEN+NO+DISPONIBLE'" />
                 <h2>${product.name}</h2>
-                <div id="selected-plan-${product.id}"  class="selected-plan-container" style="display: none; transition: all 0.4s">
+               <div id="selected-plan-${product.id}" class="selected-plan-container" style="display: none;">
+                  <div class="selected-plan">
+                   <div>
+                  <span class="selected-plan-name"></span> - 
+                  <span class="selected-plan-price"></span>
+             </div>
+               <button class="remove-plan-btn" data-product-id="${product.id}" title="Quitar plan">✕</button>
+               </div>
+              </div>
+
                   <!-- Aquí aparecerá el plan seleccionado -->
                 </div>
                 <button class="card-btn see-plans-btn" 
@@ -946,7 +976,20 @@ if (btnElement) {
   .global-plan-select-btn:hover {
     background: #e04b5a;
   }
-  
+  .remove-plan-btn {
+  background: none;
+  border: none;
+  color: #ff5e66;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: color 0.2s ease;
+}
+
+.remove-plan-btn:hover {
+  color: #e04b5a;
+}
+
   body.modal-open {
     overflow: hidden;
   }
