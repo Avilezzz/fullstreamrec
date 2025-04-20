@@ -237,6 +237,12 @@
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
   animation: modalFadeIn 0.3s ease-out;
 }
+button[disabled] {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(70%);
+}
 
 @keyframes modalFadeIn {
   from {
@@ -606,6 +612,10 @@ main {
     const whatsappBtn = document.getElementById(`btn-${productId}`);
     if (whatsappBtn) {
       whatsappBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${message}`;
+      const btnElement = document.getElementById(`buy-btn-${productId}`);
+if (btnElement) {
+  btnElement.disabled = false;
+}
     }
     
     // Mostrar el plan seleccionado en la card
@@ -733,7 +743,7 @@ main {
                 <img src="${product.logo}" alt="${product.name}" 
                      loading="lazy" onerror="this.src='https://fakeimg.pl/400x200?text=IMAGEN+NO+DISPONIBLE'" />
                 <h2>${product.name}</h2>
-                <div id="selected-plan-${product.id}" class="selected-plan-container" style="display: none;">
+                <div id="selected-plan-${product.id}"  class="selected-plan-container" style="display: none; transition: all 0.4s">
                   <!-- Aquí aparecerá el plan seleccionado -->
                 </div>
                 <button class="card-btn see-plans-btn" 
@@ -741,8 +751,9 @@ main {
                   Ver Planes
                 </button>
                 <a id="btn-${product.id}" target="_blank" href="#" rel="noopener">
-                  <button class="card-btn">Comprar Ahora</button>
+                   <button class="card-btn" id="buy-btn-${product.id}" disabled>Comprar Ahora</button>
                 </a>
+
               `;
               container.appendChild(card);
             });
