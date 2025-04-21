@@ -673,37 +673,100 @@ if (btnElement) {
             container.appendChild(categoryTitle);
 
             productsByCategory[category].forEach(product => {
-              const card = document.createElement("div");
-              card.className = "card";
-              card.innerHTML = `
-                <img src="${product.logo}" alt="${product.name}" 
-                     loading="lazy" onerror="this.src='https://fakeimg.pl/400x200?text=IMAGEN+NO+DISPONIBLE'" />
-                <h2>${product.name}</h2>
-               <div id="selected-plan-${product.id}" class="selected-plan-container" style="display: none;">
-                  <div class="selected-plan">
-                   <div>
-                  <span class="selected-plan-name"></span> - 
-                  <span class="selected-plan-price"></span>
-             </div>
-               <button class="remove-plan-btn" data-product-id="${product.id}" title="Quitar plan">✕</button>
-               </div>
-              </div>
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <img src="${product.logo}" alt="${product.name}" 
+         loading="lazy" onerror="this.src='https://fakeimg.pl/400x200?text=IMAGEN+NO+DISPONIBLE'" />
+    <h2>${product.name}</h2>
+    <div id="selected-plan-${product.id}" class="selected-plan-container" style="display: none;">
+      <div class="selected-plan">
+        <div>
+          <span class="selected-plan-name"></span> - 
+          <span class="selected-plan-price"></span>
+        </div>
+        <button class="remove-plan-btn" data-product-id="${product.id}" title="Quitar plan">✕</button>
+      </div>
+    </div>
+    <button class="card-btn see-plans-btn" data-product-id="${product.id}">
+      Ver Planes
+    </button>
+    <a id="btn-${product.id}" target="_blank" href="#" rel="noopener">
+      <button class="card-btn" id="buy-btn-${product.id}" disabled>Comprar Ahora</button>
+    </a>
+    <!-- Botón de compartir -->
+    <button class="copy-btn" data-product-id="${product.id}" title="Copiar enlace del producto">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 3H4v13"/><path d="M8 7h12v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z"/></g></svg>
+  <span class="copy-message" style="display: none;">Copiado al portapapeles</span>
+</button>
+  `;
+  container.appendChild(card);
+});
+// Resaltar producto compartido desde la URL
+const urlParams = new URLSearchParams(window.location.search);
+const sharedProductId = urlParams.get('product');
 
-                  <!-- Aquí aparecerá el plan seleccionado -->
-                </div>
-                <button class="card-btn see-plans-btn" 
-                        data-product-id="${product.id}">
-                  Ver Planes
-                </button>
-                <a id="btn-${product.id}" target="_blank" href="#" rel="noopener">
-                   <button class="card-btn" id="buy-btn-${product.id}" disabled>Comprar Ahora</button>
-                </a>
-
-              `;
-              container.appendChild(card);
-            });
+if (sharedProductId) {
+  const sharedCard = document.querySelector(`.card [data-product-id="${sharedProductId}"]`)?.closest('.card');
+  if (sharedCard) {
+    sharedCard.classList.add('card-highlight');
+    // Opcional: Hacer scroll suave hacia la card
+    sharedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
           }
         });
+        // Manejador para compartir productos
+container.addEventListener('click', (e) => {
+  if (e.target.closest('.share-btn')) {
+    const productId = e.target.closest('.share-btn').dataset.productId;
+    const product = [...snapshot.docs].find(doc => doc.id === productId)?.data();
+    
+    if (product && navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: `Mira este producto en FullStreamRec: ${product.name}`,
+        url: `${window.location.origin}?product=${productId}`
+      }).catch(err => {
+        console.log('Error al compartir:', err);
+        copyToClipboard(`${window.location.origin}?product=${productId}`);
+        alert('Enlace copiado al portapapeles');
+      });
+    } else {
+      copyToClipboard(`${window.location.origin}?product=${productId}`);
+      alert('Enlace copiado al portapapeles');
+    }
+  }
+});
+// Manejador para copiar enlace
+container.addEventListener('click', (e) => {
+  if (e.target.closest('.copy-btn')) {
+    const button = e.target.closest('.copy-btn');
+    const productId = button.dataset.productId;
+    const product = [...snapshot.docs].find(doc => doc.id === productId)?.data();
+    
+    if (product) {
+      const url = `${window.location.origin}?product=${productId}`;
+      copyToClipboard(url);
+      
+      // Mostrar mensaje temporal
+      const message = button.querySelector('.copy-message');
+      message.style.display = 'inline-block';
+      setTimeout(() => {
+        message.style.display = 'none';
+      }, 2000);
+    }
+  }
+});
+// Función auxiliar para copiar al portapapeles
+function copyToClipboard(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+}
 
         // Delegación de eventos para los botones "Ver Planes"
         container.addEventListener('click', (e) => {
@@ -904,7 +967,79 @@ if (btnElement) {
 .remove-plan-btn:hover {
   color: #e04b5a;
 }
+.share-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  color: #ffffff;
+  transition: color 0.2s;
+}
 
+.share-btn:hover {
+  color: #ffa2a2;
+}
+
+.share-btn svg {
+  vertical-align: middle;
+}
+.card-highlight {
+  box-shadow: 0 0 60px rgba(255, 94, 102, 0.8), 0 0 10px rgba(255, 94, 102, 0.5);
+  border: 2px solid #ff5e66;
+  animation: highlightFade 5s ease forwards;
+}
+
+@keyframes highlightFade {
+  0% {
+    box-shadow: 0 0 50px rgba(255, 94, 102, 0.8), 0 0 10px rgba(255, 94, 102, 0.5);
+    border-color: #ff5e66;
+
+  }
+
+  100% {
+    box-shadow: none;
+    border-color: transparent;
+  }
+}
+
+.copy-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  color: #ffffff;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.copy-btn:hover {
+  color: #ffa2a2;
+}
+
+.copy-btn svg {
+  vertical-align: middle;
+}
+
+.copy-message {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff5e66;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.copy-message[style*="display: inline-block"] {
+  opacity: 1;
+}
   body.modal-open {
     overflow: hidden;
   }
