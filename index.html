@@ -1019,7 +1019,8 @@ document.addEventListener('click', (e) => {
   document.addEventListener("DOMContentLoaded", () => {
     type();
 
-    const urlParams = new URLSearchParams(window.location.search);
+   // Resaltar producto compartido desde la URL y actualizar metaetiquetas OG
+const urlParams = new URLSearchParams(window.location.search);
 const sharedProductId = urlParams.get('product');
 
 if (sharedProductId) {
@@ -1040,12 +1041,24 @@ if (sharedProductId) {
         // Actualizar título de la página
         document.title = `${product.name} | FullStreamRec`;
 
-        // Resaltar la card del producto
-        const sharedCard = document.querySelector(`.card [data-product-id="${sharedProductId}"]`)?.closest('.card');
-        if (sharedCard) {
-          sharedCard.classList.add('card-highlight');
-          sharedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        // Actualizar descripción SEO
+        document.querySelector('meta[name="description"]').content = `Descubre ${product.name} en FullStreamRec. Planes económicos y confiables para streaming y recargas gamer en Ecuador.`;
+
+        // Retrasar el resaltado y desplazamiento hasta que los productos estén cargados
+        db.collection("products").where("visible", "in", [true, null]).get()
+          .then(snapshot => {
+            // Esperar 500ms para asegurar que el DOM esté listo
+            setTimeout(() => {
+              const sharedCard = document.querySelector(`.card [data-product-id="${sharedProductId}"]`)?.closest('.card');
+              if (sharedCard) {
+                sharedCard.classList.add('card-highlight');
+                sharedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }, 500); // Ajusta el tiempo si es necesario (500ms es un buen punto de partida)
+          })
+          .catch(error => {
+            console.error("Error al cargar productos:", error);
+          });
       }
     })
     .catch(error => {
@@ -1402,21 +1415,25 @@ function copyToClipboard(text) {
   vertical-align: middle;
 }
 .card-highlight {
-  box-shadow: 0 0 60px rgba(255, 94, 102, 0.8), 0 0 10px rgba(255, 94, 102, 0.5);
+  box-shadow: 0 0 30px rgba(255, 94, 102, 0.8), 0 0 10px rgba(255, 94, 102, 0.5);
   border: 2px solid #ff5e66;
-  animation: highlightFade 5s ease forwards;
+  animation: highlightPulse 3s ease forwards;
 }
 
-@keyframes highlightFade {
+@keyframes highlightPulse {
   0% {
-    box-shadow: 0 0 50px rgba(255, 94, 102, 0.8), 0 0 10px rgba(255, 94, 102, 0.5);
+    box-shadow: 0 0 30px rgba(255, 94, 102, 0.8), 0 0 10px rgba(255, 94, 102, 0.5);
     border-color: #ff5e66;
-
+    transform: scale(1);
   }
-
+  50% {
+    box-shadow: 0 0 50px rgba(255, 94, 102, 1), 0 0 15px rgba(255, 94, 102, 0.7);
+    transform: scale(1.02);
+  }
   100% {
-    box-shadow: none;
-    border-color: transparent;
+    box-shadow: 0 0 20px rgba(255, 94, 102, 0.4), 0 0 5px rgba(255, 94, 102, 0.3);
+    border-color: rgba(255, 94, 102, 0.5);
+    transform: scale(1);
   }
 }
 
