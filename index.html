@@ -4,26 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- SEO básico -->
+<!-- Metaetiquetas generales (por defecto) -->
 <meta name="description" content="FullStreamRec ofrece las mejores cuentas de Netflix, Disney+, Spotify, IPTV y recargas gamer en Ecuador. Planes económicos, servicio confiable y entrega inmediata.">
-
 <meta name="keywords" content="Netflix económico Ecuador, Disney+ barato Ecuador, Spotify Premium Ecuador, IPTV legal Ecuador, recargas juegos Ecuador, diamantes Free Fire Ecuador, planes streaming económicos, servicios streaming Ecuador, FullStreamRec, IPTV estable sin cortes, dónde comprar streaming económico, mejores planes digitales Ecuador, servicio confiable recargas juegos">
-
 <meta name="author" content="FullStreamRec">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#000000">
 
-<!-- Canonical URL -->
-<link rel="canonical" href="https://fullstreamrec.com">
-
-<!-- Social media preview -->
+<!-- Open Graph por defecto -->
 <meta property="og:title" content="FullStreamRec | Servicios de Streaming en Ecuador">
 <meta property="og:description" content="Compra tus planes de streaming favoritos con FullStreamRec. Confiable, económico y con atención personalizada por WhatsApp.">
 <meta property="og:image" content="https://fullstreamrec.com/logo.jpg">
 <meta property="og:url" content="https://fullstreamrec.com">
+<meta property="og:type" content="website">
 
+<!-- Contenedor para metaetiquetas dinámicas -->
+<meta id="dynamic-og-title" property="og:title" content="">
+<meta id="dynamic-og-description" property="og:description" content="">
+<meta id="dynamic-og-image" property="og:image" content="">
+<meta id="dynamic-og-url" property="og:url" content="">
+
+<link rel="canonical" href="https://fullstreamrec.com">
 <link rel="icon" type="image/x-icon" href="logo.ico">
-
   <title>FullstreamRec</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1016,6 +1018,40 @@ document.addEventListener('click', (e) => {
   // Carga de productos
   document.addEventListener("DOMContentLoaded", () => {
     type();
+
+    const urlParams = new URLSearchParams(window.location.search);
+const sharedProductId = urlParams.get('product');
+
+if (sharedProductId) {
+  db.collection("products")
+    .doc(sharedProductId)
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        const product = doc.data();
+        const productId = doc.id;
+
+        // Actualizar metaetiquetas Open Graph
+        document.getElementById('dynamic-og-title').content = `${product.name} | FullStreamRec`;
+        document.getElementById('dynamic-og-description').content = `Descubre ${product.name} en FullStreamRec. Planes económicos y confiables para streaming y recargas gamer en Ecuador.`;
+        document.getElementById('dynamic-og-image').content = product.logo || 'https://fullstreamrec.com/logo.jpg';
+        document.getElementById('dynamic-og-url').content = `${window.location.origin}?product=${productId}`;
+
+        // Actualizar título de la página
+        document.title = `${product.name} | FullStreamRec`;
+
+        // Resaltar la card del producto
+        const sharedCard = document.querySelector(`.card [data-product-id="${sharedProductId}"]`)?.closest('.card');
+        if (sharedCard) {
+          sharedCard.classList.add('card-highlight');
+          sharedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    })
+    .catch(error => {
+      console.error("Error al cargar producto compartido:", error);
+    });
+}
 
     const container = document.getElementById("products-container");
     const categoryOrder = [
