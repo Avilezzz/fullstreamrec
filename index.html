@@ -1120,6 +1120,7 @@ container.addEventListener('click', (e) => {
   }
 });
 // Manejador para copiar enlace
+// Manejador para compartir productos
 container.addEventListener('click', (e) => {
   if (e.target.closest('.copy-btn')) {
     const button = e.target.closest('.copy-btn');
@@ -1128,6 +1129,10 @@ container.addEventListener('click', (e) => {
     
     if (product) {
       const url = `${window.location.origin}?product=${productId}`;
+      
+      // Actualizar meta tags dinámicos antes de compartir
+      updateMetaTags(product.name, product.description || `Compra ${product.name} en FullStreamRec`, product.logo);
+      
       copyToClipboard(url);
       
       // Mostrar mensaje temporal
@@ -1139,13 +1144,44 @@ container.addEventListener('click', (e) => {
     }
   }
 });
+
+// Función para actualizar meta tags dinámicos
+function updateMetaTags(title, description, imageUrl) {
+  // Actualizar meta tags estándar
+  document.querySelector('meta[property="og:title"]').content = title;
+  document.querySelector('meta[property="og:description"]').content = description;
+  document.querySelector('meta[property="og:image"]').content = imageUrl;
+  
+  // Actualizar meta tags de Twitter (opcional)
+  const twitterMeta = `
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${imageUrl}">
+  `;
+  
+  // Eliminar meta tags de Twitter existentes
+  document.querySelectorAll('meta[name^="twitter"]').forEach(el => el.remove());
+  
+  // Agregar nuevos meta tags de Twitter
+  document.head.insertAdjacentHTML('beforeend', twitterMeta);
+}
 // Función auxiliar para copiar al portapapeles
 function copyToClipboard(text) {
   const textarea = document.createElement('textarea');
   textarea.value = text;
   document.body.appendChild(textarea);
   textarea.select();
-  document.execCommand('copy');
+  
+  try {
+    document.execCommand('copy');
+    console.log('Enlace copiado al portapapeles');
+  } catch (err) {
+    console.error('Error al copiar:', err);
+    // Fallback para dispositivos móviles
+    window.prompt("Presiona Ctrl+C para copiar el enlace:", text);
+  }
+  
   document.body.removeChild(textarea);
 }
 
