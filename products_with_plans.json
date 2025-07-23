@@ -7,15 +7,18 @@
       "plans": [
         {
           "name": "Perfil Compartido 1 perfil 1 mes",
-          "price": "$3.00"
+          "price": "$3.00",
+          "image": "https://img.icons8.com/color/96/user.png"
         },
         {
           "name": "Perfil Extra 1 dispositivo 1 mes",
-          "price": "$4.00"
+          "price": "$4.00",
+          "image": "https://img.icons8.com/color/96/smartphone.png"
         },
         {
           "name": "Cuenta Completa 5 perfiles 1 mes",
-          "price": "$12.00"
+          "price": "$12.00",
+          "image": "https://img.icons8.com/color/96/family.png"
         }
       ]
     },
@@ -311,7 +314,8 @@
       "plans": [
         {
           "name": "1 Mes",
-          "price": "$4.00"
+          "price": "$4.00",
+          "image": "https://img.icons8.com/color/96/spotify.png"
         }
       ]
     },
@@ -418,35 +422,43 @@
       "plans": [
         {
           "name": "100 + 10 DIAMANTES 💎",
-          "price": "$1.50"
+          "price": "$1.50",
+          "image": "https://img.icons8.com/color/96/diamond.png"
         },
         {
           "name": "310 + 31 DIAMANTES 💎",
-          "price": "$3.50"
+          "price": "$3.50",
+          "image": "https://img.icons8.com/color/96/diamond.png"
         },
         {
           "name": "520 + 52 DIAMANTES 💎",
-          "price": "$5.50"
+          "price": "$5.50",
+          "image": "https://img.icons8.com/color/96/diamond.png"
         },
         {
           "name": "1060 + 106 DIAMANTES 💎",
-          "price": "$11.00"
+          "price": "$11.00",
+          "image": "https://img.icons8.com/color/96/diamond.png"
         },
         {
           "name": "2180 + 218 DIAMANTES 💎",
-          "price": "$21.00"
+          "price": "$21.00",
+          "image": "https://img.icons8.com/color/96/diamond.png"
         },
         {
           "name": "5600 + 560 DIAMANTES 💎",
-          "price": "$55.00"
+          "price": "$55.00",
+          "image": "https://img.icons8.com/color/96/diamond.png"
         },
         {
           "name": "TARJETA SEMANAL 🎁💎",
-          "price": "$3.25"
+          "price": "$3.25",
+          "image": "https://img.icons8.com/color/96/gift.png"
         },
         {
           "name": "TARJETA MENSUAL 🎁💎",
-          "price": "$11.00"
+          "price": "$11.00",
+          "image": "https://img.icons8.com/color/96/gift.png"
         }
       ]
     },
@@ -457,27 +469,33 @@
       "plans": [
         {
           "name": " 88 CP 🪙",
-          "price": "$1.50"
+          "price": "$1.50",
+          "image": "https://img.icons8.com/color/96/coin.png"
         },
         {
           "name": " 460 CP 🪙",
-          "price": "$6.50"
+          "price": "$6.50",
+          "image": "https://img.icons8.com/color/96/coin.png"
         },
         {
           "name": " 960 CP 🪙",
-          "price": "$12.00"
+          "price": "$12.00",
+          "image": "https://img.icons8.com/color/96/coin.png"
         },
         {
           "name": " 2600 CP 🪙",
-          "price": "$28.00"
+          "price": "$28.00",
+          "image": "https://img.icons8.com/color/96/coin.png"
         },
         {
           "name": " 5400 CP 🪙",
-          "price": "$55.00"
+          "price": "$55.00",
+          "image": "https://img.icons8.com/color/96/coin.png"
         },
         {
           "name": " 11600 CP 🪙",
-          "price": "$110.00"
+          "price": "$110.00",
+          "image": "https://img.icons8.com/color/96/coin.png"
         }
       ]
     },
@@ -655,19 +673,23 @@
       "plans": [
         {
           "name": " 1 Mes - CANVA PRO EDU 🎨",
-          "price": "$3.00"
+          "price": "$3.00",
+          "image": "https://img.icons8.com/color/96/calendar--v1.png"
         },
         {
           "name": " 3 Meses - CANVA PRO EDU 🎨",
-          "price": "$6.00"
+          "price": "$6.00",
+          "image": "https://img.icons8.com/color/96/3-months.png"
         },
         {
           "name": "  6 Meses - CANVA PRO EDU 🎨",
-          "price": "$10.00"
+          "price": "$10.00",
+          "image": "https://img.icons8.com/color/96/6-months.png"
         },
         {
           "name": " 12 Meses - CANVA PRO EDU 🎨",
-          "price": "$15.00"
+          "price": "$15.00",
+          "image": "https://img.icons8.com/color/96/year.png"
         }
       ]
     },
