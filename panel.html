@@ -379,14 +379,16 @@
     
     /* En tu sección CSS */
 .plan-item {
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: auto 2fr 1fr 3fr auto;
+  gap: 0.5rem;
   margin-bottom: 1rem;
   padding: 1rem;
   background-color: #f9f9f9;
   border-radius: 0.5rem;
   cursor: default;
   position: relative;
+  align-items: center;
 }
 
 .plan-handle {
@@ -406,7 +408,8 @@
 }
     
     .plan-item input {
-      flex: 1;
+      width: 100%;
+      min-width: 0;
     }
     
     .add-plan-btn {
@@ -866,7 +869,7 @@ plansContainer.innerHTML = '';
 product.plans
   .sort((a, b) => (a.order || 0) - (b.order || 0)) // Ordena según lo guardado
   .forEach(plan => {
-    addPlanToForm(plan.name, plan.price);
+    addPlanToForm(plan.name, plan.price, plan.image || '');
   });
     
     productModal.classList.add('show');
@@ -878,7 +881,7 @@ product.plans
 }
 
 // Función para agregar un plan al formulario
-function addPlanToForm(name = '', price = '', planId = Date.now()) {
+function addPlanToForm(name = '', price = '', image = '', planId = Date.now()) {
   const planDiv = document.createElement('div');
   planDiv.className = 'plan-item draggable';
   planDiv.dataset.id = planId; // ID único para cada plan
@@ -886,11 +889,29 @@ function addPlanToForm(name = '', price = '', planId = Date.now()) {
     <div class="plan-handle" style="cursor: move;">↕️</div>
     <input type="text" class="form-control plan-name" placeholder="Nombre del plan" value="${name}" required>
     <input type="text" class="form-control plan-price" placeholder="Precio" value="${price}" required>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <input type="url" class="form-control plan-image" placeholder="URL de imagen del plan (opcional)" value="${image}">
+      <img class="plan-image-preview" src="${image}" alt="Preview" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; ${image ? 'display: block;' : 'display: none;'}" onerror="this.style.display='none'">
+    </div>
     <button type="button" class="remove-plan-btn">
       <i class="fas fa-times"></i>
     </button>
   `;
   plansContainer.appendChild(planDiv);
+
+  // Agregar evento para mostrar preview de imagen
+  const imageInput = planDiv.querySelector('.plan-image');
+  const imagePreview = planDiv.querySelector('.plan-image-preview');
+  
+  imageInput.addEventListener('input', (e) => {
+    const url = e.target.value.trim();
+    if (url) {
+      imagePreview.src = url;
+      imagePreview.style.display = 'block';
+    } else {
+      imagePreview.style.display = 'none';
+    }
+  });
 
   // Evento para eliminar plan
   planDiv.querySelector('.remove-plan-btn').addEventListener('click', () => {
@@ -917,6 +938,7 @@ async function updatePlanOrder() {
   const orderedPlans = planItems.map((item, index) => ({
     name: item.querySelector('.plan-name').value,
     price: item.querySelector('.plan-price').value,
+    image: item.querySelector('.plan-image').value,
     order: index, // Guarda la posición
   }));
 
@@ -962,11 +984,17 @@ async function saveProduct() {
   // Obtener planes
   const plans = [];
   const planItems = plansContainer.querySelectorAll('.plan-item');
-  planItems.forEach(item => {
+  planItems.forEach((item, index) => {
     const planName = item.querySelector('.plan-name').value;
     const planPrice = item.querySelector('.plan-price').value;
+    const planImage = item.querySelector('.plan-image').value;
     if (planName && planPrice) {
-      plans.push({ name: planName, price: planPrice });
+      plans.push({ 
+        name: planName, 
+        price: planPrice, 
+        image: planImage || '',
+        order: index 
+      });
     }
   });
 
