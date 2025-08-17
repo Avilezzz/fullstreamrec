@@ -1382,31 +1382,43 @@
     const db = firebase.firestore();
     
     // Función para actualizar el enlace de WhatsApp y mostrar plan seleccionado
-    function updateWhatsAppLink(productId, productName, planData) {
+    function updateWhatsAppLink(productId, productName, planData, freefireId = null) {
       const [planName, planPrice] = planData.split("|");
-      const message = encodeURIComponent(
-        `*Nuevo Pedido*\n` +
-        `*Producto:* ${productName}\n` +
-        `*Plan:* ${planName}\n` +
-        `*Precio:* ${planPrice}\n` +
-        `\nPor favor confirma disponibilidad.`
-      );
+      
+      // Crear mensaje base
+      let message = `*Nuevo Pedido*\n` +
+                   `*Producto:* ${productName}\n` +
+                   `*Plan:* ${planName}\n` +
+                   `*Precio:* ${planPrice}\n`;
+      
+      // Agregar ID de Free Fire si está disponible
+      if (freefireId && productName === 'Free Fire') {
+        message += `*ID de Free Fire:* ${freefireId}\n`;
+      }
+      
+      message += `\nPor favor confirma disponibilidad.`;
+      
+      const encodedMessage = encodeURIComponent(message);
       
       // Actualizar enlace de WhatsApp
       const whatsappBtn = document.getElementById(`btn-${productId}`);
       if (whatsappBtn) {
-        whatsappBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${message}`;
+        whatsappBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${encodedMessage}`;
         const btnElement = document.getElementById(`buy-btn-${productId}`);
         if (btnElement) {
           btnElement.disabled = false;
         }
       }
       
-      // Mostrar el plan seleccionado en la card
+      // Mostrar el plan seleccionado en la card con ID si es Free Fire
       const selectedPlanElement = document.getElementById(`selected-plan-${productId}`);
       if (selectedPlanElement) {
         selectedPlanElement.style.display = 'block';
-        selectedPlanElement.querySelector('.selected-plan-name').textContent = planName;
+        let displayText = planName;
+        if (freefireId && productName === 'Free Fire') {
+          displayText += ` (ID: ${freefireId})`;
+        }
+        selectedPlanElement.querySelector('.selected-plan-name').textContent = displayText;
         selectedPlanElement.querySelector('.selected-plan-price').textContent = planPrice;
       }
     }
@@ -1466,6 +1478,60 @@
       modalTitle.textContent = `Planes de ${product.name}`;
       
       plansContainer.innerHTML = '';
+      
+      // Agregar campo de ID para Free Fire
+      if (product.name === 'Free Fire') {
+        const idInputContainer = document.createElement('div');
+        idInputContainer.className = 'freefire-id-container';
+        idInputContainer.innerHTML = `
+          <div style="padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px;">
+            <label for="freefire-id" style="display: block; margin-bottom: 10px; color: var(--light-color); font-weight: 600;">
+              <i class="fas fa-gamepad"></i> ID de Free Fire:
+            </label>
+            <input type="text" id="freefire-id" placeholder="Ingresa tu ID de Free Fire" 
+                   style="width: 100%; padding: 12px; border: 2px solid rgba(255, 255, 255, 0.1); 
+                          border-radius: 8px; background-color: rgba(255, 255, 255, 0.05); 
+                          color: var(--light-color); font-size: 16px; transition: var(--transition);"
+                   onkeypress="return /[0-9]/.test(event.key)"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                   maxlength="12"
+                   autocomplete="off">
+            <small style="display: block; margin-top: 8px; color: rgba(255, 255, 255, 0.6); font-size: 14px;">
+              <i class="fas fa-info-circle"></i> Ingresa tu ID numérico de Free Fire (solo números)
+            </small>
+          </div>
+        `;
+        plansContainer.appendChild(idInputContainer);
+        
+        // Estilos adicionales para el input
+        const style = document.createElement('style');
+        style.textContent = `
+          #freefire-id:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 94, 102, 0.1);
+          }
+          #freefire-id::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+          }
+          #freefire-id.valid {
+            border-color: #4CAF50 !important;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+          }
+        `;
+        document.head.appendChild(style);
+        
+        // Agregar validación en tiempo real
+        const freefireInput = document.getElementById('freefire-id');
+        freefireInput.addEventListener('input', function() {
+          if (this.value.length >= 6) {
+            this.classList.add('valid');
+          } else {
+            this.classList.remove('valid');
+          }
+        });
+      }
+      
       product.plans.forEach(plan => {
         const planItem = document.createElement('div');
         planItem.className = 'global-plan-item';
@@ -1509,7 +1575,80 @@
         const productId = e.target.dataset.productId;
         const productName = e.target.dataset.productName;
         const planData = e.target.dataset.plan;
-        updateWhatsAppLink(productId, productName, planData);
+        
+        // Validación especial para Free Fire
+        if (productName === 'Free Fire') {
+          const freefireIdInput = document.getElementById('freefire-id');
+          const freefireId = freefireIdInput ? freefireIdInput.value.trim() : '';
+          
+          if (!freefireId) {
+            // Mostrar error si no se ingresó el ID
+            freefireIdInput.style.borderColor = '#ff6b6b';
+            freefireIdInput.focus();
+            
+            // Mostrar mensaje de error temporal
+            const errorMsg = document.createElement('div');
+            errorMsg.style.cssText = `
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background-color: rgba(255, 107, 107, 0.9);
+              color: white;
+              padding: 15px 25px;
+              border-radius: 8px;
+              font-weight: 600;
+              z-index: 10001;
+              box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            `;
+            errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Por favor, ingresa tu ID de Free Fire';
+            document.body.appendChild(errorMsg);
+            
+            setTimeout(() => {
+              document.body.removeChild(errorMsg);
+              freefireIdInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }, 3000);
+            
+            return; // No continuar si no hay ID
+          }
+          
+          if (freefireId.length < 6) {
+            // Mostrar error si el ID es muy corto
+            freefireIdInput.style.borderColor = '#ff6b6b';
+            freefireIdInput.focus();
+            
+            const errorMsg = document.createElement('div');
+            errorMsg.style.cssText = `
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background-color: rgba(255, 107, 107, 0.9);
+              color: white;
+              padding: 15px 25px;
+              border-radius: 8px;
+              font-weight: 600;
+              z-index: 10001;
+              box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            `;
+            errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> El ID debe tener al menos 6 dígitos';
+            document.body.appendChild(errorMsg);
+            
+            setTimeout(() => {
+              document.body.removeChild(errorMsg);
+              freefireIdInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }, 3000);
+            
+            return; // No continuar si el ID es inválido
+          }
+          
+          // Si llegamos aquí, el ID es válido, actualizar con el ID incluido
+          updateWhatsAppLink(productId, productName, planData, freefireId);
+        } else {
+          // Para otros productos, usar la función normal
+          updateWhatsAppLink(productId, productName, planData);
+        }
+        
         hideGlobalModal();
       }
     });
