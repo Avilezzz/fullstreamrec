@@ -312,78 +312,134 @@
     }
 
     .typed-text {
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ff6b35, var(--primary-color));
-      background-size: 300% 300%;
+      background: linear-gradient(270deg, #ff5e66, #ff8a00, #ffb347, #ff6b35, #ff5e66);
+      background-size: 400% 400%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: gradientShift 3s ease-in-out infinite, textGlow 2s ease-in-out infinite alternate;
       position: relative;
       display: inline-block;
+      animation: 
+        rainbowFlow 4s ease-in-out infinite,
+        floatingText 3s ease-in-out infinite,
+        textPulse 2s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 10px rgba(255, 94, 102, 0.4));
     }
 
     .typed-text::before {
       content: '';
       position: absolute;
-      top: 0;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 94, 102, 0.2), 
+        transparent, 
+        rgba(255, 107, 53, 0.2),
+        transparent);
+      background-size: 300% 300%;
+      animation: borderGlow 3s linear infinite;
+      border-radius: 8px;
+      z-index: -1;
+    }
+
+    .typed-text::after {
+      content: '';
+      position: absolute;
+      top: 50%;
       left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent, rgba(255, 94, 102, 0.1), transparent);
-      animation: shimmer 2.5s linear infinite;
-      pointer-events: none;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.8), 
+        transparent);
+      animation: scanLine 2.5s ease-in-out infinite;
+      transform: translateY(-50%);
     }
 
-    .cursor {
-      display: inline-block;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-      width: 4px;
-      height: 1.2em;
-      border-radius: 2px;
-      animation: cursorPulse 1.2s ease-in-out infinite, cursorGlow 2s ease-in-out infinite alternate;
-      box-shadow: 0 0 10px rgba(255, 94, 102, 0.5);
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes textGlow {
-      from { 
-        filter: drop-shadow(0 0 5px rgba(255, 94, 102, 0.3));
-        transform: scale(1);
-      }
-      to { 
-        filter: drop-shadow(0 0 15px rgba(255, 94, 102, 0.6));
-        transform: scale(1.02);
-      }
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    @keyframes cursorPulse {
+    /* Animaciones principales */
+    @keyframes rainbowFlow {
       0%, 100% { 
-        opacity: 1;
-        transform: scaleY(1);
+        background-position: 0% 50%; 
+      }
+      25% { 
+        background-position: 100% 50%; 
       }
       50% { 
-        opacity: 0.3;
-        transform: scaleY(0.8);
+        background-position: 200% 50%; 
+      }
+      75% { 
+        background-position: 300% 50%; 
       }
     }
 
-    @keyframes cursorGlow {
-      from { 
-        box-shadow: 0 0 10px rgba(255, 94, 102, 0.5);
+    @keyframes floatingText {
+      0%, 100% { 
+        transform: translateY(0px) rotate(0deg);
       }
-      to { 
-        box-shadow: 0 0 20px rgba(255, 94, 102, 0.8), 0 0 30px rgba(255, 94, 102, 0.4);
+      25% { 
+        transform: translateY(-8px) rotate(0.5deg);
       }
+      50% { 
+        transform: translateY(-4px) rotate(0deg);
+      }
+      75% { 
+        transform: translateY(-12px) rotate(-0.5deg);
+      }
+    }
+
+    @keyframes textPulse {
+      0% { 
+        filter: drop-shadow(0 0 10px rgba(255, 94, 102, 0.4)) brightness(1);
+        transform: scale(1);
+      }
+      100% { 
+        filter: drop-shadow(0 0 25px rgba(255, 94, 102, 0.8)) brightness(1.1);
+        transform: scale(1.03);
+      }
+    }
+
+    @keyframes borderGlow {
+      0%, 100% { 
+        background-position: 0% 50%;
+        opacity: 0.3;
+      }
+      50% { 
+        background-position: 100% 50%;
+        opacity: 0.7;
+      }
+    }
+
+    @keyframes scanLine {
+      0% { 
+        left: -100%;
+        opacity: 0;
+      }
+      50% { 
+        opacity: 1;
+      }
+      100% { 
+        left: 100%;
+        opacity: 0;
+      }
+    }
+
+    /* Efectos adicionales en hover */
+    .typed-text:hover {
+      animation: 
+        rainbowFlow 2s ease-in-out infinite,
+        floatingText 1.5s ease-in-out infinite,
+        textPulse 1s ease-in-out infinite alternate,
+        textZoom 0.3s ease-out;
+    }
+
+    @keyframes textZoom {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1.05); }
     }
 
     .hero-buttons {
@@ -1360,7 +1416,7 @@
     <h1>
       FullStreamRec - Servicios de Streaming en Ecuador: Netflix, Disney+, Spotify, IPTV
     </h1>
-    <h2><span class="typed-text"></span><span class="cursor">&nbsp;</span></h2>
+    <h2><span class="typed-text">Tu mejor opción para streaming y gaming en Ecuador</span></h2>
     <div class="hero-buttons">
       <a href="#products-container" class="hero-btn primary-btn">
         <i class="fas fa-play"></i> Ver Planes de Streaming
@@ -1419,239 +1475,7 @@
       document.body.classList.toggle('no-scroll');
     });
 
-    // Efecto de máquina de escribir avanzado con múltiples animaciones
-    class AdvancedTypingEffect {
-      constructor(element, words, options = {}) {
-        this.element = element;
-        this.words = words;
-        this.wordIndex = 0;
-        this.charIndex = 0;
-        this.isDeleting = false;
-        this.isWaiting = false;
-        
-        // Opciones personalizables
-        this.options = {
-          typeSpeed: 120,
-          deleteSpeed: 60,
-          waitTime: 2000,
-          scrambleTime: 300,
-          glitchChance: 0.1,
-          ...options
-        };
-        
-        // Caracteres para efecto glitch
-        this.glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?~`';
-        
-        this.init();
-      }
-      
-      init() {
-        this.type();
-      }
-      
-      type() {
-        if (this.isWaiting) {
-          this.isWaiting = false;
-          setTimeout(() => this.type(), this.options.waitTime);
-          return;
-        }
-        
-        const currentWord = this.words[this.wordIndex];
-        
-        if (this.isDeleting) {
-          this.deleteChar(currentWord);
-        } else {
-          this.addChar(currentWord);
-        }
-      }
-      
-      addChar(currentWord) {
-        // Efecto glitch aleatorio
-        if (Math.random() < this.options.glitchChance && this.charIndex > 0) {
-          this.glitchEffect(() => {
-            this.continueTyping(currentWord);
-          });
-          return;
-        }
-        
-        this.continueTyping(currentWord);
-      }
-      
-      continueTyping(currentWord) {
-        if (this.charIndex < currentWord.length) {
-          // Efecto de scramble en la siguiente letra
-          if (this.charIndex < currentWord.length) {
-            this.scrambleNext(currentWord, () => {
-              this.element.textContent = currentWord.substring(0, this.charIndex + 1);
-              this.charIndex++;
-              
-              // Efecto de partículas al escribir
-              this.createParticle();
-              
-              setTimeout(() => this.type(), this.options.typeSpeed + Math.random() * 50);
-            });
-          }
-        } else {
-          // Palabra completada
-          this.addCompleteEffect();
-          this.isDeleting = true;
-          this.isWaiting = true;
-          setTimeout(() => this.type(), this.options.waitTime);
-        }
-      }
-      
-      deleteChar(currentWord) {
-        if (this.charIndex > 0) {
-          this.charIndex--;
-          this.element.textContent = currentWord.substring(0, this.charIndex);
-          setTimeout(() => this.type(), this.options.deleteSpeed);
-        } else {
-          // Cambiar a la siguiente palabra
-          this.isDeleting = false;
-          this.wordIndex = (this.wordIndex + 1) % this.words.length;
-          
-          // Efecto de transición entre palabras
-          this.wordTransitionEffect();
-          setTimeout(() => this.type(), 500);
-        }
-      }
-      
-      scrambleNext(currentWord, callback) {
-        if (this.charIndex >= currentWord.length) {
-          callback();
-          return;
-        }
-        
-        const scrambleCount = 3;
-        let scrambleIndex = 0;
-        
-        const scrambleInterval = setInterval(() => {
-          const scrambledChar = this.glitchChars[Math.floor(Math.random() * this.glitchChars.length)];
-          this.element.textContent = currentWord.substring(0, this.charIndex) + scrambledChar;
-          
-          scrambleIndex++;
-          if (scrambleIndex >= scrambleCount) {
-            clearInterval(scrambleInterval);
-            callback();
-          }
-        }, this.options.scrambleTime / scrambleCount);
-      }
-      
-      glitchEffect(callback) {
-        const originalText = this.element.textContent;
-        let glitchCount = 0;
-        const maxGlitches = 3;
-        
-        const glitchInterval = setInterval(() => {
-          // Crear texto con glitch
-          let glitchedText = '';
-          for (let i = 0; i < originalText.length; i++) {
-            if (Math.random() < 0.3) {
-              glitchedText += this.glitchChars[Math.floor(Math.random() * this.glitchChars.length)];
-            } else {
-              glitchedText += originalText[i];
-            }
-          }
-          
-          this.element.textContent = glitchedText;
-          this.element.style.textShadow = '2px 0 #ff0000, -2px 0 #00ffff';
-          
-          glitchCount++;
-          if (glitchCount >= maxGlitches) {
-            clearInterval(glitchInterval);
-            this.element.textContent = originalText;
-            this.element.style.textShadow = '';
-            callback();
-          }
-        }, 100);
-      }
-      
-      addCompleteEffect() {
-        // Efecto de brillo al completar palabra
-        this.element.style.animation = 'none';
-        this.element.offsetHeight; // Trigger reflow
-        this.element.style.animation = 'gradientShift 3s ease-in-out infinite, textGlow 2s ease-in-out infinite alternate, wordComplete 0.5s ease-out';
-      }
-      
-      wordTransitionEffect() {
-        // Efecto de ondas al cambiar palabra
-        this.element.style.transform = 'scale(0.95)';
-        this.element.style.filter = 'blur(2px)';
-        
-        setTimeout(() => {
-          this.element.style.transform = 'scale(1)';
-          this.element.style.filter = 'none';
-        }, 300);
-      }
-      
-      createParticle() {
-        // Crear partícula flotante
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: radial-gradient(circle, var(--primary-color), transparent);
-          border-radius: 50%;
-          pointer-events: none;
-          z-index: 1;
-          animation: particleFloat 1s ease-out forwards;
-        `;
-        
-        // Posicionar cerca del cursor
-        const rect = this.element.getBoundingClientRect();
-        particle.style.left = (rect.right + Math.random() * 20 - 10) + 'px';
-        particle.style.top = (rect.top + rect.height / 2 + Math.random() * 20 - 10) + 'px';
-        
-        document.body.appendChild(particle);
-        
-        // Remover después de la animación
-        setTimeout(() => {
-          if (particle.parentNode) {
-            particle.parentNode.removeChild(particle);
-          }
-        }, 1000);
-      }
-    }
-    
-    // Agregar animaciones adicionales
-    const additionalStyles = document.createElement('style');
-    additionalStyles.textContent = `
-      @keyframes wordComplete {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); filter: brightness(1.3); }
-        100% { transform: scale(1); }
-      }
-      
-      @keyframes particleFloat {
-        0% { 
-          opacity: 1; 
-          transform: translateY(0) scale(1); 
-        }
-        100% { 
-          opacity: 0; 
-          transform: translateY(-20px) scale(0.5); 
-        }
-      }
-    `;
-    document.head.appendChild(additionalStyles);
 
-    // Inicializar el efecto de escritura avanzado
-    const typedText = document.querySelector(".typed-text");
-    const words = [
-      "Servicios de Streaming en Ecuador.", 
-      "Planes para Netflix, Disney+, Spotify y más.",
-      "Recargas de tus videojuegos favoritos.", 
-      "¡Atención personalizada por WhatsApp!"
-    ];
-    
-    new AdvancedTypingEffect(typedText, words, {
-      typeSpeed: 100,
-      deleteSpeed: 50,
-      waitTime: 2500,
-      scrambleTime: 200,
-      glitchChance: 0.05
-    });
 
     // Detectar cards en pantalla
     const observer = new IntersectionObserver((entries) => {
