@@ -86,6 +86,24 @@
     html{
       scroll-behavior: smooth;
     }
+    body {
+      background: linear-gradient(-45deg, #0a0a0a, #1a1a1a, #2a2a2a, #0a0a0a);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      height: 100vh;
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
     #particles-js {
       position: fixed;
       width: 100%;
@@ -414,18 +432,17 @@
 
     /* Product Card */
     .card {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
       padding: 1.5rem;
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: center;
-      transition: var(--transition);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+      transform: translateY(50px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
     }
 
     .card.visible {
@@ -515,7 +532,6 @@
       flex-direction: column;
       gap: 0.8rem;
       margin-top: 1.5rem;
-      justify-content: center;
       align-items: center;
     }
 
@@ -533,6 +549,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      width: 100%;
     }
 
     .card-btn:hover {
@@ -795,15 +812,17 @@
     }
 
     .global-modal-content {
-      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
       width: 100%;
       max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       transform: translateY(-20px);
       transition: transform 0.3s;
     }
@@ -885,10 +904,10 @@
     }
 
     .global-plan-item:hover {
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-      border-color: rgba(255, 94, 102, 0.4);
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 15px 35px rgba(255, 94, 102, 0.2), 0 5px 15px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 94, 102, 0.6);
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
 
     .plan-info {
@@ -2031,8 +2050,6 @@
     window.updateCart = updateCart;
   </script>
 
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script src="particles-config.js"></script>
 </body>
 
 </html>
