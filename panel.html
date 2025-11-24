@@ -1,1089 +1,620 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <!-- Evita que los buscadores indexen esta página -->
-   <meta name="robots" content="noindex, nofollow">
-  <title>Panel de Administración - FullStreamRec</title>
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Panel - FullStreamRec</title>
 
   <link rel="icon" type="image/x-icon" href="logo.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Agrega esto en el <head> de tu panel.html -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
-  <style>
-    :root {
-      --primary: #ff5e66;
-      --dark: #1a1a1a;
-      --light: #f8f9fa;
-      --gray: #6c757d;
-      --danger: #dc3545;
-    }
-    
-    * {
-      box-sizing: border-box;
-    }
-    
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
-    }
-    
-    /* Layout */
-    .admin-container {
-      display: grid;
-      grid-template-columns: 250px 1fr;
-      min-height: 100vh;
-    }
-    
-    /* Sidebar */
-    .sidebar {
-      background-color: var(--dark);
-      color: white;
-      padding: 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
-    
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .logo i {
-      color: var(--primary);
-    }
-    
-    .nav-menu {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    
-    .nav-item {
-      margin-bottom: 0.5rem;
-    }
-    
-    .nav-link {
-      color: white;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      transition: all 0.3s;
-    }
-    
-    .nav-link:hover, .nav-link.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: var(--primary);
-    }
-    
-    .nav-link i {
-      width: 20px;
-      text-align: center;
-    }
-    
-    /* Main Content */
-    .main-content {
-      padding: 2rem;
-    }
-    
-    /* Header */
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    
-    .page-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin: 0;
-    }
-    
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-    }
-    
-    /* Products Table */
-    .products-table-container {
-      background-color: white;
-      border-radius: 0.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-    }
-    
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .table-actions {
-      display: flex;
-      gap: 1rem;
-    }
-    /* Agregar estos estilos en la sección CSS */
-.product-hidden {
-  background-color: #f0f0f0;
-  opacity: 0.7;
-}
-
-.product-hidden td {
-  color: #999;
-}
-
-.product-hidden .badge {
-  background-color: #e9ecef !important;
-  color: #6c757d !important;
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.filter-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ddd;
-  background-color: white;
-  cursor: pointer;
-}
-
-.filter-btn.active {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-    .search-box {
-      position: relative;
-    }
-    
-    .search-box input {
-      padding: 0.5rem 1rem 0.5rem 2.5rem;
-      border: 1px solid #ddd;
-      border-radius: 0.5rem;
-      width: 250px;
-    }
-    
-    .search-box i {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-    }
-    
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s;
-    }
-    
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background-color: #e04b5a;
-    }
-    
-    .btn-outline {
-      background-color: transparent;
-      border: 1px solid var(--gray);
-      color: var(--gray);
-    }
-    
-    .btn-outline:hover {
-      background-color: #f0f0f0;
-    }
-    
-    .btn-sm {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.8rem;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    th, td {
-      padding: 1rem 1.5rem;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-    
-    th {
-      font-weight: 600;
-      color: var(--gray);
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      letter-spacing: 0.5px;
-    }
-    
-    tr:hover {
-      background-color: #f9f9f9;
-    }
-    
-    .product-logo {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      border-radius: 4px;
-    }
-    
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    
-    .badge-primary {
-      background-color: rgba(255, 94, 102, 0.1);
-      color: var(--primary);
-    }
-    
-    .action-btns {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    /* Modal */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    
-    .modal.show {
-      opacity: 1;
-      pointer-events: all;
-    }
-    
-    .modal-content {
-      background-color: white;
-      border-radius: 0.5rem;
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transform: translateY(-20px);
-      transition: transform 0.3s;
-    }
-    
-    .modal.show .modal-content {
-      transform: translateY(0);
-    }
-    
-    .modal-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .modal-title {
-      margin: 0;
-      font-size: 1.25rem;
-    }
-    
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--gray);
-    }
-    
-    .modal-body {
-      padding: 1.5rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 0.5rem;
-      font-family: inherit;
-    }
-    
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    
-    .plans-container {
-      margin-top: 1rem;
-    }
-    
-    /* En tu sección CSS */
-.plan-item {
-  display: grid;
-  grid-template-columns: auto 2fr 1fr 3fr auto;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  border-radius: 0.5rem;
-  cursor: default;
-  position: relative;
-  align-items: center;
-}
-
-.plan-handle {
-  cursor: move;
-  padding: 0.5rem;
-  align-self: center;
-}
-
-.draggable {
-  user-select: none;
-}
-
-/* Estilo durante arrastre */
-.sortable-ghost {
-  opacity: 0.5;
-  background: #c8ebfb;
-}
-    
-    .plan-item input {
-      width: 100%;
-      min-width: 0;
-    }
-    
-    .add-plan-btn {
-      margin-top: 0.5rem;
-    }
-    
-    .remove-plan-btn {
-      background-color: var(--danger);
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    
-    .modal-footer {
-      padding: 1.5rem;
-      border-top: 1px solid #eee;
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-    }
-    
-    /* Responsive */
-    @media (max-width: 992px) {
-      .admin-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .sidebar {
-        height: auto;
-        position: static;
-      }
-      
-      .nav-menu {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-      
-      .nav-item {
-        margin-bottom: 0;
-      }
-      
-      .nav-link {
-        padding: 0.5rem;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-      
-      .user-info {
-        margin-left: auto;
-      }
-      
-      .search-box input {
-        width: 200px;
-      }
-      
-      table {
-        display: block;
-        overflow-x: auto;
-      }
-    }
-    
-    @media (max-width: 576px) {
-      .main-content {
-        padding: 1rem;
-      }
-      
-      .table-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-      
-      .table-actions {
-        width: 100%;
-        flex-direction: column;
-      }
-      
-      .search-box {
-        width: 100%;
-      }
-      
-      .search-box input {
-        width: 100%;
-      }
-      
-      .modal-content {
-        margin: 1rem;
-        width: calc(100% - 2rem);
-      }
-    }
-
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              DEFAULT: '#ff5e66',
+              hover: '#ff444d',
+              dark: '#cc4b52'
+            },
+            dark: {
+              950: '#09090b',
+              900: '#121214',
+              800: '#1c1c1f',
+              700: '#27272a',
+              600: '#3f3f46'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #09090b; }
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #18181b; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #52525b; }
   </style>
 </head>
-<body>
-  <div class="admin-container">
-    <!-- Sidebar Simplificada -->
-    <aside class="sidebar">
-      <div class="logo">
-        <i class="fas fa-stream"></i>
-        <span>FullStreamRec</span>
-      </div>
-      <ul class="nav-menu">
-        <li class="nav-item">
-          <a href="#" class="nav-link active">
-            <i class="fas fa-box"></i>
-            <span>Productos</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link" id="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Cerrar Sesión</span>
-          </a>
-        </li>
-      </ul>
-    </aside>
+<body class="text-zinc-100 antialiased h-screen flex overflow-hidden bg-dark-950">
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <div class="admin-header">
-        <h1 class="page-title">Administrar Productos</h1>
-        <div class="user-info">
-          <span id="user-email">admin@fullstreamrec.com</span>
-          <div class="user-avatar" id="user-avatar">A</div>
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+  <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-72 bg-dark-900 border-r border-white/5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50 flex flex-col">
+    <div class="h-20 flex items-center px-8 border-b border-white/5">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold shadow-lg shadow-brand/20">
+          <i class="fas fa-stream"></i>
+        </div>
+        <span class="text-xl font-bold tracking-tight">FullStream<span class="text-brand">Rec</span></span>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <a href="#" class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-brand/10 text-brand font-medium border border-brand/10 transition-all">
+        <i class="fas fa-box w-5 text-center"></i>
+        <span>Productos</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-white/5 bg-dark-800/30">
+      <div class="flex items-center gap-3 mb-4 px-2">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center text-white font-bold border border-white/10" id="user-avatar">A</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate">Admin</p>
+          <p class="text-xs text-zinc-500 truncate" id="user-email">admin@fullstreamrec.com</p>
         </div>
       </div>
+      <button id="logout-btn" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-dark-800 hover:text-white hover:border-zinc-600 transition-all text-sm font-medium">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
 
-      <!-- Products Table -->
-      <div class="products-table-container">
-        <div class="table-header">
-          <h2>Lista de Productos</h2>
-          <div class="table-actions">
-            <div class="search-box">
-              <i class="fas fa-search"></i>
-              <input type="text" id="search-input" placeholder="Buscar productos...">
-            </div>
-            <button class="btn btn-primary" id="add-product-btn">
-              <i class="fas fa-plus"></i>
-              <span>Nuevo Producto</span>
-            </button>
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    
+    <header class="h-20 bg-dark-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 lg:px-8 z-30">
+      <div class="flex items-center gap-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-zinc-400 hover:text-white rounded-lg">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+        <h1 class="text-2xl font-bold text-white hidden sm:block">Administrar Productos</h1>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <button id="add-product-btn" class="bg-brand hover:bg-brand-hover text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-brand/20 flex items-center gap-2 transition-all active:scale-95">
+          <i class="fas fa-plus"></i>
+          <span class="hidden sm:inline">Nuevo Producto</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
+      <div class="max-w-7xl mx-auto">
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-8 bg-dark-900/50 p-2 rounded-2xl border border-white/5">
+          <div class="relative w-full sm:max-w-md">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+            <input type="text" id="search-input" placeholder="Buscar por nombre o categoría..." 
+                   class="w-full bg-dark-800 border border-zinc-700 text-white text-sm rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand placeholder-zinc-600 transition-all">
+          </div>
+          
+          <div class="flex bg-dark-800 p-1 rounded-xl w-full sm:w-auto filter-buttons" id="filter-container">
+             </div>
+        </div>
+
+        <div class="bg-dark-900 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-dark-800/50 border-b border-white/5 text-zinc-400 text-xs uppercase tracking-wider">
+                  <th class="p-5 font-semibold">Logo</th>
+                  <th class="p-5 font-semibold">Producto</th>
+                  <th class="p-5 font-semibold">Categoría</th>
+                  <th class="p-5 font-semibold text-center">Planes</th>
+                  <th class="p-5 font-semibold text-center">Estado</th>
+                  <th class="p-5 font-semibold text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body" class="divide-y divide-white/5">
+                <tr>
+                  <td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        
-        <table>
-          <thead>
-            <tr>
-              <th>Logo</th>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Planes</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="products-table-body">
-            <!-- Los productos se cargarán aquí dinámicamente -->
-          </tbody>
-        </table>
+
       </div>
     </main>
   </div>
 
-  <!-- Add/Edit Product Modal -->
-  <div class="modal" id="product-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modal-title">Agregar Producto</h3>
-        <button class="close-btn" id="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="product-form">
-          <input type="hidden" id="product-id">
-          <div class="form-group">
-            <label for="product-name">Nombre del Producto</label>
-            <input type="text" id="product-name" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label for="product-logo">URL del Logo</label>
-            <input type="url" id="product-logo" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label for="product-category">Categoría</label>
-            <select id="product-category" class="form-control" required>
-                <option value="">Seleccionar categoría</option>
-                <option value="Streaming de Video">Streaming de Video</option>
-                <option value="IPTV">IPTV</option>
-                <option value="Música">Música</option>
-                <option value="Videojuegos">Videojuegos</option>
-                <option value="Herramientas Creativas">Herramientas Creativas</option>
-                <option value="Combos">Combos</option>
-              </select>
-          </div>
-          <div class="form-group">
-            <label>Planes</label>
-            <div class="plans-container" id="plans-container">
-              <!-- Los planes se agregarán aquí dinámicamente -->
+  <div id="product-modal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="modal-backdrop"></div>
+    <div class="relative w-full h-full flex items-center justify-center p-4">
+      <div class="bg-dark-900 border border-zinc-700 w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        
+        <div class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50">
+          <h3 class="text-xl font-bold text-white" id="modal-title">Agregar Producto</h3>
+          <button id="close-modal" class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-red-500/20 hover:text-red-500 p-2 rounded-lg transition-colors">
+            <i class="fas fa-times text-lg"></i>
+          </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
+          <form id="product-form" class="space-y-6">
+            <input type="hidden" id="product-id">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-zinc-400">Nombre del Producto</label>
+                <input type="text" id="product-name" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" required>
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-zinc-400">Categoría</label>
+                <select id="product-category" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all appearance-none" required>
+                  <option value="">Seleccionar...</option>
+                  <option value="Streaming de Video">Streaming de Video</option>
+                  <option value="IPTV">IPTV</option>
+                  <option value="Música">Música</option>
+                  <option value="Videojuegos">Videojuegos</option>
+                  <option value="Herramientas Creativas">Herramientas Creativas</option>
+                  <option value="Combos">Combos</option>
+                </select>
+              </div>
             </div>
-            <button type="button" class="btn btn-outline add-plan-btn" id="add-plan-btn">
-              <i class="fas fa-plus"></i>
-              <span>Agregar Plan</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" id="cancel-btn">Cancelar</button>
-        <button class="btn btn-primary" id="save-btn">Guardar</button>
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-zinc-400">URL del Logo</label>
+              <div class="flex gap-3">
+                <input type="url" id="product-logo" class="flex-1 bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" required>
+                <div class="w-12 h-12 bg-dark-800 rounded-lg border border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden">
+                   <img id="logo-preview" src="" onerror="this.style.display='none'" class="w-full h-full object-contain p-1">
+                   <i class="fas fa-image text-zinc-600" id="logo-placeholder"></i>
+                </div>
+              </div>
+            </div>
+            <div class="border-t border-white/5 pt-6">
+              <div class="flex justify-between items-center mb-4">
+                <label class="text-sm font-bold text-white uppercase tracking-wider">Planes y Precios</label>
+                <button type="button" id="add-plan-btn" class="text-xs bg-dark-800 hover:bg-brand/20 hover:text-brand border border-zinc-700 hover:border-brand text-white px-3 py-1.5 rounded-lg transition-all">
+                  <i class="fas fa-plus mr-1"></i> Agregar Plan
+                </button>
+              </div>
+              <div id="plans-container" class="space-y-3"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="p-5 border-t border-white/5 bg-dark-800/50 flex justify-end gap-3">
+          <button id="cancel-btn" class="px-5 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white transition-all font-medium">Cancelar</button>
+          <button id="save-btn" class="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white shadow-lg shadow-brand/20 font-bold transition-all active:scale-95">Guardar Producto</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
 
-  
+  <script>
+    // --- Configuración Firebase ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
+      authDomain: "site-fullstreamrec.firebaseapp.com",
+      projectId: "site-fullstreamrec",
+      storageBucket: "site-fullstreamrec.appspot.com",
+      messagingSenderId: "161679433276",
+      appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39"
+    };
 
-<script>
-  // Configuración de Firebase con tus datos
-const firebaseConfig = {
-  apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
-  authDomain: "site-fullstreamrec.firebaseapp.com",
-  projectId: "site-fullstreamrec",
-  storageBucket: "site-fullstreamrec.appspot.com",
-  messagingSenderId: "161679433276",
-  appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39",
-  measurementId: "G-X06BGV5ZRJ"
-};
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-// Inicializa Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+    // --- Variables Globales ---
+    let products = [];
+    let currentProductId = null;
+    let isEditing = false;
+    let currentFilter = 'all'; // Estado global del filtro
+    const categoryOrder = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
 
-// Datos y elementos del DOM
-let products = [];
-let currentProductId = null;
-let isEditing = false;
+    // --- Elementos DOM ---
+    const tableBody = document.getElementById('products-table-body');
+    const searchInput = document.getElementById('search-input');
+    const modal = document.getElementById('product-modal');
+    const plansContainer = document.getElementById('plans-container');
+    const productForm = document.getElementById('product-form');
+    const filterContainer = document.getElementById('filter-container');
 
-const productsTableBody = document.getElementById('products-table-body');
-const searchInput = document.getElementById('search-input');
-const addProductBtn = document.getElementById('add-product-btn');
-const productModal = document.getElementById('product-modal');
-const closeModalBtn = document.getElementById('close-modal');
-const cancelBtn = document.getElementById('cancel-btn');
-const saveBtn = document.getElementById('save-btn');
-const productForm = document.getElementById('product-form');
-const modalTitle = document.getElementById('modal-title');
-const productIdInput = document.getElementById('product-id');
-const productNameInput = document.getElementById('product-name');
-const productLogoInput = document.getElementById('product-logo');
-const productCategorySelect = document.getElementById('product-category');
-const plansContainer = document.getElementById('plans-container');
-const addPlanBtn = document.getElementById('add-plan-btn');
-const logoutBtn = document.getElementById('logout-btn');
-const userEmailSpan = document.getElementById('user-email');
-const userAvatar = document.getElementById('user-avatar');
-// Agrega esto con las otras variables al inicio
-const categoryOrder = [
-    "Streaming de Video",
-    "IPTV",
-    "Música",
-    "Videojuegos",
-    "Herramientas Creativas",
-    "Combos"
-];
-// Función para cargar productos desde Firestore
-async function loadProducts() {
-  try {
-    productsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Cargando productos...</td></tr>';
-    
-    const snapshot = await db.collection("products").get();
-    products = snapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      visible: doc.data().visible !== false, // Por defecto true si no existe
-      ...doc.data() 
-    }));
-    
-    renderProducts();
-    addFilterButtons(); // Añadir los botones de filtro después de cargar
-  } catch (error) {
-    console.error("Error cargando productos:", error);
-    productsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error cargando productos</td></tr>';
-  }
-}
+    // --- Sidebar Mobile Logic ---
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
 
-// Función para renderizar productos en la tabla
-function renderProducts(filteredProducts = null) {
-  const productsToRender = filteredProducts || [...products];
-  productsToRender.sort((a, b) => {
-        const indexA = categoryOrder.indexOf(a.category);
-        const indexB = categoryOrder.indexOf(b.category);
-        return indexA - indexB;
-    });
-    
-    productsTableBody.innerHTML = '';
-
-    // Resto del código de renderProducts permanece igual...
-    if (productsToRender.length === 0) {
-        productsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay productos disponibles</td></tr>';
-        return;
+    function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
     }
 
+    mobileMenuBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
 
-  productsToRender.forEach(product => {
-    const row = document.createElement('tr');
-    if (product.visible === false) {
-      row.classList.add('product-hidden');
+    // --- Lógica de Filtrado Unificada ---
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        let filtered = products.filter(p => {
+            // Filtro por texto
+            const matchesSearch = p.name.toLowerCase().includes(searchTerm) || 
+                                  p.category.toLowerCase().includes(searchTerm);
+            
+            // Filtro por estado (Tab)
+            let matchesStatus = true;
+            if (currentFilter === 'visible') matchesStatus = p.visible !== false; // Default true
+            if (currentFilter === 'hidden') matchesStatus = p.visible === false;
+
+            return matchesSearch && matchesStatus;
+        });
+
+        renderTable(filtered);
     }
-    row.innerHTML = `
-      <td><img src="${product.logo}" alt="${product.name}" class="product-logo" onerror="this.src='https://via.placeholder.com/40'"></td>
-      <td>${product.name}</td>
-      <td><span class="badge badge-primary">${product.category}</span></td>
-      <td>${product.plans.length} planes</td>
-      <td>${product.visible === false ? '<span class="badge" style="background-color: #6c757d; color: white;">Oculto</span>' : '<span class="badge" style="background-color: #28a745; color: white;">Visible</span>'}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn btn-outline btn-sm edit-btn" data-id="${product.id}">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="btn btn-outline btn-sm toggle-visibility-btn" data-id="${product.id}" data-visible="${product.visible !== false}">
-            <i class="fas fa-eye${product.visible !== false ? '' : '-slash'}"></i>
-          </button>
-          <button class="btn btn-outline btn-sm delete-btn" data-id="${product.id}">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </td>
-    `;
-    productsTableBody.appendChild(row);
-  });
 
-  // Agregar event listeners a los botones
-  document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', () => editProduct(btn.dataset.id));
-  });
+    // --- Renderizado de Tabla ---
+    function renderTable(data) {
+        // Ordenar por categoría
+        data.sort((a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category));
 
-  document.querySelectorAll('.toggle-visibility-btn').forEach(btn => {
-    btn.addEventListener('click', () => toggleProductVisibility(
-      btn.dataset.id, 
-      btn.dataset.visible === 'true'
-    ));
-  });
+        tableBody.innerHTML = '';
 
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', () => deleteProduct(btn.dataset.id));
-  });
-}
-
-// Función para alternar visibilidad del producto
-async function toggleProductVisibility(productId, currentVisibility) {
-  if (!confirm(`¿Estás seguro de que quieres ${currentVisibility ? 'ocultar' : 'mostrar'} este producto?`)) return;
-  
-  try {
-    await db.collection("products").doc(productId).update({
-      visible: !currentVisibility,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    await loadProducts();
-  } catch (error) {
-    console.error("Error cambiando visibilidad:", error);
-    alert("Error al cambiar visibilidad del producto");
-  }
-}
-
-// Función para agregar botones de filtro
-function addFilterButtons() {
-  // Verificar si los botones de filtro ya existen
-  if (document.querySelector('.filter-buttons')) return;
-  
-  const filterContainer = document.createElement('div');
-  filterContainer.className = 'filter-buttons';
-  filterContainer.innerHTML = `
-    <button class="filter-btn active" data-filter="all">Todos</button>
-    <button class="filter-btn" data-filter="visible">Visibles</button>
-    <button class="filter-btn" data-filter="hidden">Ocultos</button>
-  `;
-  
-  // Insertar los botones de filtro antes de la tabla
-  const tableHeader = document.querySelector('.table-header');
-  tableHeader.parentNode.insertBefore(filterContainer, tableHeader.nextSibling);
-
-  // Agregar event listeners a los botones de filtro
-  filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      const filter = btn.dataset.filter;
-      let filtered = products;
-      
-      if (filter === 'visible') {
-        filtered = products.filter(p => p.visible !== false);
-      } else if (filter === 'hidden') {
-        filtered = products.filter(p => p.visible === false);
-      }
-      
-      renderProducts(filtered);
-    });
-  });
-}
-
-// Función para filtrar productos por búsqueda
-function filterProducts() {
-  const searchTerm = searchInput.value.toLowerCase();
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm) || 
-    product.category.toLowerCase().includes(searchTerm)
-  );
-  renderProducts(filteredProducts);
-}
-
-// Función para mostrar el modal de agregar/editar producto
-function showAddProductModal() {
-  isEditing = false;
-  currentProductId = null;
-  modalTitle.textContent = 'Agregar Producto';
-  productForm.reset();
-  plansContainer.innerHTML = '';
-  productModal.classList.add('show');
-  initSortablePlans();
-}
-
-// Función para editar un producto
-async function editProduct(productId) {
-  try {
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-
-    isEditing = true;
-    currentProductId = productId;
-    modalTitle.textContent = 'Editar Producto';
-    
-    // Llenar el formulario
-    productIdInput.value = product.id;
-    productNameInput.value = product.name;
-    productLogoInput.value = product.logo;
-    productCategorySelect.value = product.category;
-    
-    // Llenar los planes
-   // Dentro de editProduct()
-plansContainer.innerHTML = '';
-product.plans
-  .sort((a, b) => (a.order || 0) - (b.order || 0)) // Ordena según lo guardado
-  .forEach(plan => {
-    addPlanToForm(plan.name, plan.price, plan.image || '');
-  });
-    
-    productModal.classList.add('show');
-  } catch (error) {
-    console.error("Error al editar producto:", error);
-    alert("Error al cargar el producto para editar");
-  }
-  initSortablePlans();
-}
-
-// Función para agregar un plan al formulario
-function addPlanToForm(name = '', price = '', image = '', planId = Date.now()) {
-  const planDiv = document.createElement('div');
-  planDiv.className = 'plan-item draggable';
-  planDiv.dataset.id = planId; // ID único para cada plan
-  planDiv.innerHTML = `
-    <div class="plan-handle" style="cursor: move;">↕️</div>
-    <input type="text" class="form-control plan-name" placeholder="Nombre del plan" value="${name}" required>
-    <input type="text" class="form-control plan-price" placeholder="Precio" value="${price}" required>
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <input type="url" class="form-control plan-image" placeholder="URL de imagen del plan (opcional)" value="${image}">
-      <img class="plan-image-preview" src="${image}" alt="Preview" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; ${image ? 'display: block;' : 'display: none;'}" onerror="this.style.display='none'">
-    </div>
-    <button type="button" class="remove-plan-btn">
-      <i class="fas fa-times"></i>
-    </button>
-  `;
-  plansContainer.appendChild(planDiv);
-
-  // Agregar evento para mostrar preview de imagen
-  const imageInput = planDiv.querySelector('.plan-image');
-  const imagePreview = planDiv.querySelector('.plan-image-preview');
-  
-  imageInput.addEventListener('input', (e) => {
-    const url = e.target.value.trim();
-    if (url) {
-      imagePreview.src = url;
-      imagePreview.style.display = 'block';
-    } else {
-      imagePreview.style.display = 'none';
-    }
-  });
-
-  // Evento para eliminar plan
-  planDiv.querySelector('.remove-plan-btn').addEventListener('click', () => {
-    planDiv.remove();
-    updatePlanOrder(); // Actualiza el orden después de eliminar
-  });
-
-  // Hacer el plan redimensionable (opcional)
-  initResizable(planDiv);
-
-  return planDiv;
-}
-
-
-function initSortablePlans() {
-  new Sortable(plansContainer, {
-    animation: 150,
-    handle: '.plan-handle', // Solo el asa permite arrastrar
-    onEnd: () => updatePlanOrder(), // Actualiza Firebase al soltar
-  });
-}
-async function updatePlanOrder() {
-  const planItems = Array.from(plansContainer.querySelectorAll('.plan-item'));
-  const orderedPlans = planItems.map((item, index) => ({
-    name: item.querySelector('.plan-name').value,
-    price: item.querySelector('.plan-price').value,
-    image: item.querySelector('.plan-image').value,
-    order: index, // Guarda la posición
-  }));
-
-  // Actualiza solo si estamos editando un producto
-  if (isEditing && currentProductId) {
-    try {
-      await db.collection("products").doc(currentProductId).update({
-        plans: orderedPlans,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    } catch (error) {
-      console.error("Error actualizando orden:", error);
-    }
-  }
-}
-function initResizable(element) {
-  interact(element)
-    .resizable({
-      edges: { right: true, bottom: true },
-      listeners: {
-        move: function (event) {
-          let { width, height } = event.rect;
-          Object.assign(event.target.style, {
-            width: `${width}px`,
-            height: `${height}px`,
-          });
+        if (data.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="p-8 text-center text-zinc-500">
+                        <div class="flex flex-col items-center justify-center">
+                            <i class="fas fa-box-open text-4xl mb-3 opacity-20"></i>
+                            <p>No se encontraron productos</p>
+                        </div>
+                    </td>
+                </tr>`;
+            return;
         }
-      }
-    });
-}
-// Función para guardar un producto
-async function saveProduct() {
-  if (!productForm.checkValidity()) {
-    productForm.reportValidity();
-    return;
-  }
 
-  // Obtener datos del formulario
-  const name = productNameInput.value;
-  const logo = productLogoInput.value;
-  const category = productCategorySelect.value;
-  
-  // Obtener planes
-  const plans = [];
-  const planItems = plansContainer.querySelectorAll('.plan-item');
-  planItems.forEach((item, index) => {
-    const planName = item.querySelector('.plan-name').value;
-    const planPrice = item.querySelector('.plan-price').value;
-    const planImage = item.querySelector('.plan-image').value;
-    if (planName && planPrice) {
-      plans.push({ 
-        name: planName, 
-        price: planPrice, 
-        image: planImage || '',
-        order: index 
-      });
+        data.forEach(p => {
+            const isHidden = p.visible === false;
+            const row = document.createElement('tr');
+            // Estilos condicionales si está oculto
+            row.className = `group hover:bg-white/5 transition-colors border-b border-white/5 ${isHidden ? 'bg-red-900/10' : ''}`;
+            
+            row.innerHTML = `
+                <td class="p-4">
+                    <div class="w-12 h-12 rounded-lg bg-dark-800 border border-white/10 flex items-center justify-center overflow-hidden p-1">
+                        <img src="${p.logo}" class="w-full h-full object-contain ${isHidden ? 'grayscale opacity-50' : ''}" onerror="this.src='https://fakeimg.pl/50x50?text=Error'">
+                    </div>
+                </td>
+                <td class="p-4">
+                    <p class="font-bold text-white text-sm ${isHidden ? 'text-zinc-500 line-through' : ''}">${p.name}</p>
+                </td>
+                <td class="p-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-dark-800 border border-white/10 text-zinc-300 whitespace-nowrap">
+                        ${p.category}
+                    </span>
+                </td>
+                <td class="p-4 text-center">
+                    <span class="text-sm font-bold text-brand">${p.plans ? p.plans.length : 0}</span>
+                </td>
+                <td class="p-4 text-center">
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${isHidden ? 'bg-zinc-800 text-zinc-500 border border-zinc-700' : 'bg-green-500/10 text-green-400 border border-green-500/20'}">
+                        ${isHidden ? 'Oculto' : 'Visible'}
+                    </span>
+                </td>
+                <td class="p-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-blue-500/20 hover:text-blue-400 text-zinc-400 transition-colors flex items-center justify-center" title="Editar">
+                            <i class="fas fa-pen text-xs"></i>
+                        </button>
+                        <button onclick="toggleVisibility('${p.id}', ${isHidden})" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-yellow-500/20 hover:text-yellow-400 text-zinc-400 transition-colors flex items-center justify-center" title="${isHidden ? 'Mostrar' : 'Ocultar'}">
+                            <i class="fas ${isHidden ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i>
+                        </button>
+                        <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 transition-colors flex items-center justify-center" title="Eliminar">
+                            <i class="fas fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
     }
-  });
 
-  if (plans.length === 0) {
-    alert('Debe agregar al menos un plan');
-    return;
-  }
+    // --- Inicialización Filtros ---
+    function initFilterButtons() {
+        filterContainer.innerHTML = '';
+        const filters = [
+            { id: 'all', label: 'Todos' },
+            { id: 'visible', label: 'Visibles' },
+            { id: 'hidden', label: 'Ocultos' }
+        ];
 
-  const productData = {
-    name,
-    logo,
-    category,
-    plans,
-    visible: true, // Por defecto visible al crear/editar
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
-
-  try {
-    if (isEditing) {
-      // Actualizar producto existente (mantener el estado visible actual)
-      const currentProduct = products.find(p => p.id === currentProductId);
-      if (currentProduct) {
-        productData.visible = currentProduct.visible !== false;
-      }
-      
-      await db.collection("products").doc(currentProductId).update(productData);
-    } else {
-      // Agregar nuevo producto
-      await db.collection("products").add(productData);
+        filters.forEach(f => {
+            const btn = document.createElement('button');
+            // Estilo base
+            let baseClass = 'flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-medium transition-all border border-transparent ';
+            // Estado activo vs inactivo
+            if (currentFilter === f.id) {
+                baseClass += 'bg-brand text-white shadow-lg shadow-brand/20 border-brand';
+            } else {
+                baseClass += 'text-zinc-400 hover:text-white hover:bg-dark-700 border-zinc-800';
+            }
+            
+            btn.className = baseClass;
+            btn.textContent = f.label;
+            
+            btn.onclick = () => {
+                currentFilter = f.id; // Actualizar estado global
+                initFilterButtons();  // Re-renderizar botones para actualizar clases
+                applyFilters();       // Aplicar filtros
+            };
+            filterContainer.appendChild(btn);
+        });
     }
+
+    // --- Carga de Datos ---
+    async function loadProducts() {
+        try {
+            // Mostrar loading temporal
+            if(products.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td></tr>';
+            }
+            
+            const snap = await db.collection("products").get();
+            products = snap.docs.map(doc => ({ 
+                id: doc.id, 
+                visible: doc.data().visible !== false, // Normalizar visible: undefined = true
+                ...doc.data() 
+            }));
+            
+            applyFilters(); // Usar la función unificada en lugar de render directo
+            initFilterButtons(); // Asegurar que los botones estén pintados
+        } catch (e) {
+            console.error("Error cargando productos:", e);
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 p-4">Error al cargar datos</td></tr>';
+        }
+    }
+
+    // --- Acciones CRUD ---
     
-    productModal.classList.remove('show');
-    await loadProducts(); // Recargar la lista de productos
-  } catch (error) {
-    console.error("Error guardando producto:", error);
-    alert("Error al guardar el producto: " + error.message);
-  }
-}
+    // 1. Toggle Visibility (CORREGIDO)
+    window.toggleVisibility = async (id, newState) => {
+        // newState viene como TRUE si estaba oculto (queremos mostrarlo)
+        // o FALSE si estaba visible (queremos ocultarlo)
+        // La lógica en el HTML onclick ya envía el valor opuesto al actual.
+        
+        // Optimistic UI Update (actualizar localmente antes de DB para velocidad)
+        const pIndex = products.findIndex(p => p.id === id);
+        if(pIndex !== -1) {
+            products[pIndex].visible = newState;
+            applyFilters(); // Re-renderizar inmediatamente
+        }
 
-// Función para eliminar un producto
-async function deleteProduct(productId) {
-  if (!confirm('¿Estás seguro de que quieres eliminar este producto?')) return;
+        try {
+            await db.collection("products").doc(id).update({ visible: newState });
+            // No hace falta recargar todo loadProducts() si ya actualizamos local
+        } catch(e) {
+            console.error(e);
+            alert("Error al actualizar estado");
+            // Revertir si falla
+            if(pIndex !== -1) {
+                products[pIndex].visible = !newState;
+                applyFilters();
+            }
+        }
+    };
+
+    // 2. Delete
+    window.deleteProduct = async (id) => {
+        if(!confirm('¿Estás seguro de eliminar este producto permanentemente?')) return;
+        try {
+            await db.collection("products").doc(id).delete();
+            products = products.filter(p => p.id !== id); // Actualizar local
+            applyFilters();
+        } catch (e) {
+            alert("Error al eliminar: " + e.message);
+        }
+    };
+
+    // 3. Edit
+    window.editProduct = (id) => {
+        const p = products.find(x => x.id === id);
+        if(!p) return;
+        
+        isEditing = true;
+        currentProductId = id;
+        document.getElementById('product-name').value = p.name;
+        document.getElementById('product-category').value = p.category;
+        document.getElementById('product-logo').value = p.logo;
+        
+        document.getElementById('product-logo').dispatchEvent(new Event('input'));
+
+        plansContainer.innerHTML = '';
+        if(p.plans) {
+            p.plans.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(plan => {
+                addPlanToForm(plan.name, plan.price, plan.image);
+            });
+        }
+        
+        showModal(true);
+        new Sortable(plansContainer, { animation: 150, handle: '.drag-handle' });
+    };
+
+    // --- Formularios y Modales ---
+    
+    function addPlanToForm(name = '', price = '', image = '') {
+        const div = document.createElement('div');
+        div.className = 'plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors';
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2">
+                    <i class="fas fa-grip-vertical"></i>
+                </div>
+                <div class="flex-1 grid grid-cols-2 gap-3">
+                    <input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre del Plan" value="${name}" required>
+                    <input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio (ej: $5.00)" value="${price}" required>
+                </div>
+                <button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2 rounded-lg hover:bg-red-500/10 transition-colors">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-3 pl-8">
+                <div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
+                    <img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'">
+                    <i class="fas fa-image text-xs text-zinc-600 ${image ? 'hidden' : ''}"></i>
+                </div>
+                <input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen del Plan (Opcional)" value="${image}">
+            </div>
+        `;
+
+        const urlInput = div.querySelector('.plan-image');
+        const imgPreview = div.querySelector('.plan-img-preview');
+        const iconPlaceholder = div.querySelector('.fa-image');
+        
+        urlInput.addEventListener('input', (e) => {
+            if(e.target.value) {
+                imgPreview.src = e.target.value;
+                imgPreview.style.display = 'block';
+                iconPlaceholder.classList.add('hidden');
+            } else {
+                imgPreview.style.display = 'none';
+                iconPlaceholder.classList.remove('hidden');
+            }
+        });
+
+        div.querySelector('.remove-plan').onclick = () => div.remove();
+        plansContainer.appendChild(div);
+    }
+
+    document.getElementById('save-btn').onclick = async (e) => {
+        e.preventDefault();
+        if(!productForm.checkValidity()) {
+            productForm.reportValidity();
+            return;
+        }
+
+        const plans = [];
+        document.querySelectorAll('.plan-item').forEach((el, index) => {
+            plans.push({
+                name: el.querySelector('.plan-name').value,
+                price: el.querySelector('.plan-price').value,
+                image: el.querySelector('.plan-image').value,
+                order: index
+            });
+        });
+
+        if(plans.length === 0) {
+            alert("Agrega al menos un plan.");
+            return;
+        }
+
+        const data = {
+            name: document.getElementById('product-name').value,
+            category: document.getElementById('product-category').value,
+            logo: document.getElementById('product-logo').value,
+            plans: plans,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            if(isEditing) {
+                // Mantener visibilidad original
+                const oldP = products.find(p => p.id === currentProductId);
+                data.visible = oldP ? oldP.visible : true;
+                
+                await db.collection("products").doc(currentProductId).update(data);
+            } else {
+                data.visible = true;
+                await db.collection("products").add(data);
+            }
+            hideModal();
+            loadProducts(); // Recargar completo para asegurar sync
+        } catch(e) {
+            alert("Error al guardar: " + e.message);
+        }
+    };
+
+    // --- Helpers UI ---
+    function showModal(edit = false) {
+        modal.classList.remove('hidden');
+        document.getElementById('modal-title').textContent = edit ? 'Editar Producto' : 'Agregar Producto';
+        document.getElementById('logo-preview').style.display = 'none';
+        document.getElementById('logo-placeholder').style.display = 'block';
+    }
+
+    function hideModal() {
+        modal.classList.add('hidden');
+        productForm.reset();
+        plansContainer.innerHTML = '';
+        currentProductId = null;
+        isEditing = false;
+    }
+
+    // Listeners
+    searchInput.addEventListener('input', applyFilters);
+    document.getElementById('add-product-btn').onclick = () => {
+        isEditing = false;
+        plansContainer.innerHTML = '';
+        showModal(false);
+        new Sortable(plansContainer, { animation: 150, handle: '.drag-handle' });
+    };
+    document.getElementById('add-plan-btn').onclick = () => addPlanToForm();
+    document.getElementById('close-modal').onclick = hideModal;
+    document.getElementById('cancel-btn').onclick = hideModal;
+    document.getElementById('modal-backdrop').onclick = hideModal;
+    
+    document.getElementById('product-logo').addEventListener('input', function() {
+        const url = this.value;
+        const img = document.getElementById('logo-preview');
+        const placeholder = document.getElementById('logo-placeholder');
+        if(url) { img.src = url; img.style.display = 'block'; placeholder.style.display = 'none'; } 
+        else { img.style.display = 'none'; placeholder.style.display = 'block'; }
+    });
+
+    // Auth
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('user-avatar').textContent = user.email.charAt(0).toUpperCase();
+            loadProducts();
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+    document.getElementById('logout-btn').onclick = () => {
+        auth.signOut().then(() => window.location.href = 'login.html');
+    };
+
+  </script>
   
-  try {
-    await db.collection("products").doc(productId).delete();
-    await loadProducts(); // Recargar la lista de productos
-  } catch (error) {
-    console.error("Error eliminando producto:", error);
-    alert("Error al eliminar el producto: " + error.message);
-  }
-}
-
-// Función para manejar el logout
-function handleLogout() {
-  auth.signOut().then(() => {
-    window.location.href = 'login.html'; // Redirigir a página de login
-  }).catch(error => {
-    console.error("Error al cerrar sesión:", error);
-  });
-}
-
-// Verificar autenticación al cargar
-auth.onAuthStateChanged(user => {
-  if (user) {
-    // Usuario autenticado
-    userEmailSpan.textContent = user.email;
-    userAvatar.textContent = user.email.charAt(0).toUpperCase();
-    loadProducts();
-  } else {
-    // Redirigir a página de login
-    window.location.href = 'login.html';
-  }
-});
-
-// Event listeners
-searchInput.addEventListener('input', filterProducts);
-addProductBtn.addEventListener('click', showAddProductModal);
-closeModalBtn.addEventListener('click', () => productModal.classList.remove('show'));
-cancelBtn.addEventListener('click', () => productModal.classList.remove('show'));
-saveBtn.addEventListener('click', saveProduct);
-addPlanBtn.addEventListener('click', () => addPlanToForm());
-logoutBtn.addEventListener('click', handleLogout);
-
-// Cerrar modal al hacer clic fuera
-productModal.addEventListener('click', (e) => {
-  if (e.target === productModal) {
-    productModal.classList.remove('show');
-  }
-});
-</script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+  </style>
 </body>
 </html>
