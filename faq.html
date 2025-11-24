@@ -1,351 +1,290 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO básico -->
-    <title>Preguntas Frecuentes - FullStreamRec | Streaming y Videojuegos en Ecuador</title>
-    <meta name="description" content="Resuelve tus dudas sobre Netflix, Disney+, Spotify, IPTV, Free Fire y más con FullStreamRec. Conoce nuestros métodos de pago (Banco Guayaquil, Banco Pichincha) y cómo funcionan nuestros servicios en Ecuador.">
-    <meta name="keywords" content="FullStreamRec FAQ, preguntas streaming Ecuador, Netflix Ecuador, Free Fire recargas, IPTV Ecuador, Banco Guayaquil, Banco Pichincha, soporte streaming">
-    <meta name="author" content="FullStreamRec">
-    <!-- Social media preview -->
-    <meta property="og:title" content="Preguntas Frecuentes | FullStreamRec Ecuador">
-    <meta property="og:description" content="Encuentra respuestas sobre nuestros servicios de streaming, videojuegos y métodos de pago en Ecuador. ¡FullStreamRec te lo explica todo!">
-    <meta property="og:image" content="logo.jpg">
-    <meta property="og:url" content="https://fullstreamrec.com/sobre-nosotros">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#000000">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" type="image/x-icon" href="logo.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <meta name="description" content="Resuelve tus dudas sobre Netflix, Disney+, Spotify, IPTV y Free Fire con FullStreamRec. Métodos de pago y soporte en Ecuador.">
+  <meta name="keywords" content="FAQ FullStreamRec, preguntas frecuentes streaming, soporte Netflix Ecuador, métodos pago FullStreamRec">
+  <meta name="author" content="FullStreamRec">
+  <meta name="theme-color" content="#09090b">
 
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-            position: relative;
-        }
+  <meta property="og:title" content="Preguntas Frecuentes | FullStreamRec">
+  <meta property="og:description" content="Todo lo que necesitas saber sobre nuestros servicios y pagos.">
+  <meta property="og:image" content="logo.jpg">
+  <meta property="og:url" content="https://fullstreamrec.com/faq.html">
+  <meta property="og:type" content="website">
 
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            pointer-events: none;
-        }
+  <title>Preguntas Frecuentes - FullStreamRec</title>
+  <link rel="icon" type="image/x-icon" href="logo.ico">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        header {
-            background-color: #000000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            color: white;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .navbar a {
-            text-decoration: none;
-        }
-
-        .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: white;
-            font-weight: 500;
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger div {
-            width: 25px;
-            height: 3px;
-            background-color: white;
-        }
-
-        .mobile-menu {
-            display: none;
-            flex-direction: column;
-            background-color: #000000;
-            padding: 1rem;
-        }
-
-        .mobile-menu a {
-            margin-bottom: 1rem;
-            text-decoration: none;
-            color: white;
-            padding: 1rem;
-            outline: #ffffff solid 1px;
-            border-radius: 4px;
-        }
-
-        .mobile-menu a:hover {
-            background-color: #ff5e66;
-        }
-
-        main {
-            padding: 2rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .faq-card {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 4px 2px 10px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .faq-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .faq-card h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            position: relative;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .faq-card h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: #ff5e66;
-        }
-
-        .faq-card h3 {
-            font-size: 1.2rem;
-            margin: 1.5rem 0 0.5rem;
-            color: #ff5e66;
-        }
-
-        .faq-card p {
-            margin: 0 0 1rem;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .contact-button {
-            display: inline-block;
-            background-color: #000000;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            text-decoration: none;
-            margin: 0.5rem;
-            transition: 0.3s;
-        }
-
-        .contact-button:hover {
-            background-color: #ff5e66;
-            box-shadow: 0 0 10px #ff5e66;
-            outline: solid 1px #850007;
-        }
-
-        .logo-container {
-            margin: 2rem auto;
-            max-width: 150px;
-        }
-
-        .logo-container img {
-            width: 100%;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        footer {
-            background-color: #000;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 4rem;
-        }
-
-        footer a {
-            color: #ff5e66;
-            text-decoration: none;
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                display: none;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              DEFAULT: '#ff5e66', 
+              hover: '#ff444d',
+              light: '#ff8a90'
+            },
+            dark: {
+              950: '#09090b',
+              900: '#121214',
+              800: '#1c1c1f',
+              700: '#27272a',
             }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .mobile-menu.show {
-                display: flex;
-            }
-
-            .faq-card {
-                padding: 1.5rem;
-            }
+          },
+          boxShadow: {
+            'glow': '0 0 30px -5px rgba(255, 94, 102, 0.25)',
+          }
         }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #09090b; }
+    .no-scroll { overflow: hidden; }
+    
+    /* Animación suave para el acordeón */
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    
+    details[open] summary ~ * {
+      animation: sweep .3s ease-in-out;
+    }
+
+    @keyframes sweep {
+      0%    { opacity: 0; transform: translateY(-10px); }
+      100%  { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Icono de rotación */
+    details summary .icon { transition: transform 0.3s; }
+    details[open] summary .icon { transform: rotate(180deg); }
+  </style>
 </head>
-<body>
-    <div id="particles-js"></div>
-    <header>
-        <div class="navbar">
-            <div class="logo">FullStreamRec</div>
-            <nav>
-                <a href="index.html">Inicio - Servicios</a>
-                <a href="sobre-nosotros.html">Sobre Nosotros</a>
-                <a href="contacto.html">Contacto - Soporte</a>
-            </nav>
-            <div class="hamburger" id="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
+<body class="text-zinc-100 antialiased selection:bg-brand/30 selection:text-white">
+
+  <header class="fixed top-0 w-full z-50 bg-dark-950/80 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16 md:h-20">
+        
+        <a href="index.html" class="flex-shrink-0 flex items-center gap-3 group">
+          <div class="relative">
+              <div class="absolute -inset-1 bg-brand rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+              <img src="logo.jpg" alt="FullStreamRec" class="relative h-10 w-10 rounded-lg object-cover">
+          </div>
+          <span class="font-extrabold text-xl tracking-tight text-white">FullStream<span class="text-brand">Rec</span></span>
+        </a>
+
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="index.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Inicio</a>
+          <a href="sobre-nosotros.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Nosotros</a>
+          <a href="contacto.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Contacto</a>
+          <a href="faq.html" class="px-4 py-2 rounded-full text-white bg-white/10 font-bold text-sm uppercase tracking-wider">FAQ</a>
+        </nav>
+
+        <div class="flex items-center md:hidden">
+          <button id="hamburger" class="p-2 text-zinc-300 hover:text-white focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="hidden md:hidden bg-dark-900 border-b border-white/5">
+      <div class="px-4 pt-2 pb-4 space-y-2">
+        <a href="index.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Inicio</a>
+        <a href="sobre-nosotros.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Sobre Nosotros</a>
+        <a href="contacto.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Contacto</a>
+        <a href="faq.html" class="block px-4 py-3 rounded-xl text-base font-bold text-brand bg-brand/10 border border-brand/20">FAQ</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="relative pt-32 pb-20 lg:pt-40 overflow-hidden min-h-screen">
+    <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0 pointer-events-none select-none">
+        <div class="absolute top-20 right-0 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[150px]"></div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        <div class="text-center mb-16 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
+                Preguntas <span class="text-brand">Frecuentes</span>
+            </h1>
+            <p class="text-lg text-zinc-400 max-w-2xl mx-auto">
+                Resolvemos tus dudas para que disfrutes de tu entretenimiento sin preocupaciones.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            
+            <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Qué servicios ofrece FullStreamRec?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    Ofrecemos planes de streaming (Netflix, Disney+, HBO Max, Amazon Prime Video), música (Spotify Premium), IPTV con cientos de canales, y recargas para videojuegos como Free Fire. Todo disponible en Ecuador con precios accesibles.
+                </div>
+            </details>
+
+            <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Cuáles son los métodos de pago?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    Aceptamos transferencias bancarias a <strong>Banco Guayaquil</strong> y <strong>Banco Pichincha</strong>. Una vez que elijas tu plan, te enviaremos los detalles de pago por WhatsApp. ¡Es rápido y seguro!
+                </div>
+            </details>
+
+            <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Es seguro comprar con FullStreamRec?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    ¡Totalmente! Somos una empresa ecuatoriana confiable, con cientos de clientes satisfechos en todo el país. Usamos métodos de pago verificados y protegemos tus datos.
+                </div>
+            </details>
+
+            <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Cuánto tarda en activarse mi plan?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    Una vez confirmado tu pago, activamos tu plan en menos de <strong>10 a 30 minutos</strong>, aunque suele ser mucho más rápido (a veces en segundos). Te notificamos por WhatsApp cuando esté listo.
+                </div>
+            </details>
+
+            <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Cómo funciona el servicio de IPTV?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    Nuestro IPTV te da acceso a cientos de canales en vivo y contenido on-demand. Te enviamos un enlace y credenciales para usarlo en tu Smart TV, celular o PC. Incluye soporte para configurarlo.
+                </div>
+            </details>
+
+             <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Puedo recargar Free Fire desde cualquier ciudad?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    Sí, atendemos a todo Ecuador. Elige la cantidad de diamantes, paga con Banco Guayaquil o Banco Pichincha, y recibirás tu recarga en minutos mediante tu ID. ¡Perfecto para subir tu nivel!
+                </div>
+            </details>
+
+            <details class="group bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-brand/30 open:border-brand/30 open:bg-dark-800/80">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none">
+                    <h3 class="text-lg font-bold text-white group-hover:text-brand transition-colors">¿Qué hago si tengo problemas?</h3>
+                    <span class="icon text-zinc-500 group-hover:text-white transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+                <div class="px-6 pb-6 text-zinc-400 leading-relaxed border-t border-white/5 pt-4">
+                    Contáctanos por WhatsApp al <strong>+593 978 652 638</strong>. Estamos disponibles de lunes a domingo, de 08:00 a 22:00, para resolver cualquier duda o inconveniente en minutos.
+                </div>
+            </details>
+
+        </div>
+
+        <div class="mt-16 bg-gradient-to-r from-dark-800 to-dark-900 border border-white/10 rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-brand/10 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+                <h3 class="text-2xl font-bold text-white mb-4">¿No encontraste tu respuesta?</h3>
+                <p class="text-zinc-400 mb-8 max-w-lg mx-auto">Nuestro equipo de soporte está listo para ayudarte directamente.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://wa.me/593978652638" target="_blank" class="inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-bold rounded-full text-white bg-green-600 hover:bg-green-700 transition-all shadow-lg shadow-green-900/30 hover:-translate-y-1">
+                        <i class="fab fa-whatsapp mr-2 text-xl"></i> Escribir al WhatsApp
+                    </a>
+                    <a href="index.html" class="inline-flex justify-center items-center px-8 py-4 border border-zinc-700 text-base font-bold rounded-full text-zinc-300 hover:bg-white hover:text-black transition-all hover:-translate-y-1">
+                        Ver Servicios
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="index.html">Inicio - Servicios</a>
-            <a href="sobre-nosotros.html">Sobre Nosotros</a>
-            <a href="contacto.html">Contacto - Soporte</a>
-        </div>
-    </header>
-    <main>
-        <!-- <div class="logo-container">
-            <img src="logo.jpg" alt="FullStreamRec Logo">
-        </div> -->
-        <div class="faq-card">
-            <h2>Preguntas Frecuentes</h2>
-            <h3>¿Qué servicios ofrece FullStreamRec?</h3>
-            <p>Ofrecemos planes de streaming (Netflix, Disney+, HBO Max, Amazon Prime Video), música (Spotify Premium), IPTV con cientos de canales, y recargas para videojuegos como Free Fire. Todo disponible en Ecuador con precios accesibles.</p>
 
-            <h3>¿Cuáles son los métodos de pago?</h3>
-            <p>Aceptamos transferencias bancarias a <strong>Banco Guayaquil</strong> y <strong>Banco Pichincha</strong>. Una vez que elijas tu plan, te enviaremos los detalles de pago por WhatsApp. ¡Es rápido y seguro!</p>
-
-            <h3>¿Es seguro comprar con FullStreamRec?</h3>
-            <p>¡Totalmente! Somos una empresa ecuatoriana confiable, con cientos de clientes satisfechos en todo el país. Usamos métodos de pago verificados y protegemos tus datos.</p>
-
-            <h3>¿Cuánto tarda en activarse mi plan?</h3>
-            <p>Una vez confirmado tu pago, activamos tu plan en menos de <strong>10 a 30 min</strong>, aunque suele ser mucho más rápido (a veces en segundos). Te notificamos por WhatsApp cuando esté listo.</p>
-
-            <h3>¿Cómo funciona el servicio de IPTV?</h3>
-            <p>Nuestro IPTV te da acceso a cientos de canales en vivo y contenido on-demand. Te enviamos un enlace y credenciales para usarlo en tu Smart TV, celular o PC. Incluye soporte para configurarlo.</p>
-
-            <h3>¿Puedo recargar Free Fire desde cualquier ciudad en Ecuador?</h3>
-            <p>Sí, atendemos a todo Ecuador. Elige la cantidad de diamantes, paga con Banco Guayaquil o Banco Pichincha, y recibirás tu recarga en minutos mediante tu ID. ¡Perfecto para subir tu nivel!</p>
-
-            <h3>¿Qué hago si tengo problemas con mi suscripción?</h3>
-            <p>Contáctanos por WhatsApp al <strong>+593 978 652 638</strong>. Estamos disponibles de lunes a domingo, de 9:00 AM a 9:30 PM, para resolver cualquier duda o inconveniente en minutos.</p>
-
-            <h3>¿Ofrecen planes familiares o compartidos?</h3>
-            <p>Sí, tenemos planes familiares para Netflix y Disney+ que permiten varias pantallas. Escríbenos por WhatsApp para personalizar tu plan según tus necesidades.</p>
-
-            <h3>¿Por qué elegir FullStreamRec en lugar de comprar directamente?</h3>
-            <p>Con nosotros, obtienes precios más bajos, atención personalizada desde Ecuador, y soporte inmediato. Además, ofrecemos combos y recargas que no encuentras en las plataformas oficiales.</p>
-
-            <p>¿No encuentras tu respuesta? ¡Estamos aquí para ayudarte!</p>
-            <a href="https://wa.me/593978652638" target="_blank" class="contact-button">Contáctanos por WhatsApp</a>
-            <a href="index.html" class="contact-button">Ver Todos los Servicios</a>
-        </div>
     </main>
-    <footer>
-        <p>© 2025 FullStreamRec. Todos los derechos reservados.</p>
-        <p>Contáctanos en <a href="mailto:fullstreamrec@gmail.com">fullstreamrec@gmail.com</a></p>
-    </footer>
-    <script>
-        // Menú hamburguesa
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobileMenu');
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('show');
-        });
+  </div>
 
-        // Animación de la tarjeta
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("visible");
-                }
-            });
-        }, { threshold: 0.1 });
+  <footer class="bg-dark-900 border-t border-white/5 pt-16 pb-8 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 text-center md:text-left">
+        <div class="col-span-1">
+          <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+            <img src="logo.jpg" class="h-8 w-8 rounded" alt="Logo">
+            <span class="text-xl font-bold text-white">FullStreamRec</span>
+          </div>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+            Tu aliado confiable para servicios digitales en Ecuador. Calidad, rapidez y seguridad.
+          </p>
+        </div>
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const card = document.querySelector(".faq-card");
-            if (card) observer.observe(card);
-        });
+        <div>
+          <h3 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Enlaces</h3>
+          <ul class="space-y-3">
+            <li><a href="index.html" class="text-zinc-400 hover:text-brand text-sm transition-colors">Inicio</a></li>
+            <li><a href="sobre-nosotros.html" class="text-zinc-400 hover:text-brand text-sm transition-colors">Sobre Nosotros</a></li>
+            <li><a href="contacto.html" class="text-zinc-400 hover:text-brand text-sm transition-colors">Contacto</a></li>
+          </ul>
+        </div>
 
-        // Configuración de Particle.js
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 50, density: { enable: true, value_area: 800 } },
-                color: { value: '#ff5e66' },
-                shape: { type: 'circle', stroke: { width: 0, color: '#000000' }, polygon: { nb_sides: 5 } },
-                opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
-                size: { value: 3, random: true, anim: { enable: true, speed: 4, size_min: 0.3, sync: false } },
-                line_linked: { enable: true, distance: 150, color: '#ff5e66', opacity: 0.4, width: 1 },
-                move: { enable: true, speed: 2, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true },
-                modes: {
-                    grab: { distance: 140, line_linked: { opacity: 1 } },
-                    bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
-                    repulse: { distance: 200, duration: 0.4 },
-                    push: { particles_nb: 4 },
-                    remove: { particles_nb: 2 }
-                }
-            },
-            retina_detect: true
-        });
-    </script>
+        <div>
+          <h3 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Contacto</h3>
+          <ul class="space-y-3">
+            <li class="text-zinc-400 text-sm"><i class="fas fa-phone-alt mr-2 text-brand"></i> +593 97 865 2638</li>
+            <li class="text-zinc-400 text-sm"><i class="fas fa-envelope mr-2 text-brand"></i> info@fullstreamrec.com</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-zinc-500 text-sm">&copy; 2025 FullStreamRec. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    }
+  </style>
 </body>
 </html>

@@ -1,307 +1,210 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <!-- SEO -->
-  <meta name="description" content="¿Necesitas ayuda o tienes preguntas sobre nuestros planes? Contáctanos en FullStreamRec. Atención rápida por WhatsApp.">
-  <meta name="keywords" content="contacto FullStreamRec, ayuda streaming Ecuador, soporte Netflix Ecuador, WhatsApp FullStreamRec">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description" content="¿Necesitas ayuda? Contáctanos en FullStreamRec. Atención rápida por WhatsApp para Netflix, Disney+, IPTV y más en Ecuador.">
+  <meta name="keywords" content="contacto FullStreamRec, soporte streaming Ecuador, atención al cliente Netflix, WhatsApp FullStreamRec">
   <meta name="author" content="FullStreamRec">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://fullstreamrec.com/contacto.html">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#09090b">
 
   <meta property="og:title" content="Contáctanos | FullStreamRec">
-  <meta property="og:description" content="¿Tienes dudas? Escríbenos. Atención personalizada por WhatsApp todos los días.">
-  <meta property="og:image" content="https://fullstreamrec.com/logo.jpg">
+  <meta property="og:description" content="Estamos listos para ayudarte. Escríbenos por WhatsApp.">
+  <meta property="og:image" content="logo.jpg">
   <meta property="og:url" content="https://fullstreamrec.com/contacto.html">
   <meta property="og:type" content="website">
-    <title>Contacto - FullStreamRec</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link rel="icon" type="image/x-icon" href="logo.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <title>Contacto - FullStreamRec</title>
+  <link rel="icon" type="image/x-icon" href="logo.ico">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: #000000; /* Fondo negro como index.html */
-            color: #ffffff; /* Texto blanco para contraste */
-            position: relative;
-        }
-
-        /* Fondo de partículas */
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        header {
-            background-color: #000000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            color: white;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .navbar a {
-            text-decoration: none;
-        }
-
-        .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white; /* Logo blanco */
-        }
-
-        nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: white;
-            font-weight: 500;
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger div {
-            width: 25px;
-            height: 3px;
-            background-color: white; /* Hamburguesa blanca */
-        }
-
-        .mobile-menu {
-            display: none;
-            flex-direction: column;
-            background-color: #000000;
-            padding: 1rem;
-        }
-
-        .mobile-menu a {
-            margin-bottom: 1rem;
-            text-decoration: none;
-            color: white;
-            padding: 1rem;
-            outline: #ffffff solid 1px;
-            border-radius: 4px;
-        }
-
-        .mobile-menu a:hover {
-            background-color: #ff5e66; /* Hover rojo como index.html */
-        }
-
-        main {
-            padding: 2rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .contact-card {
-            background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 4px 2px 10px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .contact-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .contact-card h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            position: relative;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-card h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: #ff5e66; /* Subrayado rojo */
-        }
-
-        .contact-card p {
-            margin: 1rem 0;
-            font-size: 1.1rem;
-        }
-
-        .contact-button {
-            display: inline-block;
-            background-color: #000000;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            text-decoration: none;
-            margin: 0.5rem;
-            transition: 0.3s;
-        }
-
-        .contact-button:hover {
-            background-color: #ff5e66;
-            box-shadow: 0 0 10px #ff5e66;
-            outline: solid 1px #850007;
-        }
-
-        .logo-container {
-            margin: 2rem auto;
-            max-width: 150px;
-        }
-
-        .logo-container img {
-            width: 100%;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        footer {
-            background-color: #000;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 4rem;
-        }
-
-        footer a {
-            color: #ff5e66;
-            text-decoration: none;
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                display: none;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              DEFAULT: '#ff5e66', 
+              hover: '#ff444d',
+              light: '#ff8a90'
+            },
+            dark: {
+              950: '#09090b',
+              900: '#121214',
+              800: '#1c1c1f',
+              700: '#27272a',
             }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .mobile-menu.show {
-                display: flex;
-            }
-
-            .contact-card {
-                padding: 1.5rem;
-            }
+          },
+          boxShadow: {
+            'glow': '0 0 30px -5px rgba(255, 94, 102, 0.25)',
+          }
         }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #09090b; }
+    .no-scroll { overflow: hidden; }
+  </style>
 </head>
-<body>
-    <!-- Añadir contenedor de partículas -->
-    <div id="particles-js"></div>
+<body class="text-zinc-100 antialiased selection:bg-brand/30 selection:text-white">
 
-    <header>
-        <div class="navbar">
-            <div class="logo">FullStreamRec</div>
-            <nav>
-                <a href="index.html">Inicio - Servicios</a>
-                <a href="sobre-nosotros.html">Sobre Nosotros</a>
-                <a href="faq.html">Preguntas Frecuentes (FAQ)</a>
-            </nav>
-            <div class="hamburger" id="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
+  <header class="fixed top-0 w-full z-50 bg-dark-950/80 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16 md:h-20">
+        
+        <a href="index.html" class="flex-shrink-0 flex items-center gap-3 group">
+          <div class="relative">
+              <div class="absolute -inset-1 bg-brand rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+              <img src="logo.jpg" alt="FullStreamRec" class="relative h-10 w-10 rounded-lg object-cover">
+          </div>
+          <span class="font-extrabold text-xl tracking-tight text-white">FullStream<span class="text-brand">Rec</span></span>
+        </a>
+
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="index.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Inicio</a>
+          <a href="sobre-nosotros.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Nosotros</a>
+          <a href="contacto.html" class="px-4 py-2 rounded-full text-white bg-white/10 font-bold text-sm uppercase tracking-wider">Contacto</a>
+          <a href="faq.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">FAQ</a>
+        </nav>
+
+        <div class="flex items-center md:hidden">
+          <button id="hamburger" class="p-2 text-zinc-300 hover:text-white focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="hidden md:hidden bg-dark-900 border-b border-white/5">
+      <div class="px-4 pt-2 pb-4 space-y-2">
+        <a href="index.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Inicio</a>
+        <a href="sobre-nosotros.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Sobre Nosotros</a>
+        <a href="contacto.html" class="block px-4 py-3 rounded-xl text-base font-bold text-brand bg-brand/10 border border-brand/20">Contacto</a>
+        <a href="faq.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">FAQ</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="relative pt-32 pb-20 lg:pt-40 overflow-hidden min-h-screen flex items-center">
+    <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0 pointer-events-none select-none">
+        <div class="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand/10 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[150px]"></div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        
+        <div class="text-center mb-16 animate-fade-in">
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">
+                Estamos aquí <span class="text-brand">para ayudarte</span>
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-2xl mx-auto">
+                ¿Tienes dudas sobre un plan? ¿Necesitas soporte técnico? Elige tu canal preferido y contáctanos.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-3xl p-8 hover:border-green-500/30 hover:bg-dark-800/80 transition-all duration-300 group text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-green-500 opacity-50"></div>
+                <div class="w-16 h-16 mx-auto bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">WhatsApp</h3>
+                <p class="text-zinc-400 mb-8 text-sm">Respuesta inmediata para compras y soporte.</p>
+                <a href="https://wa.me/593978652638" target="_blank" class="inline-flex w-full justify-center items-center px-6 py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold transition-all shadow-lg shadow-green-900/20 group-hover:-translate-y-1">
+                    Chat Directo
+                </a>
             </div>
-        </div>
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="index.html">Inicio - Servicios</a>
-            <a href="sobre-nosotros.html">Sobre Nosotros</a>
-            <a href="faq.html">Preguntas Frecuentes (FAQ)</a>
-        </div>
-    </header>
 
-    <main>
-        <!-- <div class="logo-container">
-            <img src="logo.jpg" alt="FullStreamRec Logo">
-        </div> -->
-        <div class="contact-card">
-            <h2>Contáctanos</h2>
-            <p>¿Tienes dudas, deseas hacer una compra o necesitas soporte? Estamos aquí para ayudarte.</p>
-            <p><a href="https://wa.me/593978652638" target="_blank" class="contact-button">WhatsApp</a></p>
-            <p><a href="mailto:fullstreamrec@gmail.com" class="contact-button">fullstreamrec@gmail.com</a></p>
-            <p>Atendemos de lunes a domingo de <strong>9:00 AM a 21:30 PM</strong>. ¡Tu experiencia es nuestra prioridad!</p>
+            <div class="bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-3xl p-8 hover:border-brand/30 hover:bg-dark-800/80 transition-all duration-300 group text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand opacity-50"></div>
+                <div class="w-16 h-16 mx-auto bg-brand/10 rounded-2xl flex items-center justify-center text-brand text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Email</h3>
+                <p class="text-zinc-400 mb-8 text-sm">Para consultas administrativas o colaboraciones.</p>
+                <a href="mailto:fullstreamrec@gmail.com" class="inline-flex w-full justify-center items-center px-6 py-4 rounded-xl border border-zinc-700 hover:bg-white hover:text-dark-950 text-zinc-300 font-bold transition-all group-hover:-translate-y-1">
+                    Enviar Correo
+                </a>
+            </div>
+
+            <div class="bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-3xl p-8 hover:border-blue-500/30 hover:bg-dark-800/80 transition-all duration-300 group text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 opacity-50"></div>
+                <div class="w-16 h-16 mx-auto bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Horario</h3>
+                <p class="text-zinc-400 mb-6 text-sm">Atención personalizada todos los días.</p>
+                <div class="bg-dark-950/50 rounded-xl p-4 border border-white/5">
+                    <p class="text-white font-bold text-lg">Lunes a Domingo</p>
+                    <p class="text-brand font-medium">09:00 AM - 09:30 PM</p>
+                </div>
+            </div>
+
         </div>
+
     </main>
+  </div>
 
-    <footer>
-        <p>&copy; 2025 FullStreamRec. Todos los derechos reservados.</p>
-        <p>Contáctanos en <a href="mailto:fullstreamrec@gmail.com">fullstreamrec@gmail.com</a></p>
-    </footer>
+  <footer class="bg-dark-900 border-t border-white/5 pt-16 pb-8 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 text-center md:text-left">
+        <div class="col-span-1">
+          <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+            <img src="logo.jpg" class="h-8 w-8 rounded" alt="Logo">
+            <span class="text-xl font-bold text-white">FullStreamRec</span>
+          </div>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+            Tu aliado confiable para servicios digitales en Ecuador. Calidad, rapidez y seguridad.
+          </p>
+        </div>
 
-    <script>
-        // Menú hamburguesa
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobileMenu');
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('show');
-        });
+        <div>
+          <h3 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Enlaces</h3>
+          <ul class="space-y-3">
+            <li><a href="index.html" class="text-zinc-400 hover:text-brand text-sm transition-colors">Inicio</a></li>
+            <li><a href="sobre-nosotros.html" class="text-zinc-400 hover:text-brand text-sm transition-colors">Sobre Nosotros</a></li>
+            <li><a href="faq.html" class="text-zinc-400 hover:text-brand text-sm transition-colors">Preguntas Frecuentes</a></li>
+          </ul>
+        </div>
 
-        // Animación de la tarjeta
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("visible");
-                }
-            });
-        }, { threshold: 0.1 });
+        <div>
+          <h3 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Contacto</h3>
+          <ul class="space-y-3">
+            <li class="text-zinc-400 text-sm"><i class="fas fa-phone-alt mr-2 text-brand"></i> +593 97 865 2638</li>
+            <li class="text-zinc-400 text-sm"><i class="fas fa-envelope mr-2 text-brand"></i> fullstreamrec@gmail.com</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-zinc-500 text-sm">&copy; 2025 FullStreamRec. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const card = document.querySelector(".contact-card");
-            if (card) observer.observe(card);
-        });
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+  </script>
 
-       
-    </script>
-
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="particles-config.js"></script>
-
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    }
+  </style>
 </body>
 </html>
