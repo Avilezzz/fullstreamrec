@@ -396,26 +396,55 @@
             const img = plan.image || product.logo;
             
             const btn = document.createElement('button');
-            btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-brand/50 rounded-xl p-4 flex items-center justify-between group transition-all";
+            btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-green-500/50 rounded-xl p-4 flex items-center justify-between group transition-all";
             btn.innerHTML = `
                 <div class="flex items-center gap-4">
                     <img src="${img}" class="w-10 h-10 object-contain" onerror="this.src='https://fakeimg.pl/50x50'">
                     <div class="text-left">
-                        <p class="font-bold text-white group-hover:text-brand transition-colors">${plan.name}</p>
+                        <p class="font-bold text-white group-hover:text-white transition-colors">${plan.name}</p>
                     </div>
                 </div>
-                <span class="font-bold text-brand bg-brand/10 px-3 py-1 rounded-lg">${plan.price}</span>
+                <span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>
             `;
             
             btn.onclick = () => {
                 let name = plan.name;
+
+                // Validación mejorada para Free Fire
                 if (product.name.toLowerCase().includes('free fire')) {
-                    const ffId = document.getElementById('ff-id').value;
-                    if(ffId.length < 5) { alert("Por favor ingresa un ID válido"); return; }
+                    const input = document.getElementById('ff-id');
+                    const ffId = input.value.trim();
+
+                    if (ffId.length < 5) {
+                        // 1. Cambiar borde a rojo y añadir brillo
+                        input.classList.remove('border-zinc-600');
+                        input.classList.add('border-red-500', 'ring-2', 'ring-red-500/30', 'animate-pulse');
+                        input.focus();
+
+                        // 2. Mostrar mensaje de error debajo del input (si no existe ya)
+                        let existingError = input.parentNode.querySelector('.ff-error-message');
+                        if (!existingError) {
+                            const errorMsg = document.createElement('div');
+                            errorMsg.className = 'ff-error-message text-red-400 text-xs mt-2 font-bold flex items-center gap-2';
+                            errorMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ingresa un ID válido (mínimo de 8-11 dígitos)';
+                            input.parentNode.appendChild(errorMsg);
+
+                            // 3. Quitar el error automáticamente después de 3 segundos
+                            setTimeout(() => {
+                                input.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30', 'animate-pulse');
+                                input.classList.add('border-zinc-600');
+                                errorMsg.remove();
+                            }, 3000);
+                        }
+                        return; // Detener la ejecución
+                    }
                     name += ` (ID: ${ffId})`;
                 }
+
+                // Flujo normal de compra
                 addToCart(product.id, product.name, name, plan.price, img);
-                globalModal.classList.add('hidden');
+                document.getElementById('globalModal').classList.add('hidden');
+                document.body.classList.remove('no-scroll');
             };
             container.appendChild(btn);
         });
