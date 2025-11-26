@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <meta name="description" content="FullStreamRec: Cuentas Premium de Netflix, Disney+, Spotify, IPTV y Recargas Free Fire en Ecuador. Entrega inmediata.">
   <meta name="keywords" content="Netflix Ecuador, Disney+, Spotify, IPTV, Free Fire, streaming barato, recargas juegos">
   <meta name="author" content="FullStreamRec">
   <meta name="theme-color" content="#09090b">
-
   <meta property="og:title" content="FullStreamRec | Streaming Premium Ecuador">
   <meta property="og:image" content="logo.jpg">
   <meta property="og:url" content="https://fullstreamrec.com">
   <meta property="og:type" content="website">
-
   <title>FullStreamRec | Streaming y Juegos</title>
   <link rel="icon" type="image/x-icon" href="logo.ico">
   
@@ -21,7 +18,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -48,10 +44,9 @@
       }
     }
   </script>
-
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <style>
     body { background-color: #09090b; }
     .no-scroll { overflow: hidden; }
@@ -60,7 +55,6 @@
   </style>
 </head>
 <body class="text-zinc-100 antialiased selection:bg-brand/30 selection:text-white">
-
   <header class="fixed top-0 w-full z-50 bg-dark-950/80 backdrop-blur-xl border-b border-white/5 transition-all duration-300 supports-[backdrop-filter]:bg-dark-950/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16 md:h-20">
@@ -73,7 +67,7 @@
           <span class="font-extrabold text-xl tracking-tight text-white">FullStream<span class="text-brand">Rec</span></span>
         </div>
 
-        <nav class="hidden md:flex items-center space-x-1">
+        <nav id="main-nav" class="hidden md:flex items-center space-x-1 transition-all duration-300">
           <a href="index.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Inicio</a>
           <a href="sobre-nosotros.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Nosotros</a>
           <a href="contacto.html" class="px-4 py-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-all font-medium text-sm uppercase tracking-wider">Contacto</a>
@@ -81,6 +75,20 @@
         </nav>
 
         <div class="flex items-center gap-4 md:gap-6">
+          
+          <div id="guest-menu" class="hidden">
+             <button onclick="loginWithGoogle()" class="flex items-center gap-2 bg-white text-dark-950 px-4 py-2 rounded-full font-bold text-xs hover:bg-zinc-200 transition-all shadow-lg hover:scale-105">
+                <i class="fab fa-google"></i> Ingresar
+             </button>
+          </div>
+
+          <div id="user-menu" class="hidden items-center gap-3 animate-fade-in">
+            <img id="user-photo" src="" alt="User" class="h-8 w-8 rounded-full border border-brand/50 object-cover shadow-glow">
+            <button onclick="logout()" class="hidden md:block text-xs bg-dark-800 hover:bg-red-500/20 text-zinc-300 hover:text-red-500 border border-zinc-700 px-3 py-1.5 rounded-lg transition-all font-medium">
+                <span class="flex items-center gap-2">Salir <i class="fas fa-sign-out-alt"></i></span>
+            </button>
+          </div>
+
           <div class="relative cursor-pointer group p-2" id="cartIcon">
             <i class="fas fa-shopping-cart text-xl text-zinc-300 group-hover:text-brand transition-colors"></i>
             <span id="cartCount" class="absolute top-0 right-0 bg-brand text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-dark-950 animate-pulse">0</span>
@@ -93,22 +101,32 @@
       </div>
     </div>
 
-    <div id="mobileMenu" class="hidden md:hidden bg-dark-900 border-b border-white/5">
+    <div id="mobileMenu" class="hidden md:hidden bg-dark-900 border-b border-white/5 transition-all">
       <div class="px-4 pt-2 pb-4 space-y-2">
-        <a href="index.html" class="block px-4 py-3 rounded-xl text-base font-bold text-brand bg-brand/10 border border-brand/20">Inicio</a>
-        <a href="sobre-nosotros.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Sobre Nosotros</a>
-        <a href="contacto.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Contacto</a>
-        <a href="faq.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">FAQ</a>
+        
+        <div id="mobile-nav-links" class="space-y-2">
+            <a href="index.html" class="block px-4 py-3 rounded-xl text-base font-bold text-brand bg-brand/10 border border-brand/20">Inicio</a>
+            <a href="sobre-nosotros.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Sobre Nosotros</a>
+            <a href="contacto.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Contacto</a>
+            <a href="faq.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">FAQ</a>
+        </div>
+        
+        <button id="mobile-guest-btn" onclick="loginWithGoogle()" class="w-full mt-4 flex items-center justify-center gap-2 bg-white text-dark-950 px-4 py-3 rounded-xl font-bold text-sm hover:bg-zinc-200 transition-all">
+            <i class="fab fa-google"></i> Iniciar Sesión
+        </button>
+
+        <button id="mobile-logout-btn" onclick="logout()" class="hidden w-full mt-4 flex items-center justify-center gap-2 bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
       </div>
     </div>
   </header>
 
-  <section class="relative pt-36 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+  <section class="relative pt-36 pb-10 lg:pt-48 lg:pb-20 overflow-hidden">
     <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0 pointer-events-none select-none">
         <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-brand/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
     </div>
-
     <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-8 leading-tight">
         Entretenimiento <br/>
@@ -117,7 +135,8 @@
       <p class="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-zinc-400 mb-12 leading-relaxed font-light">
         Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.
       </p>
-      <div class="flex flex-col sm:flex-row gap-5 justify-center items-center">
+      
+      <div id="hero-buttons" class="flex flex-col sm:flex-row gap-5 justify-center items-center transition-all duration-300">
         <a href="#products-container" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-brand px-8 font-bold text-white transition-all hover:bg-brand-hover shadow-lg shadow-brand/30 hover:shadow-brand/50 hover:-translate-y-1">
           <span class="relative flex items-center gap-2">
              <i class="fas fa-play text-sm"></i> Ver Catálogo
@@ -133,14 +152,19 @@
   </section>
 
   <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32 relative z-10">
-    <div id="products-container" class="min-h-[500px]">
-        <div class="flex flex-col items-center justify-center py-32 text-zinc-500">
-            <div class="relative w-16 h-16 mb-4">
-                <div class="absolute top-0 left-0 w-full h-full border-4 border-zinc-800 rounded-full"></div>
-                <div class="absolute top-0 left-0 w-full h-full border-4 border-brand rounded-full border-t-transparent animate-spin"></div>
+    
+    <div id="search-container" class="hidden max-w-2xl mx-auto mb-16 animate-fade-in">
+        <div class="relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-brand to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+            <div class="relative">
+                <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-brand transition-colors"></i>
+                <input type="text" id="searchInput" placeholder="¿Qué estás buscando hoy? (Ej: Netflix, Free Fire...)" 
+                       class="w-full bg-dark-900 border border-zinc-700 text-white text-lg rounded-xl pl-14 pr-4 py-4 focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none transition-all placeholder-zinc-600 shadow-2xl">
             </div>
-            <p class="text-lg font-medium animate-pulse">Cargando...</p>
         </div>
+    </div>
+
+    <div id="products-container" class="min-h-[500px]">
     </div>
   </main>
 
@@ -163,7 +187,6 @@
             <a href="https://wa.me/593978652638" class="h-12 w-12 rounded-full bg-dark-800 border border-white/5 flex items-center justify-center text-zinc-400 hover:bg-green-600 hover:border-green-600 hover:text-white transition-all group"><i class="fab fa-whatsapp text-xl group-hover:scale-110 transition-transform"></i></a>
           </div>
         </div>
-
         <div class="md:col-span-3 md:pl-8">
           <h3 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Menú</h3>
           <ul class="space-y-4">
@@ -173,7 +196,6 @@
             <li><a href="faq.html" class="text-zinc-400 hover:text-brand font-medium transition-colors flex items-center gap-2">FAQ</a></li>
           </ul>
         </div>
-
         <div class="md:col-span-4">
           <h3 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Contacto</h3>
           <ul class="space-y-6">
@@ -198,10 +220,8 @@
 
   <div id="globalModal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-dark-950/80 backdrop-blur-md transition-opacity" id="modalOverlay"></div>
-    
     <div class="relative w-full h-full flex items-center justify-center p-4 sm:p-6">
         <div class="bg-dark-900/90 border border-white/10 w-full max-w-xl max-h-[85vh] rounded-3xl shadow-2xl shadow-black/50 flex flex-col animate-fade-in overflow-hidden supports-[backdrop-filter]:backdrop-blur-xl">
-            
             <div class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-900/50">
                 <div class="flex items-center gap-4">
                     <div class="p-2 bg-dark-800 rounded-xl border border-white/5">
@@ -216,18 +236,14 @@
                     <i class="fas fa-times text-lg w-6 h-6 flex items-center justify-center"></i>
                 </button>
             </div>
-
-            <div id="global-plans-container" class="p-6 overflow-y-auto scrollbar-hide space-y-4">
-                </div>
+            <div id="global-plans-container" class="p-6 overflow-y-auto scrollbar-hide space-y-4"></div>
         </div>
     </div>
   </div>
 
   <div id="cartModal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-dark-950/80 backdrop-blur-sm transition-opacity close-cart"></div>
-    
     <div class="absolute right-0 top-0 h-full w-full max-w-[450px] bg-dark-900 border-l border-white/10 shadow-2xl transform transition-transform flex flex-col supports-[backdrop-filter]:backdrop-blur-xl bg-dark-900/95">
-        
         <div class="flex items-center justify-between p-6 border-b border-white/5">
             <div>
                 <h3 class="text-2xl font-black text-white flex items-center gap-3">
@@ -239,10 +255,7 @@
                  <i class="fas fa-times text-lg w-6 h-6 flex items-center justify-center"></i>
             </button>
         </div>
-
-        <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide bg-dark-900/50">
-            </div>
-
+        <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide bg-dark-900/50"></div>
         <div class="p-6 border-t border-white/5 bg-dark-900 relative">
             <div class="absolute -top-6 left-0 w-full h-6 bg-gradient-to-t from-dark-900 to-transparent pointer-events-none"></div>
             <div class="flex justify-between items-end mb-6">
@@ -258,42 +271,27 @@
   </div>
 
   <script>
-    // --- Lógica UI ---
+    // --- UI ---
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
     const cartModal = document.getElementById('cartModal');
     const globalModal = document.getElementById('globalModal');
     const body = document.body;
-
-    // Toggle Menú Móvil
-    hamburger.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-    });
-
-    // Scroll Lock
+    hamburger.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
     const disableScroll = () => body.classList.add('no-scroll', 'pr-[15px]');
     const enableScroll = () => body.classList.remove('no-scroll', 'pr-[15px]');
-
-    // Cerrar Modales
     const closeModals = () => {
         globalModal.classList.add('hidden');
         cartModal.classList.add('hidden');
         enableScroll();
     };
-
-    document.querySelectorAll('.global-modal-close, .close-cart').forEach(btn => {
-        btn.addEventListener('click', closeModals);
-    });
-
+    document.querySelectorAll('.global-modal-close, .close-cart').forEach(btn => btn.addEventListener('click', closeModals));
     document.getElementById('modalOverlay').addEventListener('click', closeModals);
-
-    // Abrir Carrito
     document.getElementById('cartIcon').addEventListener('click', () => {
         cartModal.classList.remove('hidden');
         disableScroll();
     });
-
-    // --- Lógica de Negocio (Firebase & Carrito) ---
+    // --- Firebase ---
     const firebaseConfig = {
       apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
       authDomain: "site-fullstreamrec.firebaseapp.com",
@@ -305,29 +303,189 @@
     
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-
+    const auth = firebase.auth();
+    // --- Variables ---
     let cart = [];
     let productsCache = [];
-
+    let currentUser = null;
+    // --- Auth ---
+    window.loginWithGoogle = () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+            .then((result) => {
+                console.log("Login:", result.user.displayName);
+            }).catch((error) => {
+                console.error("Error login:", error);
+                alert("Error al iniciar sesión: " + error.message);
+            });
+    };
+    window.logout = () => {
+        auth.signOut().then(() => {
+            window.location.reload();
+        });
+    };
+    // --- Auth Observer (Core Fixes) ---
+    auth.onAuthStateChanged(user => {
+        const userMenu = document.getElementById('user-menu');
+        const guestMenu = document.getElementById('guest-menu');
+        const userPhoto = document.getElementById('user-photo');
+        const mainNav = document.getElementById('main-nav'); // Menú Desktop
+        
+        const mobileNavLinks = document.getElementById('mobile-nav-links');
+        const mobileGuestBtn = document.getElementById('mobile-guest-btn');
+        const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+        
+        const heroButtons = document.getElementById('hero-buttons');
+        const searchContainer = document.getElementById('search-container');
+        if (user) {
+            // --- LOGUEADO ---
+            currentUser = user;
+            
+            // Header Desktop: Ocultar NAV, Mostrar Perfil
+            if(mainNav) {
+                mainNav.classList.remove('md:flex'); // Quita display flex de desktop
+                mainNav.classList.add('hidden'); // Forza oculto
+            }
+            guestMenu.classList.add('hidden');
+            userMenu.classList.remove('hidden');
+            userMenu.classList.add('flex');
+            userPhoto.src = user.photoURL || 'logo.jpg';
+            
+            // Menú Móvil: Limpiar todo, solo dejar salir
+            if(mobileNavLinks) mobileNavLinks.classList.add('hidden');
+            if(mobileGuestBtn) mobileGuestBtn.classList.add('hidden');
+            if(mobileLogoutBtn) mobileLogoutBtn.classList.remove('hidden');
+            
+            // Contenido
+            if(searchContainer) searchContainer.classList.remove('hidden');
+            if(heroButtons) heroButtons.classList.add('opacity-0', 'pointer-events-none');
+            loadProducts(); 
+        } else {
+            // --- INVITADO ---
+            
+            // Header Desktop: Mostrar NAV (Resetear clases originales)
+            if(mainNav) {
+                mainNav.classList.remove('hidden');
+                mainNav.classList.add('hidden'); // Primero reset hidden base
+                mainNav.classList.add('md:flex'); // Restaurar flex en desktop
+            }
+            guestMenu.classList.remove('hidden');
+            userMenu.classList.add('hidden');
+            
+            // Menú Móvil: Restaurar todo, ocultar salir
+            if(mobileNavLinks) mobileNavLinks.classList.remove('hidden');
+            if(mobileGuestBtn) mobileGuestBtn.classList.remove('hidden');
+            if(mobileLogoutBtn) mobileLogoutBtn.classList.add('hidden');
+            
+            // Contenido
+            if(searchContainer) searchContainer.classList.add('hidden');
+            if(heroButtons) heroButtons.classList.remove('opacity-0', 'pointer-events-none');
+            renderLockedCatalog();
+        }
+    });
+    // --- Render ---
+    function renderLockedCatalog() {
+        const container = document.getElementById("products-container");
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-32 px-4 text-center animate-fade-in">
+                <div class="bg-dark-900/50 border border-white/5 p-8 rounded-3xl max-w-md w-full backdrop-blur-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand to-transparent opacity-50"></div>
+                    <div class="w-20 h-20 bg-dark-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-black/20 group-hover:scale-110 transition-transform duration-500">
+                        <i class="fas fa-lock text-4xl text-zinc-500 group-hover:text-brand transition-colors"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Catálogo Exclusivo</h3>
+                    <p class="text-zinc-400 mb-8 leading-relaxed">Para ver nuestros precios y productos premium, inicia sesión con Google.</p>
+                    <button onclick="loginWithGoogle()" class="w-full py-4 bg-white hover:bg-zinc-200 text-dark-950 font-bold rounded-xl flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 shadow-lg shadow-white/10">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                        <span>Acceder con Google</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    function loadProducts() {
+        const container = document.getElementById("products-container");
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-32 text-zinc-500 animate-fade-in">
+                <div class="relative w-16 h-16 mb-4"><div class="absolute top-0 left-0 w-full h-full border-4 border-zinc-800 rounded-full"></div><div class="absolute top-0 left-0 w-full h-full border-4 border-brand rounded-full border-t-transparent animate-spin"></div></div>
+                <p class="text-lg font-medium animate-pulse">Cargando...</p>
+            </div>
+        `;
+        db.collection("products").where("visible", "in", [true, null]).get().then(snapshot => {
+            productsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderCatalog(productsCache); 
+        });
+    }
+    function renderCatalog(productsList) {
+        const container = document.getElementById("products-container");
+        container.innerHTML = '';
+        if (productsList.length === 0) {
+            container.innerHTML = `<div class="text-center py-20 text-zinc-500 text-xl">No se encontraron productos.</div>`;
+            return;
+        }
+        const categories = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
+        
+        categories.forEach((catName, catIndex) => {
+            const products = productsList.filter(p => p.category === catName);
+            if (products.length === 0) return;
+            const section = document.createElement('div');
+            section.className = `mb-24 relative ${catIndex === 0 ? 'mt-10' : ''} animate-fade-in`;
+            section.innerHTML = `
+                <div class="flex items-center gap-6 mb-10">
+                    <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent flex-1"></div>
+                    <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tight text-center relative">
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">${catName}</span>
+                    </h2>
+                    <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent flex-1"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4"></div>
+            `;
+            
+            const grid = section.querySelector('.grid');
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-[32px] p-6 hover:border-brand/40 shadow-xl shadow-black/30 hover:shadow-brand/20 transition-all duration-300 hover:-translate-y-2 flex flex-col relative group overflow-hidden";
+                card.innerHTML = `
+                    <div class="absolute top-0 left-0 w-full h-40 bg-brand/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen"></div>
+                    <div class="relative h-32 mb-6 flex items-center justify-center bg-gradient-to-b from-dark-800 to-dark-950 rounded-2xl overflow-hidden border border-white/5 p-4 group-hover:border-brand/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-brand/10">
+                        ${p.isPopular ? `<div class="absolute top-2 right-2 bg-white/10 backdrop-blur-sm border border-white/10 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 z-20 shadow-sm"><i class="fas fa-star text-[8px] text-[#ff5a5f]"></i> Popular</div>` : ''}
+                        <img src="${p.logo}" alt="${p.name}" class="h-full w-auto object-contain drop-shadow-xl group-hover:scale-110 transition-all duration-500 relative z-10" onerror="this.src='https://fakeimg.pl/200x200?text=No+Img'">
+                    </div>
+                    <h3 class="text-2xl font-black text-center text-white mb-2 tracking-tight leading-tight">${p.name}</h3>
+                    <p class="text-zinc-400 text-center text-sm mb-6 leading-snug font-medium">${p.subtitle || ''}</p>
+                    <div class="mt-auto">
+                        <button class="see-plans-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#ff5a5f] to-[#ff8a90] text-white font-bold hover:shadow-lg hover:shadow-brand/40 hover:brightness-110 transition-all flex items-center justify-center gap-2 group/btn active:scale-95 shadow-md shadow-brand/20" data-id="${p.id}">
+                            <i class="fas fa-tags transition-transform group-hover/btn:rotate-12"></i> Ver Planes y Precios
+                        </button>
+                    </div>
+                `;
+                card.querySelector('.see-plans-btn').onclick = () => showPlans(p);
+                grid.appendChild(card);
+            });
+            container.appendChild(section);
+        });
+    }
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        if (term.trim() === '') { renderCatalog(productsCache); return; }
+        const filtered = productsCache.filter(p => 
+            p.name.toLowerCase().includes(term) || 
+            (p.subtitle && p.subtitle.toLowerCase().includes(term)) ||
+            p.category.toLowerCase().includes(term)
+        );
+        renderCatalog(filtered);
+    });
     const parsePrice = (str) => parseFloat(str.replace(/[^\d.]/g, '')) || 0;
     const formatPrice = (num) => num.toLocaleString('es-EC', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
-
-    // Renderizar Carrito
     function updateCart() {
         const cartCount = document.getElementById('cartCount');
         const container = document.getElementById('cartItems');
         const totalEl = document.getElementById('cartTotal');
         const checkoutBtn = document.getElementById('whatsappCheckout');
-
         cartCount.textContent = cart.length;
         
         if (cart.length === 0) {
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-64 text-zinc-500">
-                    <i class="fas fa-shopping-basket text-6xl mb-4 opacity-20"></i>
-                    <p>Tu carrito está vacío</p>
-                </div>
-            `;
+            container.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-zinc-500"><i class="fas fa-shopping-basket text-6xl mb-4 opacity-20"></i><p>Tu carrito está vacío</p></div>`;
             checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
             checkoutBtn.href = '#';
         } else {
@@ -340,230 +498,62 @@
                         <p class="text-sm text-zinc-400">${item.planName}</p>
                         <p class="text-brand font-bold mt-1">${item.planPrice}</p>
                     </div>
-                    <button onclick="removeFromCart(${i})" class="text-zinc-500 hover:text-red-500 transition-colors p-1">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <button onclick="removeFromCart(${i})" class="text-zinc-500 hover:text-red-500 transition-colors p-1"><i class="fas fa-trash"></i></button>
                 </div>
             `).join('');
         }
-
         const total = cart.reduce((acc, item) => acc + parsePrice(item.planPrice), 0);
         totalEl.textContent = formatPrice(total);
-
         if (cart.length > 0) {
-            const msg = encodeURIComponent(
-                `*¡Hola FullStreamRec! Quiero realizar el siguiente pedido:* \n\n` +
-                cart.map(i => `📦 ${i.productName} (${i.planName}) - ${i.planPrice}`).join('\n') +
-                `\n\n💰 *Total a pagar: ${formatPrice(total)}*`
-            );
+            const userName = currentUser ? currentUser.displayName : 'Cliente';
+            const msg = encodeURIComponent(`*¡Hola FullStreamRec! Soy ${userName}. Quiero realizar el siguiente pedido:* \n\n` + cart.map(i => `📦 ${i.productName} (${i.planName}) - ${i.planPrice}`).join('\n') + `\n\n💰 *Total a pagar: ${formatPrice(total)}*`);
             checkoutBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${msg}`;
         }
     }
-
-    window.removeFromCart = (index) => {
-        cart.splice(index, 1);
-        updateCart();
-    };
-
+    window.removeFromCart = (index) => { cart.splice(index, 1); updateCart(); };
     window.addToCart = (productId, productName, planName, planPrice, img) => {
         cart.push({ productId, productName, planName, planPrice, productImage: img });
         updateCart();
-        // Abrir carrito automáticamente al agregar
         cartModal.classList.remove('hidden');
         disableScroll();
     };
-
-    // Mostrar Modal de Planes
     function showPlans(product) {
         const modal = document.getElementById('globalModal');
         const container = document.getElementById('global-plans-container');
-        
         document.getElementById('global-modal-logo').src = product.logo;
         document.getElementById('global-modal-title').textContent = product.name;
         container.innerHTML = '';
-
-        // Input especial para Free Fire
         if (product.name.toLowerCase().includes('free fire')) {
-            container.innerHTML += `
-                <div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700">
-                    <label class="block text-xs font-bold text-zinc-400 uppercase mb-2">ID de Jugador</label>
-                    <input type="number" id="ff-id" placeholder="Ingresa tu ID aquí" class="w-full bg-dark-900 border border-zinc-600 rounded p-3 text-white focus:border-brand focus:outline-none">
-                </div>
-            `;
+            container.innerHTML += `<div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700"><label class="block text-xs font-bold text-zinc-400 uppercase mb-2">ID de Jugador</label><input type="number" id="ff-id" placeholder="Ingresa tu ID aquí" class="w-full bg-dark-900 border border-zinc-600 rounded p-3 text-white focus:border-brand focus:outline-none"></div>`;
         }
-
         product.plans.forEach(plan => {
             const img = plan.image || product.logo;
-            
             const btn = document.createElement('button');
             btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-green-500/50 rounded-xl p-4 flex items-center justify-between group transition-all";
-            btn.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <img src="${img}" class="w-10 h-10 object-contain" onerror="this.src='https://fakeimg.pl/50x50'">
-                    <div class="text-left">
-                        <p class="font-bold text-white group-hover:text-white transition-colors">${plan.name}</p>
-                    </div>
-                </div>
-                <span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>
-            `;
+            btn.innerHTML = `<div class="flex items-center gap-4"><img src="${img}" class="w-10 h-10 object-contain"><div class="text-left"><p class="font-bold text-white group-hover:text-white transition-colors">${plan.name}</p></div></div><span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>`;
             
             btn.onclick = () => {
                 let name = plan.name;
-
-                // Validación mejorada para Free Fire
                 if (product.name.toLowerCase().includes('free fire')) {
                     const input = document.getElementById('ff-id');
                     const ffId = input.value.trim();
-
-                    if (ffId.length < 5) {
-                        // 1. Cambiar borde a rojo y añadir brillo
-                        input.classList.remove('border-zinc-600');
-                        input.classList.add('border-red-500', 'ring-2', 'ring-red-500/30', 'animate-pulse');
-                        input.focus();
-
-                        // 2. Mostrar mensaje de error debajo del input (si no existe ya)
-                        let existingError = input.parentNode.querySelector('.ff-error-message');
-                        if (!existingError) {
-                            const errorMsg = document.createElement('div');
-                            errorMsg.className = 'ff-error-message text-red-400 text-xs mt-2 font-bold flex items-center gap-2';
-                            errorMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ingresa un ID válido (mínimo de 8-11 dígitos)';
-                            input.parentNode.appendChild(errorMsg);
-
-                            // 3. Quitar el error automáticamente después de 3 segundos
-                            setTimeout(() => {
-                                input.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30', 'animate-pulse');
-                                input.classList.add('border-zinc-600');
-                                errorMsg.remove();
-                            }, 3000);
-                        }
-                        return; // Detener la ejecución
-                    }
+                    if (ffId.length < 5) { input.classList.add('border-red-500', 'animate-pulse'); setTimeout(() => input.classList.remove('border-red-500', 'animate-pulse'), 2000); return; }
                     name += ` (ID: ${ffId})`;
                 }
-
-                // Flujo normal de compra
                 addToCart(product.id, product.name, name, plan.price, img);
                 document.getElementById('globalModal').classList.add('hidden');
                 document.body.classList.remove('no-scroll');
             };
             container.appendChild(btn);
         });
-
         modal.classList.remove('hidden');
         document.body.classList.add('no-scroll');
     }
-
-    // Cargar Productos
-    document.addEventListener("DOMContentLoaded", () => {
-        const container = document.getElementById("products-container");
-        
-        db.collection("products").where("visible", "in", [true, null]).get().then(snapshot => {
-            productsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            container.innerHTML = '';
-
-            const categories = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
-            
-            categories.forEach((catName, catIndex) => {
-                const products = productsCache.filter(p => p.category === catName);
-                if (products.length === 0) return;
-
-                // Título Categoría
-                const section = document.createElement('div');
-                section.className = `mb-24 relative ${catIndex === 0 ? 'mt-10' : ''}`;
-                section.innerHTML = `
-                    <div class="flex items-center gap-6 mb-10">
-                        <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent flex-1"></div>
-                        <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tight text-center relative" id="${catName.replace(/\s+/g, '-').toLowerCase()}">
-                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">${catName}</span>
-                            <span class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-1 bg-brand rounded-full"></span>
-                        </h2>
-                        <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent flex-1"></div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4"></div>
-                `;
-                
-                const grid = section.querySelector('.grid');
-
-                products.forEach(p => {
-                    const card = document.createElement('div');
-                    // --- TARJETA OPTIMIZADA ---
-                    // Imagen más pequeña (h-32) y con padding (p-4)
-                    // card.className = "bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-3xl p-6 hover:border-brand/40 shadow-xl shadow-black/30 hover:shadow-brand/20 transition-all duration-300 hover:-translate-y-2 flex flex-col relative group overflow-hidden";
-                    
-                    // card.innerHTML = `
-                    //     <div class="absolute top-0 left-0 w-full h-40 bg-brand/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen"></div>
-
-                    //     <div class="relative h-32 mb-6 flex items-center justify-center bg-gradient-to-b from-dark-800 to-dark-950 rounded-2xl overflow-hidden border border-white/5 p-4 group-hover:border-brand/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-brand/10">
-                    //         <img src="${p.logo}" alt="${p.name}" class="h-full w-auto object-contain drop-shadow-xl group-hover:scale-110 transition-all duration-500 relative z-10" onerror="this.src='https://fakeimg.pl/200x200?text=No+Img'">
-                    //     </div>
-                        
-                    //     <h3 class="text-xl font-extrabold text-center text-white mb-3 tracking-tight leading-tight">${p.name}</h3>
-                        
-                    //     <div class="w-10 h-0.5 bg-zinc-700 rounded-full mx-auto mb-6 group-hover:w-24 group-hover:bg-brand transition-all duration-500"></div>
-
-                    //     <div class="mt-auto">
-                    //         <button class="see-plans-btn w-full py-3.5 px-4 rounded-2xl bg-brand text-white font-bold hover:bg-brand-hover hover:shadow-lg hover:shadow-brand/25 transition-all flex items-center justify-center gap-2 group/btn active:scale-95 shadow-md" data-id="${p.id}">
-                    //             <i class="fas fa-tags group-hover/btn:scale-110 transition-transform"></i> Ver Planes y Precios
-                    //         </button>
-                    //     </div>
-                    // `;
-                    card.className = "bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-[32px] p-6 hover:border-brand/40 shadow-xl shadow-black/30 hover:shadow-brand/20 transition-all duration-300 hover:-translate-y-2 flex flex-col relative group overflow-hidden";
-
-    card.innerHTML = `
-        <div class="absolute top-0 left-0 w-full h-40 bg-brand/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen"></div>
-
-        <div class="relative h-32 mb-6 flex items-center justify-center bg-gradient-to-b from-dark-800 to-dark-950 rounded-2xl overflow-hidden border border-white/5 p-4 group-hover:border-brand/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-brand/10">
-            
-            ${p.isPopular ? `
-            <div class="absolute top-2 right-2 bg-white/10 backdrop-blur-sm border border-white/10 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 z-20 shadow-sm">
-                <i class="fas fa-star text-[8px] text-[#ff5a5f]"></i> Popular
-            </div>
-            ` : ''}
-
-            <img src="${p.logo}" alt="${p.name}" class="h-full w-auto object-contain drop-shadow-xl group-hover:scale-110 transition-all duration-500 relative z-10" onerror="this.src='https://fakeimg.pl/200x200?text=No+Img'">
-        </div>
-        
-        <h3 class="text-2xl font-black text-center text-white mb-2 tracking-tight leading-tight">${p.name}</h3>
-        
-        <p class="text-zinc-400 text-center text-sm mb-6 leading-snug font-medium">
-            ${p.subtitle || ''}
-        </p>
-        <div class="mt-auto">
-            <button class="see-plans-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#ff5a5f] to-[#ff8a90] text-white font-bold hover:shadow-lg hover:shadow-brand/40 hover:brightness-110 transition-all flex items-center justify-center gap-2 group/btn active:scale-95 shadow-md shadow-brand/20" data-id="${p.id}">
-                <i class="fas fa-tags transition-transform group-hover/btn:rotate-12"></i> Ver Planes y Precios
-            </button>
-        </div>
-    `;
-                    
-                    card.querySelector('.see-plans-btn').onclick = () => showPlans(p);
-                    grid.appendChild(card);
-                });
-
-                container.appendChild(section);
-            });
-
-            // Scroll automático si viene ID en URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const sharedId = urlParams.get('product');
-            if (sharedId) {
-                setTimeout(() => {
-                    const btn = document.querySelector(`button[data-id="${sharedId}"]`);
-                    if(btn) {
-                        const card = btn.closest('.group');
-                        card.scrollIntoView({behavior: 'smooth', block: 'center'});
-                        card.classList.add('ring-4', 'ring-brand', 'shadow-glow');
-                        setTimeout(() => card.classList.remove('ring-4', 'ring-brand', 'shadow-glow'), 2000);
-                    }
-                }, 800);
-            }
-        });
-    });
   </script>
-
   <style type="text/tailwindcss">
     @layer utilities {
-      .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-      @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+      .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     }
   </style>
 </body>
