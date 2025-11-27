@@ -465,18 +465,39 @@
             </div>
         `;
     }
+    // --- CAMBIO: De carga única a Tiempo Real ---
     function loadProducts() {
         const container = document.getElementById("products-container");
-        container.innerHTML = `
+        
+        // Solo mostramos el loading si el contenedor está vacío (primera carga)
+        if (!container.innerHTML.trim()) {
+             container.innerHTML = `
             <div class="flex flex-col items-center justify-center py-32 text-zinc-500 animate-fade-in">
                 <div class="relative w-16 h-16 mb-4"><div class="absolute top-0 left-0 w-full h-full border-4 border-zinc-800 rounded-full"></div><div class="absolute top-0 left-0 w-full h-full border-4 border-brand rounded-full border-t-transparent animate-spin"></div></div>
                 <p class="text-lg font-medium animate-pulse">Cargando...</p>
             </div>
         `;
-        db.collection("products").where("visible", "in", [true, null]).get().then(snapshot => {
-            productsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderCatalog(productsCache); 
-        });
+        }
+
+        // Usamos onSnapshot en lugar de get
+        db.collection("products")
+          .where("visible", "in", [true, null])
+          .onSnapshot((snapshot) => {
+                // Esta función se ejecutará automáticamente cada vez que haya un cambio en la BD
+                productsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Volvemos a renderizar el catálogo con los datos nuevos
+                renderCatalog(productsCache); 
+                
+                // Si el usuario tenía algo escrito en el buscador, volvemos a filtrar
+                const searchVal = document.getElementById('searchInput').value;
+                if(searchVal.trim() !== '') {
+                    const event = new Event('input');
+                    document.getElementById('searchInput').dispatchEvent(event);
+                }
+          }, (error) => {
+              console.error("Error obteniendo productos en tiempo real:", error);
+          });
     }
     function renderCatalog(productsList) {
         const container = document.getElementById("products-container");
