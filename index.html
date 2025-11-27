@@ -168,7 +168,7 @@
     </div>
   </main>
 
-  <footer class="bg-dark-900 border-t border-white/5 pt-20 pb-10 relative overflow-hidden">
+  <footer id="main-footer" class="bg-dark-900 border-t border-white/5 pt-20 pb-10 relative overflow-hidden">
     <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-brand/5 blur-[100px] pointer-events-none"></div>
     
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -324,12 +324,12 @@
             window.location.reload();
         });
     };
-    // --- Auth Observer (Core Fixes) ---
+    // Auth Observer
     auth.onAuthStateChanged(user => {
         const userMenu = document.getElementById('user-menu');
         const guestMenu = document.getElementById('guest-menu');
         const userPhoto = document.getElementById('user-photo');
-        const mainNav = document.getElementById('main-nav'); // Menú Desktop
+        const mainNav = document.getElementById('main-nav');
         
         const mobileNavLinks = document.getElementById('mobile-nav-links');
         const mobileGuestBtn = document.getElementById('mobile-guest-btn');
@@ -337,49 +337,55 @@
         
         const heroButtons = document.getElementById('hero-buttons');
         const searchContainer = document.getElementById('search-container');
+
+        // NUEVO: Referencia al footer
+        const footer = document.getElementById('main-footer'); 
+
         if (user) {
             // --- LOGUEADO ---
             currentUser = user;
             
-            // Header Desktop: Ocultar NAV, Mostrar Perfil
             if(mainNav) {
-                mainNav.classList.remove('md:flex'); // Quita display flex de desktop
-                mainNav.classList.add('hidden'); // Forza oculto
+                mainNav.classList.remove('md:flex');
+                mainNav.classList.add('hidden');
             }
             guestMenu.classList.add('hidden');
             userMenu.classList.remove('hidden');
             userMenu.classList.add('flex');
             userPhoto.src = user.photoURL || 'logo.jpg';
             
-            // Menú Móvil: Limpiar todo, solo dejar salir
             if(mobileNavLinks) mobileNavLinks.classList.add('hidden');
             if(mobileGuestBtn) mobileGuestBtn.classList.add('hidden');
             if(mobileLogoutBtn) mobileLogoutBtn.classList.remove('hidden');
             
-            // Contenido
             if(searchContainer) searchContainer.classList.remove('hidden');
             if(heroButtons) heroButtons.classList.add('opacity-0', 'pointer-events-none');
+
+            // NUEVO: Ocultar el footer si está logueado
+            if(footer) footer.classList.add('hidden');
+
             loadProducts(); 
         } else {
             // --- INVITADO ---
             
-            // Header Desktop: Mostrar NAV (Resetear clases originales)
             if(mainNav) {
                 mainNav.classList.remove('hidden');
-                mainNav.classList.add('hidden'); // Primero reset hidden base
-                mainNav.classList.add('md:flex'); // Restaurar flex en desktop
+                mainNav.classList.add('hidden');
+                mainNav.classList.add('md:flex');
             }
             guestMenu.classList.remove('hidden');
             userMenu.classList.add('hidden');
             
-            // Menú Móvil: Restaurar todo, ocultar salir
             if(mobileNavLinks) mobileNavLinks.classList.remove('hidden');
             if(mobileGuestBtn) mobileGuestBtn.classList.remove('hidden');
             if(mobileLogoutBtn) mobileLogoutBtn.classList.add('hidden');
             
-            // Contenido
             if(searchContainer) searchContainer.classList.add('hidden');
             if(heroButtons) heroButtons.classList.remove('opacity-0', 'pointer-events-none');
+
+            // NUEVO: Mostrar el footer si es invitado
+            if(footer) footer.classList.remove('hidden');
+
             renderLockedCatalog();
         }
     });
