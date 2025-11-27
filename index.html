@@ -128,11 +128,11 @@
         <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
     </div>
     <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-8 leading-tight">
+      <h1 id="hero-title" class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-8 leading-tight">
         Entretenimiento <br/>
         <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>
       </h1>
-      <p class="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-zinc-400 mb-12 leading-relaxed font-light">
+      <p id="hero-desc" class="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-zinc-400 mb-12 leading-relaxed font-light">
         Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.
       </p>
       
@@ -270,6 +270,14 @@
     </div>
   </div>
 
+  <!-- carrito flotante  -->
+   <button id="floating-cart" class="hidden fixed bottom-6 right-6 z-40 bg-brand hover:bg-brand-hover text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 group border-2 border-white/10">
+    <div class="relative">
+        <i class="fas fa-shopping-cart text-2xl"></i>
+        <span id="floatingCartCount" class="absolute -top-2 -right-3 bg-white text-brand text-xs font-bold h-6 w-6 flex items-center justify-center rounded-full shadow-md border border-gray-100 transform scale-100 transition-transform group-hover:scale-110">0</span>
+    </div>
+</button>
+
   <script>
     // --- UI ---
     const hamburger = document.getElementById('hamburger');
@@ -324,8 +332,10 @@
             window.location.reload();
         });
     };
-    // Auth Observer
+
+    // --- Auth Observer (Lógica Principal con Saludo Dinámico) ---
     auth.onAuthStateChanged(user => {
+        // Elementos del DOM
         const userMenu = document.getElementById('user-menu');
         const guestMenu = document.getElementById('guest-menu');
         const userPhoto = document.getElementById('user-photo');
@@ -338,13 +348,32 @@
         const heroButtons = document.getElementById('hero-buttons');
         const searchContainer = document.getElementById('search-container');
 
-        // NUEVO: Referencia al footer
         const footer = document.getElementById('main-footer'); 
+        const headerCart = document.getElementById('cartIcon'); 
+        const floatingCart = document.getElementById('floating-cart');
+
+        // Referencias para el saludo (NUEVO)
+        const heroTitle = document.getElementById('hero-title');
+        const heroDesc = document.getElementById('hero-desc');
 
         if (user) {
-            // --- LOGUEADO ---
+            // ===================================
+            // USUARIO LOGUEADO (DENTRO)
+            // ===================================
             currentUser = user;
             
+            // 1. Obtener nombre del usuario
+            const firstName = user.displayName ? user.displayName.split(' ')[0] : 'Amigo';
+
+            // 2. Cambiar Texto del Hero (Saludo)
+            if(heroTitle) {
+                heroTitle.innerHTML = `Hola, ${firstName} <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Qué bueno verte</span>`;
+            }
+            if(heroDesc) {
+                heroDesc.textContent = "Tu catálogo exclusivo está listo. Explora las mejores ofertas que tenemos para ti hoy.";
+            }
+
+            // Header Desktop
             if(mainNav) {
                 mainNav.classList.remove('md:flex');
                 mainNav.classList.add('hidden');
@@ -354,41 +383,68 @@
             userMenu.classList.add('flex');
             userPhoto.src = user.photoURL || 'logo.jpg';
             
+            // Menú Móvil
             if(mobileNavLinks) mobileNavLinks.classList.add('hidden');
             if(mobileGuestBtn) mobileGuestBtn.classList.add('hidden');
             if(mobileLogoutBtn) mobileLogoutBtn.classList.remove('hidden');
             
+            // Contenido Principal
             if(searchContainer) searchContainer.classList.remove('hidden');
             if(heroButtons) heroButtons.classList.add('opacity-0', 'pointer-events-none');
 
-            // NUEVO: Ocultar el footer si está logueado
+            // Footer y Carritos
             if(footer) footer.classList.add('hidden');
+            if(headerCart) headerCart.classList.remove('hidden');
+            if(floatingCart) {
+                floatingCart.classList.remove('hidden');
+                floatingCart.onclick = () => {
+                    document.getElementById('cartModal').classList.remove('hidden');
+                    document.body.classList.add('no-scroll');
+                };
+            }
 
             loadProducts(); 
         } else {
-            // --- INVITADO ---
+            // ===================================
+            // INVITADO (FUERA)
+            // ===================================
             
+            // Restaurar Texto Original del Hero
+            if(heroTitle) {
+                heroTitle.innerHTML = `Entretenimiento <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>`;
+            }
+            if(heroDesc) {
+                heroDesc.textContent = "Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.";
+            }
+
+            // Header Desktop
             if(mainNav) {
                 mainNav.classList.remove('hidden');
-                mainNav.classList.add('hidden');
+                mainNav.classList.add('hidden'); 
                 mainNav.classList.add('md:flex');
             }
             guestMenu.classList.remove('hidden');
             userMenu.classList.add('hidden');
             
+            // Menú Móvil
             if(mobileNavLinks) mobileNavLinks.classList.remove('hidden');
             if(mobileGuestBtn) mobileGuestBtn.classList.remove('hidden');
             if(mobileLogoutBtn) mobileLogoutBtn.classList.add('hidden');
             
+            // Contenido Principal
             if(searchContainer) searchContainer.classList.add('hidden');
             if(heroButtons) heroButtons.classList.remove('opacity-0', 'pointer-events-none');
 
-            // NUEVO: Mostrar el footer si es invitado
+            // Footer y Carritos
             if(footer) footer.classList.remove('hidden');
+            if(headerCart) headerCart.classList.add('hidden');
+            if(floatingCart) floatingCart.classList.add('hidden');
 
             renderLockedCatalog();
         }
     });
+
+
     // --- Render ---
     function renderLockedCatalog() {
         const container = document.getElementById("products-container");
@@ -483,12 +539,24 @@
     });
     const parsePrice = (str) => parseFloat(str.replace(/[^\d.]/g, '')) || 0;
     const formatPrice = (num) => num.toLocaleString('es-EC', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+
+
     function updateCart() {
-        const cartCount = document.getElementById('cartCount');
+        // Obtenemos la cantidad actual
+        const count = cart.length;
+        
+        // 1. Actualizar el contador de arriba (Header)
+        const headerCountEl = document.getElementById('cartCount');
+        if(headerCountEl) headerCountEl.textContent = count;
+
+        // 2. Actualizar el contador de abajo (Flotante)
+        const floatCountEl = document.getElementById('floatingCartCount');
+        if(floatCountEl) floatCountEl.textContent = count;
+
+        // Actualizar lista visual dentro del modal
         const container = document.getElementById('cartItems');
         const totalEl = document.getElementById('cartTotal');
         const checkoutBtn = document.getElementById('whatsappCheckout');
-        cartCount.textContent = cart.length;
         
         if (cart.length === 0) {
             container.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-zinc-500"><i class="fas fa-shopping-basket text-6xl mb-4 opacity-20"></i><p>Tu carrito está vacío</p></div>`;
@@ -508,8 +576,12 @@
                 </div>
             `).join('');
         }
+        
+        // Calcular total
         const total = cart.reduce((acc, item) => acc + parsePrice(item.planPrice), 0);
         totalEl.textContent = formatPrice(total);
+        
+        // Generar enlace de WhatsApp
         if (cart.length > 0) {
             const userName = currentUser ? currentUser.displayName : 'Cliente';
             const msg = encodeURIComponent(`*¡Hola FullStreamRec! Soy ${userName}. Quiero realizar el siguiente pedido:* \n\n` + cart.map(i => `📦 ${i.productName} (${i.planName}) - ${i.planPrice}`).join('\n') + `\n\n💰 *Total a pagar: ${formatPrice(total)}*`);
