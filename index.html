@@ -542,28 +542,35 @@
 
 
     function updateCart() {
-        // Obtenemos la cantidad actual
         const count = cart.length;
         
-        // 1. Actualizar el contador de arriba (Header)
+        // Actualizar contadores visuales
         const headerCountEl = document.getElementById('cartCount');
         if(headerCountEl) headerCountEl.textContent = count;
-
-        // 2. Actualizar el contador de abajo (Flotante)
         const floatCountEl = document.getElementById('floatingCartCount');
         if(floatCountEl) floatCountEl.textContent = count;
 
-        // Actualizar lista visual dentro del modal
         const container = document.getElementById('cartItems');
         const totalEl = document.getElementById('cartTotal');
         const checkoutBtn = document.getElementById('whatsappCheckout');
         
+        // Renderizar items
         if (cart.length === 0) {
             container.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-zinc-500"><i class="fas fa-shopping-basket text-6xl mb-4 opacity-20"></i><p>Tu carrito está vacío</p></div>`;
             checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            checkoutBtn.href = '#';
+            checkoutBtn.onclick = null; // Desactivar click
         } else {
             checkoutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            
+            // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+            // En lugar de href, asignamos la función al hacer click
+            checkoutBtn.removeAttribute('href'); // Quitamos el enlace directo
+            checkoutBtn.onclick = (e) => {
+                e.preventDefault(); // Evitamos comportamiento estándar
+                processOrder();     // Ejecutamos nuestra función de guardado
+            };
+            // ---------------------------------
+
             container.innerHTML = cart.map((item, i) => `
                 <div class="flex items-start gap-4 bg-dark-800 p-3 rounded-lg border border-zinc-700/50">
                     <img src="${item.productImage}" class="w-16 h-16 object-contain bg-dark-900 rounded p-1">
@@ -580,14 +587,8 @@
         // Calcular total
         const total = cart.reduce((acc, item) => acc + parsePrice(item.planPrice), 0);
         totalEl.textContent = formatPrice(total);
-        
-        // Generar enlace de WhatsApp
-        if (cart.length > 0) {
-            const userName = currentUser ? currentUser.displayName : 'Cliente';
-            const msg = encodeURIComponent(`*¡Hola FullStreamRec! Soy ${userName}. Quiero realizar el siguiente pedido:* \n\n` + cart.map(i => `📦 ${i.productName} (${i.planName}) - ${i.planPrice}`).join('\n') + `\n\n💰 *Total a pagar: ${formatPrice(total)}*`);
-            checkoutBtn.href = `https://api.whatsapp.com/send?phone=593978652638&text=${msg}`;
-        }
     }
+    
     window.removeFromCart = (index) => { cart.splice(index, 1); updateCart(); };
     window.addToCart = (productId, productName, planName, planPrice, img) => {
         cart.push({ productId, productName, planName, planPrice, productImage: img });
@@ -627,6 +628,71 @@
         modal.classList.remove('hidden');
         document.body.classList.add('no-scroll');
     }
+
+    // PEDIDOS
+    // --- Función para Procesar y Guardar el Pedido ---
+    async function processOrder() {
+        // Validaciones de seguridad
+        if (!currentUser) {
+            alert("Por favor inicia sesión para continuar.");
+            return;
+        }
+        if (cart.length === 0) return;
+
+        const checkoutBtn = document.getElementById('whatsappCheckout');
+        const originalText = checkoutBtn.innerHTML;
+        
+        // Feedback visual de carga
+        checkoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+        checkoutBtn.style.pointerEvents = 'none';
+
+        // 1. Preparar los datos del pedido
+        const total = cart.reduce((acc, item) => acc + parsePrice(item.planPrice), 0);
+        // Aquí tomamos el nombre del usuario logueado
+        const userName = currentUser.displayName || 'Cliente'; 
+        const userEmail = currentUser.email;
+        
+        const orderData = {
+            userId: currentUser.uid,
+            userName: userName, // <-- Guardamos el nombre
+            userEmail: userEmail,
+            items: cart, // Guardamos qué productos compró
+            total: total,
+            totalFormatted: formatPrice(total),
+            status: 'Pendiente', // Estado inicial para que tú lo gestiones luego
+            date: firebase.firestore.FieldValue.serverTimestamp(), // Fecha y hora exacta
+            platform: 'Web'
+        };
+
+        try {
+            // 2. Guardar en Firebase (Esto crea la colección 'orders' automáticamente)
+            await db.collection('orders').add(orderData);
+
+            // 3. Redirigir a WhatsApp (Mensaje con los datos)
+            const msg = encodeURIComponent(`*¡Hola FullStreamRec! Soy ${userName}. Acabo de hacer un pedido en la web:* \n\n` + cart.map(i => `📦 ${i.productName} (${i.planName}) - ${i.planPrice}`).join('\n') + `\n\n💰 *Total a pagar: ${formatPrice(total)}*`);
+            
+            // Abrir WhatsApp en nueva pestaña
+            window.open(`https://api.whatsapp.com/send?phone=593978652638&text=${msg}`, '_blank');
+
+            // 4. Limpiar carrito y cerrar modal (Opcional, para que no compre lo mismo 2 veces)
+            cart = [];
+            updateCart();
+            document.getElementById('cartModal').classList.add('hidden');
+            document.body.classList.remove('no-scroll');
+
+        } catch (error) {
+            console.error("Error al guardar pedido:", error);
+            alert("Hubo un pequeño error de conexión, pero te redirigiremos a WhatsApp.");
+            // Si falla la base de datos, igual lo mandamos a WhatsApp para no perder la venta
+            const msgFallback = encodeURIComponent(`*¡Hola FullStreamRec! Soy ${userName}.* (Error Web) Quiero pedir: \n\n` + cart.map(i => `📦 ${i.productName}`).join('\n'));
+            window.open(`https://api.whatsapp.com/send?phone=593978652638&text=${msgFallback}`, '_blank');
+        } finally {
+            // Restaurar botón
+            checkoutBtn.innerHTML = originalText;
+            checkoutBtn.style.pointerEvents = 'auto';
+        }
+    }
+
   </script>
   <style type="text/tailwindcss">
     @layer utilities {
