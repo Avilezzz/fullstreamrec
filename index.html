@@ -84,6 +84,10 @@
 
           <div id="user-menu" class="hidden items-center gap-3 animate-fade-in">
             <img id="user-photo" src="" alt="User" class="h-8 w-8 rounded-full border border-brand/50 object-cover shadow-glow">
+
+           <a href="mis-pedidos.html" class="hidden md:inline-flex items-center text-xs text-zinc-300 hover:text-brand font-bold bg-dark-800 border border-zinc-700 px-3 py-1.5 rounded-lg transition-all">
+       <i class="fas fa-box-open mr-1"></i> Mis Pedidos
+    </a>
             <button onclick="logout()" class="hidden md:block text-xs bg-dark-800 hover:bg-red-500/20 text-zinc-300 hover:text-red-500 border border-zinc-700 px-3 py-1.5 rounded-lg transition-all font-medium">
                 <span class="flex items-center gap-2">Salir <i class="fas fa-sign-out-alt"></i></span>
             </button>
@@ -110,7 +114,9 @@
             <a href="contacto.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">Contacto</a>
             <a href="faq.html" class="block px-4 py-3 rounded-xl text-base font-medium text-zinc-400 hover:bg-dark-800 hover:text-white transition-all">FAQ</a>
         </div>
-        
+        <a id="mobile-orders-btn" href="mis-pedidos.html" class="hidden w-full mt-2 flex items-center justify-center gap-2 bg-dark-800 text-zinc-200 border border-zinc-700 px-4 py-3 rounded-xl font-bold text-sm hover:bg-dark-700 hover:text-white transition-all">
+        <i class="fas fa-box-open"></i> Mis Pedidos
+    </a>
         <button id="mobile-guest-btn" onclick="loginWithGoogle()" class="w-full mt-4 flex items-center justify-center gap-2 bg-white text-dark-950 px-4 py-3 rounded-xl font-bold text-sm hover:bg-zinc-200 transition-all">
             <i class="fab fa-google"></i> Iniciar Sesión
         </button>
@@ -340,7 +346,7 @@
         const guestMenu = document.getElementById('guest-menu');
         const userPhoto = document.getElementById('user-photo');
         const mainNav = document.getElementById('main-nav');
-        
+        const mobileOrdersBtn = document.getElementById('mobile-orders-btn');
         const mobileNavLinks = document.getElementById('mobile-nav-links');
         const mobileGuestBtn = document.getElementById('mobile-guest-btn');
         const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
@@ -387,7 +393,7 @@
             if(mobileNavLinks) mobileNavLinks.classList.add('hidden');
             if(mobileGuestBtn) mobileGuestBtn.classList.add('hidden');
             if(mobileLogoutBtn) mobileLogoutBtn.classList.remove('hidden');
-            
+            if(mobileOrdersBtn) mobileOrdersBtn.classList.remove('hidden');
             // Contenido Principal
             if(searchContainer) searchContainer.classList.remove('hidden');
             if(heroButtons) heroButtons.classList.add('opacity-0', 'pointer-events-none');
@@ -430,7 +436,7 @@
             if(mobileNavLinks) mobileNavLinks.classList.remove('hidden');
             if(mobileGuestBtn) mobileGuestBtn.classList.remove('hidden');
             if(mobileLogoutBtn) mobileLogoutBtn.classList.add('hidden');
-            
+            if(mobileOrdersBtn) mobileOrdersBtn.classList.add('hidden');
             // Contenido Principal
             if(searchContainer) searchContainer.classList.add('hidden');
             if(heroButtons) heroButtons.classList.remove('opacity-0', 'pointer-events-none');
