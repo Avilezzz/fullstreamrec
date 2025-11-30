@@ -39,6 +39,10 @@
           },
           boxShadow: {
             'glow': '0 0 20px -5px rgba(255, 94, 102, 0.3)',
+          },
+          animation: {
+            'bounce-slow': 'bounce 3s infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite', /* Animación más lenta para el esqueleto */
           }
         }
       }
@@ -333,10 +337,10 @@
     </div>
   </div>
 
-  <button id="floating-cart" class="hidden fixed bottom-6 right-6 z-40 bg-brand hover:bg-brand-hover text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 group border-2 border-white/10">
+  <button id="floating-cart" class="hidden fixed bottom-8 right-8 z-50 bg-gradient-to-br from-brand to-rose-600 text-white w-16 h-16 rounded-full shadow-[0_0_20px_rgba(255,94,102,0.5)] flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 active:scale-95 group border-4 border-dark-900/50 backdrop-blur-sm animate-bounce-slow">
     <div class="relative">
-        <i class="fas fa-shopping-cart text-2xl"></i>
-        <span id="floatingCartCount" class="absolute -top-2 -right-3 bg-white text-brand text-xs font-bold h-6 w-6 flex items-center justify-center rounded-full shadow-md border border-gray-100 transform scale-100 transition-transform group-hover:scale-110">0</span>
+        <i class="fas fa-shopping-cart text-2xl drop-shadow-md"></i>
+        <span id="floatingCartCount" class="absolute -top-3 -right-3 bg-white text-brand text-xs font-bold h-6 w-6 flex items-center justify-center rounded-full shadow-lg border-2 border-brand transform scale-100 transition-transform group-hover:scale-110">0</span>
     </div>
   </button>
 
@@ -384,6 +388,24 @@
     let cart = [];
     let productsCache = [];
     let currentUser = null;
+
+    // --- LocalStorage Helper ---
+    function saveCart() {
+        localStorage.setItem('fullstream_cart', JSON.stringify(cart));
+    }
+
+    function initCart() {
+        const saved = localStorage.getItem('fullstream_cart');
+        if (saved) {
+            try {
+                cart = JSON.parse(saved);
+                updateCart();
+            } catch (e) {
+                console.error("Error cargando carrito", e);
+                localStorage.removeItem('fullstream_cart');
+            }
+        }
+    }
 
     // --- Auth Functions ---
     window.loginWithGoogle = () => {
@@ -453,6 +475,8 @@
                     document.body.classList.add('no-scroll');
                 };
             }
+            // Muestra el esqueleto ANTES de cargar los productos
+            renderSkeleton(); 
             loadProducts(); 
         } else {
             // Invitado
@@ -479,6 +503,45 @@
         }
     });
 
+    // --- SKELETON LOADING ---
+    function renderSkeleton() {
+        const container = document.getElementById("products-container");
+        
+        // Estructura de la tarjeta esqueleto
+        const skeletonCard = `
+            <div class="bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-[32px] p-6 shadow-xl shadow-black/30 flex flex-col relative overflow-hidden animate-pulse-slow">
+                <div class="relative h-32 mb-6 flex items-center justify-center bg-dark-800/50 rounded-2xl p-4 border border-white/5">
+                    <div class="w-16 h-16 bg-dark-700/50 rounded-full"></div>
+                </div>
+                <div class="h-6 bg-dark-700/50 rounded-full w-3/4 mx-auto mb-3"></div>
+                <div class="h-4 bg-dark-800/50 rounded w-1/2 mx-auto mb-6"></div>
+                <div class="mt-auto h-12 bg-brand/30 rounded-2xl w-full"></div>
+            </div>
+        `;
+        
+        // Estructura de la categoría esqueleto
+        const skeletonCategory = (name) => `
+            <div class="mb-24 relative mt-10 skeleton-loading">
+                <div class="flex items-center gap-6 mb-10">
+                    <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent flex-1"></div>
+                    <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tight text-center relative">
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">${name}</span>
+                    </h2>
+                    <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent flex-1"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4">
+                    ${skeletonCard.repeat(4)}
+                </div>
+            </div>
+        `;
+
+        // Renderiza varios esqueletos de categorías
+        container.innerHTML = 
+            skeletonCategory('Streaming de Video') +
+            skeletonCategory('Videojuegos') +
+            skeletonCategory('Música');
+    }
+
     // --- Render Functions ---
     function renderLockedCatalog() {
         const container = document.getElementById("products-container");
@@ -501,16 +564,6 @@
     }
 
     function loadProducts() {
-        const container = document.getElementById("products-container");
-        if (!container.innerHTML.trim()) {
-             container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-32 text-zinc-500 animate-fade-in">
-                <div class="relative w-16 h-16 mb-4"><div class="absolute top-0 left-0 w-full h-full border-4 border-zinc-800 rounded-full"></div><div class="absolute top-0 left-0 w-full h-full border-4 border-brand rounded-full border-t-transparent animate-spin"></div></div>
-                <p class="text-lg font-medium animate-pulse">Cargando...</p>
-            </div>
-        `;
-        }
-
         db.collection("products")
           .where("visible", "in", [true, null])
           .onSnapshot((snapshot) => {
@@ -628,9 +681,15 @@
         totalEl.textContent = formatPrice(total);
     }
     
-    window.removeFromCart = (index) => { cart.splice(index, 1); updateCart(); };
+    window.removeFromCart = (index) => { 
+        cart.splice(index, 1); 
+        saveCart(); 
+        updateCart(); 
+    };
+    
     window.addToCart = (productId, productName, planName, planPrice, img) => {
         cart.push({ productId, productName, planName, planPrice, productImage: img });
+        saveCart();
         updateCart();
         cartModal.classList.remove('hidden');
         disableScroll();
@@ -708,6 +767,7 @@
             await db.collection('orders').add(orderData);
 
             cart = [];
+            saveCart(); // Limpiar localStorage
             updateCart(); 
             
             document.getElementById('paymentModal').classList.add('hidden');
@@ -723,11 +783,15 @@
         }
     }
 
+    // Inicializar carrito
+    initCart();
+
   </script>
   <style type="text/tailwindcss">
     @layer utilities {
       .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
       @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     }
   </style>
 </body>
