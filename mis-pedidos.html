@@ -18,7 +18,6 @@
             dark: { 950: '#09090b', 900: '#121214', 800: '#1c1c1f', 700: '#27272a' }
           },
           animation: {
-            // Añadir animación más lenta para el skeleton
             'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }
         }
@@ -108,7 +107,7 @@
                   <div id="modal-items-list" class="space-y-3"></div>
                   <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/5">
                       <span class="text-zinc-400">Total a Pagar:</span>
-                      <span class="text-xl font-bold text-brand" id="modal-total">...</span>
+                      <span class="text-xl font-bold text-white" id="modal-total">...</span>
                   </div>
               </div>
 
@@ -136,7 +135,7 @@
     const auth = firebase.auth();
 
     let currentUser = null;
-    let currentOrderData = null;
+    let currentOrderData = null; // Mantenemos por compatibilidad, pero usaremos el input hidden
 
     // --- Utility Functions ---
 
@@ -177,7 +176,6 @@
         const tbodyDesktop = document.getElementById('orders-table-body-desktop');
         const containerMobile = document.getElementById('orders-card-list-mobile');
 
-        // 1. Desktop Table Skeleton (3 rows)
         const skeletonRow = `
             <tr class="animate-pulse bg-dark-800/50">
                 <td class="p-4"><div class="h-4 bg-dark-700 rounded w-1/2"></div></td>
@@ -189,7 +187,6 @@
         `;
         tbodyDesktop.innerHTML = skeletonRow.repeat(3);
 
-        // 2. Mobile Card Skeleton (3 cards)
         const skeletonMobileCard = `
             <div class="p-4 bg-dark-800 rounded-xl border border-white/5 shadow-lg animate-pulse-slow">
                 <div class="flex justify-between items-center mb-3 border-b border-white/5 pb-2">
@@ -217,7 +214,6 @@
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
-            // Mostrar esqueleto inmediatamente
             renderSkeleton();
             loadOrders();
         } else {
@@ -225,7 +221,7 @@
         }
     });
 
-    // --- 3. Cargar Pedidos en Tabla (Improved UI) ---
+    // --- 3. Cargar Pedidos en Tabla ---
     function loadOrders() {
         const tbodyDesktop = document.getElementById('orders-table-body-desktop');
         const containerMobile = document.getElementById('orders-card-list-mobile');
@@ -270,7 +266,6 @@
                     statusCardColor = 'border-red-500/50';
                   }
 
-                  // 1. Desktop Table Row
                   const row = `
                     <tr class="hover:bg-white/5 transition-colors border-b border-white/5">
                         <td class="p-4 font-mono text-sm text-zinc-400 whitespace-nowrap">
@@ -278,7 +273,7 @@
                             <span class="text-zinc-500 text-xs">${timeAgoStr}</span>
                         </td>
                         <td class="p-4 text-zinc-300 whitespace-nowrap">${dateString}</td>
-                        <td class="p-4 font-black text-brand text-lg">${order.totalFormatted}</td>
+                        <td class="p-4 font-black text-white text-lg">${order.totalFormatted}</td>
                         <td class="p-4 text-center">${statusBadgeHTML}</td>
                         <td class="p-4 text-center">
                             <button onclick="openDetailModal('${id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-brand hover:text-white text-zinc-400 transition-all flex items-center justify-center border border-white/10">
@@ -289,7 +284,6 @@
                   `;
                   tbodyDesktop.innerHTML += row;
 
-                  // 2. Mobile Card
                   const card = `
                     <div class="p-4 bg-dark-800 rounded-xl border ${statusCardColor} shadow-lg cursor-pointer transition-all hover:ring-2 hover:ring-brand/30" onclick="openDetailModal('${id}')">
                         <div class="flex justify-between items-center mb-3 border-b border-white/5 pb-2">
@@ -350,12 +344,13 @@
             // --- RENDERIZADO DINÁMICO POR ESTADO ---
             
             if (order.status === 'Pendiente') {
-                // ESCENARIO A: Formulario de Reporte
+                // CORRECCIÓN CLAVE: Pasamos el ID en un input hidden para no perder la referencia
                 container.innerHTML = `
                     <h4 class="text-sm font-bold text-yellow-500 mb-2 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> Pago no reportado</h4>
                     <p class="text-xs text-zinc-400 mb-4">Realiza la transferencia y repórtala aquí para que activemos tu servicio.</p>
                     
                     <form onsubmit="submitPayment(event)" class="space-y-3">
+                        <input type="hidden" id="hidden-order-id" value="${doc.id}">
                         <div>
                             <label class="block text-xs text-zinc-500 mb-1">Banco de destino</label>
                             <select id="bank-select" class="w-full bg-dark-900 border border-zinc-700 text-white text-sm rounded-lg p-2.5 focus:border-brand focus:outline-none">
@@ -374,7 +369,6 @@
                 `;
             } 
             else if (order.status === 'Verificando') {
-                // ESCENARIO B: Esperando Aprobación
                 container.innerHTML = `
                     <div class="text-center py-4">
                         <div class="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl border border-blue-500/20">
@@ -389,7 +383,6 @@
                 `;
             }
             else if (order.status === 'Completado') {
-                // ESCENARIO C: Entrega de Producto
                 const deliveryNote = order.deliveryData?.credentials || "Tu servicio ha sido activado. Revisa tu correo o contáctanos si tienes dudas.";
                 
                 container.innerHTML = `
@@ -406,7 +399,6 @@
                 `;
             }
             else {
-                // Cancelado u otros
                 container.innerHTML = `<p class="text-center text-red-500 font-bold">El pedido ha sido cancelado o rechazado.</p>`;
             }
 
@@ -416,14 +408,24 @@
         }
     }
 
-    // --- 5. Enviar Reporte de Pago (Updated to use showToast) ---
+    // --- 5. Enviar Reporte de Pago (CORREGIDO) ---
     async function submitPayment(e) {
         e.preventDefault();
+        
+        // Obtenemos el ID directamente del input oculto para mayor seguridad
+        const hiddenIdInput = document.getElementById('hidden-order-id');
+        const orderIdToUpdate = hiddenIdInput ? hiddenIdInput.value : (currentOrderData ? currentOrderData.id : null);
+
+        if (!orderIdToUpdate) {
+            showToast("Error: No se identificó el pedido. Cierra y vuelve a abrir.", "error");
+            return;
+        }
+
         const bank = document.getElementById('bank-select').value;
         const ref = document.getElementById('ref-input').value;
         const btn = e.target.querySelector('button');
 
-        if (!ref) {
+        if (!ref || ref.trim() === '') {
             showToast("Por favor ingresa el número de comprobante", "warning");
             return;
         }
@@ -432,11 +434,11 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
         try {
-            await db.collection('orders').doc(currentOrderData.id).update({
+            await db.collection('orders').doc(orderIdToUpdate).update({
                 status: 'Verificando',
                 paymentData: {
                     bank: bank,
-                    refCode: ref,
+                    refCode: ref.trim(),
                     dateReported: firebase.firestore.FieldValue.serverTimestamp()
                 }
             });
@@ -445,7 +447,9 @@
             showToast("¡Reporte enviado! Ahora espera nuestra confirmación.", "success");
 
         } catch (error) {
-            console.error(error);
+            console.error("Error al actualizar:", error);
+            // IMPORTANTE: Mostramos el error real en alerta para depurar si falla
+            alert("Error detallado: " + error.message);
             showToast("Error al enviar el reporte. Intenta de nuevo.", "error");
             btn.disabled = false;
             btn.innerText = 'Intentar de nuevo';

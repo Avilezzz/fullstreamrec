@@ -302,10 +302,10 @@
                 <div class="p-4 bg-dark-950 rounded-xl border border-zinc-800 flex items-center justify-between group hover:border-brand/30 transition-colors">
                     <div>
                         <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Banco Pichincha</p>
-                        <p class="text-white font-mono font-bold text-lg">2204567890</p>
-                        <p class="text-xs text-zinc-400">Ahorros - Luis Avilez</p>
+                        <p class="text-white font-mono font-bold text-lg">2210925922</p>
+                        <p class="text-xs text-zinc-400">Ahorros - Luis Fernando Avilez Cevallos</p>
                     </div>
-                    <button class="text-zinc-500 hover:text-white bg-dark-800 p-2 rounded-lg transition-colors" onclick="navigator.clipboard.writeText('2204567890'); alert('Copiado!')">
+                    <button class="text-zinc-500 hover:text-white bg-dark-800 p-2 rounded-lg transition-colors" onclick="navigator.clipboard.writeText('2210925922'); alert('Copiado!')">
                         <i class="far fa-copy"></i>
                     </button>
                 </div>
@@ -313,10 +313,10 @@
                 <div class="p-4 bg-dark-950 rounded-xl border border-zinc-800 flex items-center justify-between group hover:border-brand/30 transition-colors">
                     <div>
                         <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Banco Guayaquil</p>
-                        <p class="text-white font-mono font-bold text-lg">1450089721</p>
-                        <p class="text-xs text-zinc-400">Ahorros - Luis Avilez</p>
+                        <p class="text-white font-mono font-bold text-lg">0024419555</p>
+                        <p class="text-xs text-zinc-400">Ahorros - Luis Fernando Avilez Cevallos</p>
                     </div>
-                    <button class="text-zinc-500 hover:text-white bg-dark-800 p-2 rounded-lg transition-colors" onclick="navigator.clipboard.writeText('1450089721'); alert('Copiado!')">
+                    <button class="text-zinc-500 hover:text-white bg-dark-800 p-2 rounded-lg transition-colors" onclick="navigator.clipboard.writeText('0024419555'); alert('Copiado!')">
                         <i class="far fa-copy"></i>
                     </button>
                 </div>
@@ -483,7 +483,14 @@
             if(heroTitle) heroTitle.innerHTML = `Entretenimiento <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>`;
             if(heroDesc) heroDesc.textContent = "Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.";
 
-            if(mainNav) { mainNav.classList.remove('hidden'); mainNav.classList.add('md:flex'); }
+            // CORRECCIÓN CLAVE:
+            // En lugar de remove('hidden'), aseguramos que se agregue 'hidden' (para móvil) y 'md:flex' (para desktop)
+            // Esto respeta la clase original "hidden md:flex"
+            if(mainNav) { 
+                mainNav.classList.add('hidden'); // Oculto en móviles
+                mainNav.classList.add('md:flex'); // Visible en desktop
+            }
+            
             guestMenu.classList.remove('hidden');
             userMenu.classList.add('hidden');
             
@@ -795,4 +802,5 @@
     }
   </style>
 </body>
+
 </html>
