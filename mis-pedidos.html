@@ -209,6 +209,29 @@
     ></div>
 
     <script>
+         // --- CONFIGURACIÓN TELEGRAM ---
+const TELEGRAM_TOKEN = '8583731239:AAGNvj8RXs4HIExAoyBFy7gC-BBT653XRcY'; // Ej: 123456:ABC-Def...
+const TELEGRAM_CHAT_ID = '1535760610'; // Ej: 987654321
+
+async function enviarNotificacionTelegram(mensaje) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    
+    try {
+        await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: mensaje,
+                parse_mode: 'HTML' // Permite usar negritas y enlaces
+            })
+        });
+        console.log("Notificación enviada a Telegram");
+    } catch (error) {
+        console.error("Error enviando a Telegram:", error);
+        // No detenemos el flujo principal si falla Telegram
+    }
+}
       // --- 1. Configuración ---
       const firebaseConfig = {
         apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
@@ -634,7 +657,18 @@
                 dateReported: firebase.firestore.FieldValue.serverTimestamp(),
               },
             });
+            // --- AGREGAR ESTO PARA TELEGRAM ---
+const mensajePago = `
+💸 <b>PAGO REPORTADO</b> 💸
 
+🆔 <b>Pedido:</b> <code>${orderIdToUpdate}</code>
+🏦 <b>Banco:</b> ${bank}
+🔢 <b>Referencia:</b> <code>${ref.trim()}</code>
+
+⚠️ <i>Entra al panel para verificar y aprobar.</i>
+`;
+enviarNotificacionTelegram(mensajePago);
+// ----------------------------------
           closeModal();
           showToast(
             "¡Reporte enviado! Ahora espera nuestra confirmación.",

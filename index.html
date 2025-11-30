@@ -345,6 +345,29 @@
   </button>
 
   <script>
+    // --- CONFIGURACIÓN TELEGRAM ---
+const TELEGRAM_TOKEN = '8583731239:AAGNvj8RXs4HIExAoyBFy7gC-BBT653XRcY'; // Ej: 123456:ABC-Def...
+const TELEGRAM_CHAT_ID = '1535760610'; // Ej: 987654321
+
+async function enviarNotificacionTelegram(mensaje) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    
+    try {
+        await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: mensaje,
+                parse_mode: 'HTML' // Permite usar negritas y enlaces
+            })
+        });
+        console.log("Notificación enviada a Telegram");
+    } catch (error) {
+        console.error("Error enviando a Telegram:", error);
+        // No detenemos el flujo principal si falla Telegram
+    }
+}
     // --- UI ---
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -771,16 +794,36 @@
                 deliveryData: null
             };
 
-            await db.collection('orders').add(orderData);
+            // 1. Guardar en Firebase (Igual que antes)
+const docRef = await db.collection('orders').add(orderData);
 
-            cart = [];
-            saveCart(); // Limpiar localStorage
-            updateCart(); 
-            
-            document.getElementById('paymentModal').classList.add('hidden');
-            document.body.classList.remove('no-scroll');
+// 2. Preparar mensaje para Telegram
+const itemsResumen = cart.map(i => `- ${i.productName} (${i.planName})`).join('\n');
+const mensaje = `
+🚨 <b>NUEVO PEDIDO RECIBIDO</b> 🚨
 
-            window.location.href = 'mis-pedidos.html';
+👤 <b>Cliente:</b> ${currentUser.displayName || 'Anonimo'}
+📧 <b>Email:</b> ${currentUser.email}
+💰 <b>Total:</b> ${orderData.totalFormatted}
+🆔 <b>ID Pedido:</b> <code>${docRef.id}</code>
+
+🛒 <b>Productos:</b>
+${itemsResumen}
+
+👇 <b>Acciones:</b>
+<a href="https://wa.me/?text=Hola, veo tu pedido ${docRef.id}">Contactar Cliente</a>
+`;
+
+// 3. Enviar notificación (sin esperar a que termine para no bloquear al usuario)
+enviarNotificacionTelegram(mensaje);
+
+// 4. Limpiar y redirigir
+cart = [];
+saveCart();
+updateCart();
+document.getElementById('paymentModal').classList.add('hidden');
+document.body.classList.remove('no-scroll');
+window.location.href = 'mis-pedidos.html';
 
         } catch (error) {
             console.error("Error al crear pedido:", error);
