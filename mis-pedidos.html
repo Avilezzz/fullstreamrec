@@ -1,180 +1,299 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mis Pedidos - FullStreamRec</title>
-  <link rel="icon" type="image/x-icon" href="logo.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: { DEFAULT: '#ff5e66', hover: '#ff444d' },
-            dark: { 950: '#09090b', 900: '#121214', 800: '#1c1c1f', 700: '#27272a' }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Pedidos - FullStreamRec</title>
+    <link rel="icon" type="image/x-icon" href="logo.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: { DEFAULT: "#ff5e66", hover: "#ff444d" },
+              dark: {
+                950: "#09090b",
+                900: "#121214",
+                800: "#1c1c1f",
+                700: "#27272a",
+              },
+            },
+            animation: {
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
           },
-          animation: {
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          }
+        },
+      };
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <style>
+      body {
+        background-color: #09090b;
+      }
+
+      /* Animaciones para el Toast */
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
         }
       }
-    }
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-  <style>
-    body { background-color: #09090b; }
-    
-    /* Animaciones para el Toast */
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-  </style>
-</head>
-<body class="text-zinc-100 antialiased min-h-screen flex flex-col">
-
-  <header class="fixed top-0 w-full z-50 bg-dark-950/90 backdrop-blur-md border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-zinc-100 antialiased min-h-screen flex flex-col">
+    <header
+      class="fixed top-0 w-full z-50 bg-dark-950/90 backdrop-blur-md border-b border-white/5"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between"
+      >
         <a href="index.html" class="flex items-center gap-2 font-bold text-xl">
-            <i class="fas fa-arrow-left text-zinc-400 hover:text-white transition-colors"></i>
-            <span>Mis Pedidos</span>
+          <i
+            class="fas fa-arrow-left text-zinc-400 hover:text-white transition-colors"
+          ></i>
+          <span>Mis Pedidos</span>
         </a>
-    </div>
-  </header>
+      </div>
+    </header>
 
-  <main class="flex-grow pt-24 pb-10 px-4 md:px-8">
-    <div class="max-w-6xl mx-auto bg-dark-900 rounded-3xl p-6 border border-white/10 shadow-2xl">
-        <h2 class="text-2xl font-bold text-white mb-6 border-b border-white/5 pb-4">Historial de Compras</h2>
-        
-        <div id="status-legend" class="mb-8 p-4 bg-dark-800 rounded-xl border border-white/5">
-          <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-wider mb-3">Leyenda de Estados</h3>
-          <div class="grid grid-cols-2 max-md:grid-cols-1 gap-y-3 gap-x-6 text-sm font-medium">
-              <span class="flex items-center gap-2 text-yellow-500"><i class="fas fa-exclamation-circle w-4 text-center"></i> **Pendiente**: Pago no reportado.</span>
-              <span class="flex items-center gap-2 text-blue-400"><i class="fas fa-clock w-4 text-center"></i> **Verificando**: Esperando confirmación de pago.</span>
-              <span class="flex items-center gap-2 text-green-500"><i class="fas fa-check-circle w-4 text-center"></i> **Completado**: Servicio entregado.</span>
-              <span class="flex items-center gap-2 text-red-500"><i class="fas fa-times-circle w-4 text-center"></i> **Cancelado**: Pedido anulado.</span>
-          </div>
-        </div>
+    <main class="flex-grow pt-24 pb-10 px-4 md:px-8">
+      <div
+        class="max-w-6xl mx-auto bg-dark-900 rounded-3xl p-6 border border-white/10 shadow-2xl"
+      >
+        <h2
+          class="text-2xl font-bold text-white mb-6 border-b border-white/5 pb-4"
+        >
+          Historial de Compras
+        </h2>
+
+       <div class="mb-8 p-5 bg-dark-900 rounded-2xl border border-white/10 shadow-lg shadow-black/20">
+  <h3 class="text-sm font-bold text-white mb-4 tracking-wide">
+    Leyenda de Estados
+  </h3>
+
+  <div class="grid grid-cols-2 max-md:grid-cols-1 gap-4 text-sm">
+
+    <div class="flex items-center gap-3">
+      <span class="px-2 py-1 text-xs bg-yellow-500/20 text-yellow-400 rounded-lg">Pendiente</span>
+      <p class="text-zinc-400">Pago no reportado</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="px-2 py-1 text-xs bg-blue-500/20 text-blue-400 rounded-lg">Verificando</span>
+      <p class="text-zinc-400">Confirmación pendiente</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="px-2 py-1 text-xs bg-green-500/20 text-green-500 rounded-lg">Completado</span>
+      <p class="text-zinc-400">Servicio entregado</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="px-2 py-1 text-xs bg-red-500/20 text-red-500 rounded-lg">Cancelado</span>
+      <p class="text-zinc-400">Pedido anulado</p>
+    </div>
+
+  </div>
+</div>
+
 
         <div class="overflow-x-auto hidden md:block">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-dark-800/50 text-zinc-400 text-xs uppercase tracking-wider border-b border-white/5">
-                        <th class="p-4 font-semibold rounded-tl-xl">ID Pedido</th>
-                        <th class="p-4 font-semibold">Fecha</th>
-                        <th class="p-4 font-semibold">Total</th>
-                        <th class="p-4 font-semibold text-center">Estado</th>
-                        <th class="p-4 font-semibold text-center rounded-tr-xl">Acción</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-table-body-desktop" class="divide-y divide-white/5 text-sm">
-                    </tbody>
-            </table>
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr
+                class="bg-dark-800/50 text-zinc-400 text-xs uppercase tracking-wider border-b border-white/5"
+              >
+                <th class="p-4 font-semibold rounded-tl-xl">ID Pedido</th>
+                <th class="p-4 font-semibold">Fecha</th>
+                <th class="p-4 font-semibold">Total</th>
+                <th class="p-4 font-semibold text-center">Estado</th>
+                <th class="p-4 font-semibold text-center rounded-tr-xl">
+                  Acción
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              id="orders-table-body-desktop"
+              class="divide-y divide-white/5 text-sm"
+            ></tbody>
+          </table>
         </div>
-        
-        <div id="orders-card-list-mobile" class="space-y-4 block md:hidden">
-          </div>
 
-    </div>
-  </main>
-
-  <div id="detail-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
-      <div class="relative bg-dark-900 border border-zinc-700 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden transform transition-all scale-100">
-          
-          <div class="p-5 border-b border-white/5 bg-dark-800/50 flex justify-between items-center">
-              <div>
-                  <h3 class="text-lg font-bold text-white">Detalles del Pedido</h3>
-                  <p class="text-xs text-zinc-500 font-mono" id="modal-order-id">ID: ...</p>
-              </div>
-              <button onclick="closeModal()" class="text-zinc-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-          </div>
-
-          <div class="p-6 overflow-y-auto max-h-[70vh] space-y-6">
-              
-              <div>
-                  <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Productos</h4>
-                  <div id="modal-items-list" class="space-y-3"></div>
-                  <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/5">
-                      <span class="text-zinc-400">Total a Pagar:</span>
-                      <span class="text-xl font-bold text-white" id="modal-total">...</span>
-                  </div>
-              </div>
-
-              <div id="dynamic-action-area" class="bg-dark-950 rounded-xl p-5 border border-white/5">
-                  </div>
-
-          </div>
+        <div
+          id="orders-card-list-mobile"
+          class="space-y-4 block md:hidden"
+        ></div>
       </div>
-  </div>
+    </main>
 
-  <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+    <div
+      id="detail-modal"
+      class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="relative bg-dark-900 border border-zinc-700 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden transform transition-all scale-100"
+      >
+        <div
+          class="p-5 border-b border-white/5 bg-dark-800/50 flex justify-between items-center"
+        >
+          <div>
+            <h3 class="text-lg font-bold text-white">Detalles del Pedido</h3>
+            <p class="text-xs text-zinc-500 font-mono" id="modal-order-id">
+              ID: ...
+            </p>
+          </div>
+          <button onclick="closeModal()" class="text-zinc-400 hover:text-white">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
 
-  <script>
-    // --- 1. Configuración ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
-      authDomain: "site-fullstreamrec.firebaseapp.com",
-      projectId: "site-fullstreamrec",
-      storageBucket: "site-fullstreamrec.appspot.com",
-      messagingSenderId: "161679433276",
-      appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+        <div class="p-6 overflow-y-auto max-h-[70vh] space-y-6">
+          <div>
+            <h4
+              class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3"
+            >
+              Productos
+            </h4>
+            <div id="modal-items-list" class="space-y-3"></div>
+            <div
+              class="flex justify-between items-center mt-3 pt-3 border-t border-white/5"
+            >
+              <span class="text-zinc-400">Total a Pagar:</span>
+              <span class="text-xl font-bold text-white" id="modal-total"
+                >...</span
+              >
+            </div>
+          </div>
 
-    let currentUser = null;
-    let currentOrderData = null; // Mantenemos por compatibilidad, pero usaremos el input hidden
+          <div
+            id="dynamic-action-area"
+            class="bg-dark-950 rounded-xl p-5 border border-white/5"
+          ></div>
+        </div>
+      </div>
+    </div>
 
-    // --- Utility Functions ---
+    <div
+      id="toast-container"
+      class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"
+    ></div>
 
-    function timeAgo(date) {
-        if (!date) return 'Reciente';
+    <script>
+      // --- 1. Configuración ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
+        authDomain: "site-fullstreamrec.firebaseapp.com",
+        projectId: "site-fullstreamrec",
+        storageBucket: "site-fullstreamrec.appspot.com",
+        messagingSenderId: "161679433276",
+        appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39",
+      };
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
+
+      let currentUser = null;
+      let currentOrderData = null; // Mantenemos por compatibilidad, pero usaremos el input hidden
+
+      // --- Utility Functions ---
+
+      function timeAgo(date) {
+        if (!date) return "Reciente";
         const s = Math.floor((new Date() - date) / 1000);
         if (s < 0 || isNaN(s)) return "Reciente";
-        if (s > 604800) return date.toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric'});
-        const i = [{l:'día',s:86400}, {l:'hora',s:3600}, {l:'minuto',s:60}];
-        for (const v of i) { const c = Math.floor(s / v.s); if (c >= 1) return `hace ${c} ${v.l}${c>1?'s':''}`; }
+        if (s > 604800)
+          return date.toLocaleDateString("es-ES", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+        const i = [
+          { l: "día", s: 86400 },
+          { l: "hora", s: 3600 },
+          { l: "minuto", s: 60 },
+        ];
+        for (const v of i) {
+          const c = Math.floor(s / v.s);
+          if (c >= 1) return `hace ${c} ${v.l}${c > 1 ? "s" : ""}`;
+        }
         return "hace un momento";
-    }
+      }
 
-    function showToast(message, type = 'success') {
-        const container = document.getElementById('toast-container');
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
         const config = {
-            success: { icon: 'fa-check-circle', color: 'text-green-500', border: 'border-green-500/20', bg: 'bg-dark-800' },
-            error:   { icon: 'fa-times-circle', color: 'text-red-500',   border: 'border-red-500/20',   bg: 'bg-dark-800' },
-            warning: { icon: 'fa-exclamation-circle', color: 'text-yellow-500', border: 'border-yellow-500/20', bg: 'bg-dark-800' }
+          success: {
+            icon: "fa-check-circle",
+            color: "text-green-500",
+            border: "border-green-500/20",
+            bg: "bg-dark-800",
+          },
+          error: {
+            icon: "fa-times-circle",
+            color: "text-red-500",
+            border: "border-red-500/20",
+            bg: "bg-dark-800",
+          },
+          warning: {
+            icon: "fa-exclamation-circle",
+            color: "text-yellow-500",
+            border: "border-yellow-500/20",
+            bg: "bg-dark-800",
+          },
         };
         const style = config[type] || config.success;
-        const toast = document.createElement('div');
-        
+        const toast = document.createElement("div");
+
         toast.className = `pointer-events-auto flex items-center gap-3 p-4 rounded-xl border ${style.border} ${style.bg} shadow-2xl shadow-black/50 min-w-[300px] transform transition-all duration-300`;
-        toast.style.animation = 'slideIn 0.3s forwards';
-        
+        toast.style.animation = "slideIn 0.3s forwards";
+
         toast.innerHTML = `<i class="fas ${style.icon} text-xl ${style.color}"></i><p class="text-sm font-medium text-white">${message}</p>`;
         container.appendChild(toast);
-        
-        setTimeout(() => { 
-            toast.style.animation = 'slideOut 0.3s forwards';
-            setTimeout(() => toast.remove(), 300); 
+
+        setTimeout(() => {
+          toast.style.animation = "slideOut 0.3s forwards";
+          setTimeout(() => toast.remove(), 300);
         }, 3000);
-    }
-    
-    // --- SKELETON RENDER FUNCTION ---
-    function renderSkeleton() {
-        const tbodyDesktop = document.getElementById('orders-table-body-desktop');
-        const containerMobile = document.getElementById('orders-card-list-mobile');
+      }
+
+      // --- SKELETON RENDER FUNCTION ---
+      function renderSkeleton() {
+        const tbodyDesktop = document.getElementById(
+          "orders-table-body-desktop"
+        );
+        const containerMobile = document.getElementById(
+          "orders-card-list-mobile"
+        );
 
         const skeletonRow = `
             <tr class="animate-pulse bg-dark-800/50">
@@ -207,73 +326,83 @@
             </div>
         `;
         containerMobile.innerHTML = skeletonMobileCard.repeat(3);
-    }
+      }
 
-
-    // --- 2. Auth y Carga ---
-    auth.onAuthStateChanged(user => {
+      // --- 2. Auth y Carga ---
+      auth.onAuthStateChanged((user) => {
         if (user) {
-            currentUser = user;
-            renderSkeleton();
-            loadOrders();
+          currentUser = user;
+          renderSkeleton();
+          loadOrders();
         } else {
-            window.location.href = 'index.html';
+          window.location.href = "index.html";
         }
-    });
+      });
 
-    // --- 3. Cargar Pedidos en Tabla ---
-    function loadOrders() {
-        const tbodyDesktop = document.getElementById('orders-table-body-desktop');
-        const containerMobile = document.getElementById('orders-card-list-mobile');
+      // --- 3. Cargar Pedidos en Tabla ---
+      function loadOrders() {
+        const tbodyDesktop = document.getElementById(
+          "orders-table-body-desktop"
+        );
+        const containerMobile = document.getElementById(
+          "orders-card-list-mobile"
+        );
 
-        db.collection('orders')
-          .where('userId', '==', currentUser.uid)
-          .orderBy('date', 'desc')
-          .onSnapshot(snapshot => {
-              
-              if (snapshot.empty) {
-                  const noOrdersHtml = `<div class="p-8 text-center text-zinc-500">No tienes pedidos aún.</div>`;
-                  tbodyDesktop.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-500">No tienes pedidos aún.</td></tr>`;
-                  containerMobile.innerHTML = noOrdersHtml;
-                  return;
+        db.collection("orders")
+          .where("userId", "==", currentUser.uid)
+          .orderBy("date", "desc")
+          .onSnapshot((snapshot) => {
+            if (snapshot.empty) {
+              const noOrdersHtml = `<div class="p-8 text-center text-zinc-500">No tienes pedidos aún.</div>`;
+              tbodyDesktop.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-500">No tienes pedidos aún.</td></tr>`;
+              containerMobile.innerHTML = noOrdersHtml;
+              return;
+            }
+
+            tbodyDesktop.innerHTML = "";
+            containerMobile.innerHTML = "";
+
+            snapshot.forEach((doc) => {
+              const order = doc.data();
+              const id = doc.id;
+
+              const dateObj = order.date ? order.date.toDate() : new Date();
+              const dateString = dateObj.toLocaleDateString();
+              const timeAgoStr = timeAgo(dateObj);
+
+              // Estilos de estado
+              let statusBadgeHTML = "";
+              let statusCardColor = "border-yellow-500/50";
+              if (order.status === "Pendiente") {
+                statusBadgeHTML =
+                  '<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">PENDIENTE</span>';
+                statusCardColor = "border-yellow-500/50";
+              } else if (order.status === "Verificando") {
+                statusBadgeHTML =
+                  '<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20"><i class="fas fa-spinner fa-spin mr-1"></i> VERIFICANDO</span>';
+                statusCardColor = "border-blue-500/50";
+              } else if (order.status === "Completado") {
+                statusBadgeHTML =
+                  '<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-green-500/10 text-green-500 border border-green-500/20">COMPLETADO</span>';
+                statusCardColor = "border-green-500/50";
+              } else {
+                statusBadgeHTML = `<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-red-500/10 text-red-500 border border-red-500/20">CANCELADO</span>`;
+                statusCardColor = "border-red-500/50";
               }
 
-              tbodyDesktop.innerHTML = '';
-              containerMobile.innerHTML = '';
-              
-              snapshot.forEach(doc => {
-                  const order = doc.data();
-                  const id = doc.id;
-                  
-                  const dateObj = order.date ? order.date.toDate() : new Date();
-                  const dateString = dateObj.toLocaleDateString();
-                  const timeAgoStr = timeAgo(dateObj);
-                  
-                  // Estilos de estado
-                  let statusBadgeHTML = '';
-                  let statusCardColor = 'border-yellow-500/50';
-                  if(order.status === 'Pendiente') { 
-                    statusBadgeHTML = '<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">PENDIENTE</span>';
-                    statusCardColor = 'border-yellow-500/50';
-                  } else if(order.status === 'Verificando') {
-                    statusBadgeHTML = '<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20"><i class="fas fa-spinner fa-spin mr-1"></i> VERIFICANDO</span>';
-                    statusCardColor = 'border-blue-500/50';
-                  } else if(order.status === 'Completado') { 
-                    statusBadgeHTML = '<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-green-500/10 text-green-500 border border-green-500/20">COMPLETADO</span>';
-                    statusCardColor = 'border-green-500/50';
-                  } else { 
-                    statusBadgeHTML = `<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-red-500/10 text-red-500 border border-red-500/20">CANCELADO</span>`;
-                    statusCardColor = 'border-red-500/50';
-                  }
-
-                  const row = `
+              const row = `
                     <tr class="hover:bg-white/5 transition-colors border-b border-white/5">
                         <td class="p-4 font-mono text-sm text-zinc-400 whitespace-nowrap">
-                            <span class="block font-bold text-white text-xs mb-0.5">#${id.slice(0,8)}</span>
+                            <span class="block font-bold text-white text-xs mb-0.5">#${id.slice(
+                              0,
+                              8
+                            )}</span>
                             <span class="text-zinc-500 text-xs">${timeAgoStr}</span>
                         </td>
                         <td class="p-4 text-zinc-300 whitespace-nowrap">${dateString}</td>
-                        <td class="p-4 font-black text-white text-lg">${order.totalFormatted}</td>
+                        <td class="p-4 font-black text-white text-lg">${
+                          order.totalFormatted
+                        }</td>
                         <td class="p-4 text-center">${statusBadgeHTML}</td>
                         <td class="p-4 text-center">
                             <button onclick="openDetailModal('${id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-brand hover:text-white text-zinc-400 transition-all flex items-center justify-center border border-white/10">
@@ -282,12 +411,15 @@
                         </td>
                     </tr>
                   `;
-                  tbodyDesktop.innerHTML += row;
+              tbodyDesktop.innerHTML += row;
 
-                  const card = `
+              const card = `
                     <div class="p-4 bg-dark-800 rounded-xl border ${statusCardColor} shadow-lg cursor-pointer transition-all hover:ring-2 hover:ring-brand/30" onclick="openDetailModal('${id}')">
                         <div class="flex justify-between items-center mb-3 border-b border-white/5 pb-2">
-                            <div class="text-xs font-mono text-zinc-400">#${id.slice(0,8)}</div>
+                            <div class="text-xs font-mono text-zinc-400">#${id.slice(
+                              0,
+                              8
+                            )}</div>
                             <div class="text-right">
                                 ${statusBadgeHTML}
                             </div>
@@ -295,170 +427,232 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-sm text-zinc-400">Total:</p>
-                                <p class="text-2xl font-black text-white">${order.totalFormatted}</p>
+                                <p class="text-2xl font-black text-white">${
+                                  order.totalFormatted
+                                }</p>
                             </div>
                             <div class="text-right space-y-1">
-                                <p class="text-sm text-white font-medium">${order.items.length} ${order.items.length === 1 ? 'producto' : 'productos'}</p>
+                                <p class="text-sm text-white font-medium">${
+                                  order.items.length
+                                } ${
+                order.items.length === 1 ? "producto" : "productos"
+              }</p>
                                 <p class="text-xs text-zinc-500">Fecha: ${dateString}</p>
                                 <p class="text-xs text-zinc-500">${timeAgoStr}</p>
                             </div>
                         </div>
                     </div>
                   `;
-                  containerMobile.innerHTML += card;
-              });
+              containerMobile.innerHTML += card;
+            });
           });
-    }
+      }
 
-    // --- 4. Abrir Modal y Lógica Dinámica ---
-    async function openDetailModal(orderId) {
-        const modal = document.getElementById('detail-modal');
-        const container = document.getElementById('dynamic-action-area');
-        
+      // --- 4. Abrir Modal y Lógica Dinámica ---
+      async function openDetailModal(orderId) {
+        const modal = document.getElementById("detail-modal");
+        const container = document.getElementById("dynamic-action-area");
+
         // Loader mientras carga
-        container.innerHTML = '<div class="text-center p-4 text-zinc-500"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-        modal.classList.remove('hidden');
+        container.innerHTML =
+          '<div class="text-center p-4 text-zinc-500"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+        modal.classList.remove("hidden");
 
         try {
-            const doc = await db.collection('orders').doc(orderId).get();
-            if (!doc.exists) return;
-            const order = doc.data();
-            currentOrderData = { id: doc.id, ...order };
+          const doc = await db.collection("orders").doc(orderId).get();
+          if (!doc.exists) return;
+          const order = doc.data();
+          currentOrderData = { id: doc.id, ...order };
 
-            // Llenar datos fijos
-            document.getElementById('modal-order-id').innerText = `ID: ${doc.id}`;
-            document.getElementById('modal-total').innerText = order.totalFormatted;
-            
-            // Render Items
-            const itemsList = document.getElementById('modal-items-list');
-            itemsList.innerHTML = order.items.map(item => `
+          // Llenar datos fijos
+          document.getElementById("modal-order-id").innerText = `ID: ${doc.id}`;
+          document.getElementById("modal-total").innerText =
+            order.totalFormatted;
+
+          // Render Items
+          const itemsList = document.getElementById("modal-items-list");
+          itemsList.innerHTML = order.items
+            .map(
+              (item) => `
                 <div class="flex items-center gap-3 p-2 bg-dark-800 rounded-lg border border-white/5">
-                    <img src="${item.productImage || 'logo.jpg'}" class="w-10 h-10 object-contain rounded">
+                    <img src="${
+                      item.productImage || "logo.jpg"
+                    }" class="w-10 h-10 object-contain rounded">
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-white truncate">${item.productName}</p>
+                        <p class="text-sm font-bold text-white truncate">${
+                          item.productName
+                        }</p>
                         <p class="text-xs text-zinc-500">${item.planName}</p>
                     </div>
                 </div>
-            `).join('');
+            `
+            )
+            .join("");
 
-            // --- RENDERIZADO DINÁMICO POR ESTADO ---
-            
-            if (order.status === 'Pendiente') {
-                // CORRECCIÓN CLAVE: Pasamos el ID en un input hidden para no perder la referencia
-                container.innerHTML = `
-                    <h4 class="text-sm font-bold text-yellow-500 mb-2 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> Pago no reportado</h4>
-                    <p class="text-xs text-zinc-400 mb-4">Realiza la transferencia y repórtala aquí para que activemos tu servicio.</p>
-                    
-                    <form onsubmit="submitPayment(event)" class="space-y-3">
-                        <input type="hidden" id="hidden-order-id" value="${doc.id}">
-                        <div>
-                            <label class="block text-xs text-zinc-500 mb-1">Banco de destino</label>
-                            <select id="bank-select" class="w-full bg-dark-900 border border-zinc-700 text-white text-sm rounded-lg p-2.5 focus:border-brand focus:outline-none">
-                                <option value="Banco Pichincha">Banco Pichincha</option>
-                                <option value="Banco Guayaquil">Banco Guayaquil</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-zinc-500 mb-1">Número de Comprobante / Referencia</label>
-                            <input type="text" id="ref-input" required placeholder="Ej: 12345678" class="w-full bg-dark-900 border border-zinc-700 text-white text-sm rounded-lg p-2.5 focus:border-brand focus:outline-none">
-                        </div>
-                        <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand/20 mt-2">
-                            Reportar Pago Realizado
-                        </button>
-                    </form>
+          // --- RENDERIZADO DINÁMICO POR ESTADO ---
+
+          if (order.status === "Pendiente") {
+            // CORRECCIÓN CLAVE: Pasamos el ID en un input hidden para no perder la referencia
+            container.innerHTML = `
+                    <h4 class="text-sm font-bold text-yellow-500 mb-2 flex items-center gap-2">
+    <i class="fas fa-exclamation-circle"></i> Pago no reportado
+</h4>
+
+<p class="text-xs text-zinc-400 mb-3">
+    Realiza la transferencia y reporta el número de comprobante.
+</p>
+
+<div class="mb-4 p-3 bg-black/30 rounded-xl border border-white/5">
+    <p class="text-[11px] text-zinc-500 mb-1">Ejemplo de comprobante:</p>
+    
+    <div class="w-full flex justify-center">
+        <img 
+            src="https://ik.imagekit.io/strmng00/medias/Picsart_25-11-30_09-51-56-806.jpg" 
+            class="max-h-72 w-full sm:max-w-xs object-contain rounded-lg opacity-90 hover:opacity-100 transition-opacity"
+            alt="Ejemplo Comprobante">
+    </div>
+</div>
+
+<form onsubmit="submitPayment(event)" class="space-y-3">
+    <input type="hidden" id="hidden-order-id" value="${doc.id}">
+
+    <div>
+        <label class="block text-xs text-zinc-500 mb-1">Banco de destino</label>
+        <select id="bank-select" 
+            class="w-full bg-dark-900 border border-zinc-700 text-white text-sm rounded-lg p-2.5 focus:border-brand focus:outline-none">
+            <option value="Banco Pichincha">Banco Pichincha</option>
+            <option value="Banco Guayaquil">Banco Guayaquil</option>
+        </select>
+    </div>
+
+    <div>
+        <label class="block text-xs text-zinc-500 mb-1">Número de Comprobante / Referencia</label>
+        <input type="text" id="ref-input" required 
+            placeholder="Ej: 12345678"
+            class="w-full bg-dark-900 border border-zinc-700 text-white text-sm rounded-lg p-2.5 focus:border-brand focus:outline-none">
+    </div>
+
+    <button 
+        type="submit" 
+        class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand/20 mt-2">
+        Reportar Pago Realizado
+    </button>
+</form>
+
                 `;
-            } 
-            else if (order.status === 'Verificando') {
-                container.innerHTML = `
+          } else if (order.status === "Verificando") {
+            container.innerHTML = `
                     <div class="text-center py-4">
                         <div class="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl border border-blue-500/20">
                             <i class="fas fa-clock"></i>
                         </div>
                         <h4 class="text-white font-bold mb-1">Verificando tu pago...</h4>
                         <p class="text-sm text-zinc-400">
-                            Hemos recibido tu reporte (Ref: <span class="font-mono text-white">${order.paymentData?.refCode || 'N/A'}</span>).<br>
+                            Hemos recibido tu reporte (Ref: <span class="font-mono text-white">${
+                              order.paymentData?.refCode || "N/A"
+                            }</span>).<br>
                             Esto suele tomar unos minutos. Te notificaremos pronto.
                         </p>
                     </div>
                 `;
-            }
-            else if (order.status === 'Completado') {
-                const deliveryNote = order.deliveryData?.credentials || "Tu servicio ha sido activado. Revisa tu correo o contáctanos si tienes dudas.";
-                
-                container.innerHTML = `
-                    <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-                        <h4 class="text-green-500 font-bold mb-3 flex items-center gap-2">
-                            <i class="fas fa-check-circle"></i> ¡Pedido Entregado!
-                        </h4>
-                        <div class="bg-dark-900 p-3 rounded-lg border border-zinc-700">
-                            <p class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Tus Credenciales / Nota:</p>
-                            <p class="text-white font-mono text-sm whitespace-pre-wrap select-all">${deliveryNote}</p>
-                        </div>
-                        <p class="text-xs text-zinc-500 mt-3 text-center">Guarda esta información en un lugar seguro.</p>
-                    </div>
+          } else if (order.status === "Completado") {
+            const deliveryNote =
+              order.deliveryData?.credentials ||
+              "Tu servicio ha sido activado. Revisa tu correo o contáctanos si tienes dudas.";
+
+            container.innerHTML = `
+                    <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-3">
+  <h4 class="text-green-400 font-semibold mb-2 flex items-center gap-2 text-xs">
+    <i class="fas fa-check-circle"></i>
+    Pedido Entregado
+  </h4>
+
+  <div class="bg-dark-900 p-2 rounded-lg border border-zinc-700/40">
+    <p class="text-[10px] text-zinc-500 mb-1">Credenciales:</p>
+
+    <p class="text-white font-mono text-xs break-words whitespace-pre-wrap select-all">
+      ${deliveryNote}
+    </p>
+  </div>
+
+  <p class="text-[10px] text-zinc-600 mt-2 text-center">
+    Guarda esta información.
+  </p>
+</div>
+
                 `;
-            }
-            else {
-                container.innerHTML = `<p class="text-center text-red-500 font-bold">El pedido ha sido cancelado o rechazado.</p>`;
-            }
-
+          } else {
+            container.innerHTML = `<p class="text-center text-red-500 font-bold">El pedido ha sido cancelado o rechazado.</p>`;
+          }
         } catch (error) {
-            console.error(error);
-            container.innerHTML = `<p class="text-red-500 text-center">Error al cargar detalles.</p>`;
+          console.error(error);
+          container.innerHTML = `<p class="text-red-500 text-center">Error al cargar detalles.</p>`;
         }
-    }
+      }
 
-    // --- 5. Enviar Reporte de Pago (CORREGIDO) ---
-    async function submitPayment(e) {
+      // --- 5. Enviar Reporte de Pago (CORREGIDO) ---
+      async function submitPayment(e) {
         e.preventDefault();
-        
+
         // Obtenemos el ID directamente del input oculto para mayor seguridad
-        const hiddenIdInput = document.getElementById('hidden-order-id');
-        const orderIdToUpdate = hiddenIdInput ? hiddenIdInput.value : (currentOrderData ? currentOrderData.id : null);
+        const hiddenIdInput = document.getElementById("hidden-order-id");
+        const orderIdToUpdate = hiddenIdInput
+          ? hiddenIdInput.value
+          : currentOrderData
+          ? currentOrderData.id
+          : null;
 
         if (!orderIdToUpdate) {
-            showToast("Error: No se identificó el pedido. Cierra y vuelve a abrir.", "error");
-            return;
+          showToast(
+            "Error: No se identificó el pedido. Cierra y vuelve a abrir.",
+            "error"
+          );
+          return;
         }
 
-        const bank = document.getElementById('bank-select').value;
-        const ref = document.getElementById('ref-input').value;
-        const btn = e.target.querySelector('button');
+        const bank = document.getElementById("bank-select").value;
+        const ref = document.getElementById("ref-input").value;
+        const btn = e.target.querySelector("button");
 
-        if (!ref || ref.trim() === '') {
-            showToast("Por favor ingresa el número de comprobante", "warning");
-            return;
+        if (!ref || ref.trim() === "") {
+          showToast("Por favor ingresa el número de comprobante", "warning");
+          return;
         }
 
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
         try {
-            await db.collection('orders').doc(orderIdToUpdate).update({
-                status: 'Verificando',
-                paymentData: {
-                    bank: bank,
-                    refCode: ref.trim(),
-                    dateReported: firebase.firestore.FieldValue.serverTimestamp()
-                }
+          await db
+            .collection("orders")
+            .doc(orderIdToUpdate)
+            .update({
+              status: "Verificando",
+              paymentData: {
+                bank: bank,
+                refCode: ref.trim(),
+                dateReported: firebase.firestore.FieldValue.serverTimestamp(),
+              },
             });
-            
-            closeModal();
-            showToast("¡Reporte enviado! Ahora espera nuestra confirmación.", "success");
 
+          closeModal();
+          showToast(
+            "¡Reporte enviado! Ahora espera nuestra confirmación.",
+            "success"
+          );
         } catch (error) {
-            console.error("Error al actualizar:", error);
-            // IMPORTANTE: Mostramos el error real en alerta para depurar si falla
-            alert("Error detallado: " + error.message);
-            showToast("Error al enviar el reporte. Intenta de nuevo.", "error");
-            btn.disabled = false;
-            btn.innerText = 'Intentar de nuevo';
+          console.error("Error al actualizar:", error);
+          // IMPORTANTE: Mostramos el error real en alerta para depurar si falla
+          alert("Error detallado: " + error.message);
+          showToast("Error al enviar el reporte. Intenta de nuevo.", "error");
+          btn.disabled = false;
+          btn.innerText = "Intentar de nuevo";
         }
-    }
+      }
 
-    function closeModal() {
-        document.getElementById('detail-modal').classList.add('hidden');
-    }
-  </script>
-</body>
+      function closeModal() {
+        document.getElementById("detail-modal").classList.add("hidden");
+      }
+    </script>
+  </body>
 </html>
