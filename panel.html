@@ -14,7 +14,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>
@@ -44,20 +43,12 @@
 
   <style>
     body { background-color: #09090b; }
-    /* Scrollbar personalizada */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #18181b; }
     ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #52525b; }
-    
-    /* Checkbox personalizado */
-    .toggle-checkbox:checked {
-      right: 0;
-      border-color: #ff5e66;
-    }
-    .toggle-checkbox:checked + .toggle-label {
-      background-color: #ff5e66;
-    }
+    .toggle-checkbox:checked { right: 0; border-color: #ff5e66; }
+    .toggle-checkbox:checked + .toggle-label { background-color: #ff5e66; }
   </style>
 </head>
 <body class="text-zinc-100 antialiased h-screen flex overflow-hidden bg-dark-950">
@@ -81,13 +72,10 @@
       </a>
 
       <a href="#" onclick="switchView('orders')" id="nav-orders" class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all">
-  <i class="fas fa-shopping-bag w-5 text-center"></i>
-  <span class="flex-1">Pedidos</span>
-  
-  <span id="orders-badge" class="hidden bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse">
-    0
-  </span>
-</a>
+        <i class="fas fa-shopping-bag w-5 text-center"></i>
+        <span class="flex-1">Pedidos</span>
+        <span id="orders-badge" class="hidden bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse">0</span>
+      </a>
     </nav>
 
     <div class="p-4 border-t border-white/5 bg-dark-800/30">
@@ -111,7 +99,7 @@
         <button id="mobile-menu-btn" class="lg:hidden p-2 text-zinc-400 hover:text-white rounded-lg">
           <i class="fas fa-bars text-xl"></i>
         </button>
-        <h1 class="text-2xl font-bold text-white hidden sm:block">Administrar Productos</h1>
+        <h1 class="text-2xl font-bold text-white hidden sm:block">Panel de Control</h1>
       </div>
       
       <div class="flex items-center gap-4">
@@ -125,11 +113,10 @@
    <main class="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
       
       <div id="view-products" class="max-w-7xl mx-auto fade-in">
-        
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-8 bg-dark-900/50 p-2 rounded-2xl border border-white/5">
           <div class="relative w-full sm:max-w-md">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-            <input type="text" id="search-input" placeholder="Buscar por nombre o categoría..." 
+            <input type="text" id="search-input" placeholder="Buscar productos..." 
                    class="w-full bg-dark-800 border border-zinc-700 text-white text-sm rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand placeholder-zinc-600 transition-all">
           </div>
           <div class="flex bg-dark-800 p-1 rounded-xl w-full sm:w-auto filter-buttons" id="filter-container"></div>
@@ -158,8 +145,7 @@
 
       <div id="view-orders" class="max-w-7xl mx-auto hidden fade-in">
         <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-bold text-white">Historial de Pedidos</h2>
-            
+            <h2 class="text-2xl font-bold text-white">Gestión de Pedidos</h2>
         </div>
 
         <div class="bg-dark-900 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
@@ -167,12 +153,12 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-dark-800/50 border-b border-white/5 text-zinc-400 text-xs uppercase tracking-wider">
-                  <th class="p-5 font-semibold">Fecha</th>
+                  <th class="p-5 font-semibold">ID / Fecha</th>
                   <th class="p-5 font-semibold">Cliente</th>
                   <th class="p-5 font-semibold">Items</th>
                   <th class="p-5 font-semibold">Total</th>
                   <th class="p-5 font-semibold">Estado</th>
-                  <th class="p-5 font-semibold text-right">Acciones</th>
+                  <th class="p-5 font-semibold text-right">Gestionar</th>
                 </tr>
               </thead>
               <tbody id="orders-table-body" class="divide-y divide-white/5">
@@ -190,21 +176,18 @@
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="modal-backdrop"></div>
     <div class="relative w-full h-full flex items-center justify-center p-4">
       <div class="bg-dark-900 border border-zinc-700 w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-        
         <div class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50">
           <h3 class="text-xl font-bold text-white" id="modal-title">Agregar Producto</h3>
           <button id="close-modal" class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-red-500/20 hover:text-red-500 p-2 rounded-lg transition-colors">
             <i class="fas fa-times text-lg"></i>
           </button>
         </div>
-
         <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
           <form id="product-form" class="space-y-6">
             <input type="hidden" id="product-id">
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
-                <label class="text-sm font-medium text-zinc-400">Nombre del Producto</label>
+                <label class="text-sm font-medium text-zinc-400">Nombre</label>
                 <input type="text" id="product-name" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" required>
               </div>
               <div class="space-y-2">
@@ -220,24 +203,20 @@
                 </select>
               </div>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="md:col-span-2 space-y-2">
-                <label class="text-sm font-medium text-zinc-400">Subtítulo (Opcional)</label>
-                <input type="text" id="product-subtitle" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all placeholder-zinc-600" placeholder="Ej: Explora millones de mundos">
+                <label class="text-sm font-medium text-zinc-400">Subtítulo</label>
+                <input type="text" id="product-subtitle" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" placeholder="Opcional">
               </div>
               <div class="space-y-2 flex items-end pb-2">
                   <label class="flex items-center gap-3 cursor-pointer bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 w-full hover:border-brand/50 transition-all group">
                       <input type="checkbox" id="product-popular" class="accent-brand w-5 h-5 rounded cursor-pointer">
-                      <span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors select-none flex items-center gap-2">
-                        Es Popular <i class="fas fa-star text-yellow-500 text-xs"></i>
-                      </span>
+                      <span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors select-none flex items-center gap-2">Es Popular <i class="fas fa-star text-yellow-500 text-xs"></i></span>
                   </label>
               </div>
             </div>
-
             <div class="space-y-2">
-              <label class="text-sm font-medium text-zinc-400">URL del Logo</label>
+              <label class="text-sm font-medium text-zinc-400">URL Logo</label>
               <div class="flex gap-3">
                 <input type="url" id="product-logo" class="flex-1 bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" required>
                 <div class="w-12 h-12 bg-dark-800 rounded-lg border border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden">
@@ -246,143 +225,89 @@
                 </div>
               </div>
             </div>
-
             <div class="border-t border-white/5 pt-6">
               <div class="flex justify-between items-center mb-4">
-                <label class="text-sm font-bold text-white uppercase tracking-wider">Planes y Precios</label>
-                <button type="button" id="add-plan-btn" class="text-xs bg-dark-800 hover:bg-brand/20 hover:text-brand border border-zinc-700 hover:border-brand text-white px-3 py-1.5 rounded-lg transition-all">
-                  <i class="fas fa-plus mr-1"></i> Agregar Plan
-                </button>
+                <label class="text-sm font-bold text-white uppercase tracking-wider">Planes</label>
+                <button type="button" id="add-plan-btn" class="text-xs bg-dark-800 hover:bg-brand/20 hover:text-brand border border-zinc-700 hover:border-brand text-white px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-plus mr-1"></i> Agregar</button>
               </div>
               <div id="plans-container" class="space-y-3"></div>
             </div>
           </form>
         </div>
-
         <div class="p-5 border-t border-white/5 bg-dark-800/50 flex justify-end gap-3">
           <button id="cancel-btn" class="px-5 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white transition-all font-medium">Cancelar</button>
-          <button id="save-btn" class="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white shadow-lg shadow-brand/20 font-bold transition-all active:scale-95">Guardar Producto</button>
+          <button id="save-btn" class="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white shadow-lg shadow-brand/20 font-bold transition-all active:scale-95">Guardar</button>
         </div>
       </div>
     </div>
   </div>
 
-<!-- NOACCESS MODAL -->
-<div id="access-denied-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity"></div>
-    
-    <div class="relative bg-dark-900 border border-red-500/20 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl shadow-red-900/10 transform transition-all scale-100 animate-fade-in">
-        
-        <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-5 border border-red-500/20">
-            <i class="fas fa-lock text-3xl text-red-500"></i>
-        </div>
-        
-        <h3 class="text-2xl font-black text-white mb-2 tracking-tight">Acceso Restringido</h3>
-        <p class="text-zinc-400 mb-8 text-sm leading-relaxed">
-            Esta área es exclusiva para administradores. Serás redirigido a la tienda principal.
-        </p>
-        
-        <button onclick="window.location.href='index.html'" class="w-full py-3.5 px-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-xl font-bold shadow-lg shadow-red-900/20 transition-all active:scale-95 flex items-center justify-center gap-2">
-            <i class="fas fa-arrow-left"></i> Volver a la Tienda
-        </button>
-    </div>
-</div>
-
-<div id="order-modal" class="fixed inset-0 z-[80] hidden" role="dialog" aria-modal="true">
+  <div id="order-modal" class="fixed inset-0 z-[80] hidden" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeOrderModal()"></div>
-    
     <div class="relative w-full h-full flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-zinc-700 w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
-            
             <div class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50">
                 <div>
-                    <h3 class="text-xl font-bold text-white">Detalle del Pedido</h3>
-                    <p class="text-xs text-zinc-500 mt-1 font-mono" id="modal-order-id">Cargando ID...</p>
+                    <h3 class="text-xl font-bold text-white">Gestión del Pedido</h3>
+                    <p class="text-xs text-zinc-500 mt-1 font-mono" id="modal-order-id">Cargando...</p>
                 </div>
                 <button onclick="closeOrderModal()" class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-brand/20 hover:text-brand p-2 rounded-lg transition-colors">
                     <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
-
             <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
-                
                 <div class="flex flex-wrap gap-4 justify-between items-center bg-dark-950 p-4 rounded-xl border border-white/5">
                     <div class="flex items-center gap-3">
-                        <div id="modal-order-status-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase border">
-                            ESTADO
-                        </div>
-                        <span class="text-zinc-400 text-sm flex items-center gap-2">
-                            <i class="far fa-clock"></i> <span id="modal-order-date">...</span>
-                        </span>
+                        <div id="modal-order-status-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase border">ESTADO</div>
+                        <span class="text-zinc-400 text-sm flex items-center gap-2"><i class="far fa-clock"></i> <span id="modal-order-date">...</span></span>
                     </div>
-                    <div class="text-2xl font-black text-white" id="modal-order-total">$0.00</div>
+                    <div class="text-2xl font-black text-brand" id="modal-order-total">$0.00</div>
                 </div>
-
+                
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Cliente</h4>
                     <div class="flex items-center gap-4 p-4 bg-dark-950 rounded-xl border border-white/5">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 text-white flex items-center justify-center font-bold text-xl shadow-lg" id="modal-customer-avatar">
-                            ?
-                        </div>
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 text-white flex items-center justify-center font-bold text-xl shadow-lg" id="modal-customer-avatar">?</div>
                         <div>
                             <p class="text-white font-bold text-lg" id="modal-customer-name">...</p>
-                            <div class="flex items-center gap-2 text-sm text-zinc-400">
-                                <i class="fas fa-envelope"></i>
-                                <span id="modal-customer-email">...</span>
-                            </div>
+                            <div class="flex items-center gap-2 text-sm text-zinc-400"><i class="fas fa-envelope"></i> <span id="modal-customer-email">...</span></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Productos Comprados</h4>
-                    <div class="space-y-2" id="modal-order-items">
-                        </div>
+                    <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Productos</h4>
+                    <div class="space-y-2" id="modal-order-items"></div>
                 </div>
-
-            </div>
-
-            <div class="p-5 border-t border-white/5 bg-dark-800/50 flex justify-end gap-3">
-                <button onclick="closeOrderModal()" class="px-6 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 text-white font-bold border border-zinc-700 transition-all">
-                    Cerrar
-                </button>
             </div>
         </div>
     </div>
-</div>
+  </div>
 
-<!-- modales de notificacion o confrimacion reemplazo de alerts -->
- <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
-
-<div id="confirm-modal" class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true">
+  <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+  <div id="confirm-modal" class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
     <div class="relative w-full h-full flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-zinc-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 transform scale-100 transition-all animate-fade-in">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 text-red-500 text-3xl">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
+                <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 text-red-500 text-3xl"><i class="fas fa-exclamation-triangle"></i></div>
                 <h3 class="text-xl font-bold text-white mb-2" id="confirm-title">¿Estás seguro?</h3>
                 <p class="text-zinc-400 text-sm" id="confirm-desc">Esta acción no se puede deshacer.</p>
             </div>
             <div class="flex gap-3">
-                <button id="btn-confirm-cancel" class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white font-medium transition-all">
-                    Cancelar
-                </button>
-                <button id="btn-confirm-yes" class="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-900/20 transition-all">
-                    Sí, eliminar
-                </button>
+                <button id="btn-confirm-cancel" class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white font-medium transition-all">Cancelar</button>
+                <button id="btn-confirm-yes" class="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-900/20 transition-all">Sí, confirmar</button>
             </div>
         </div>
     </div>
-</div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
 
   <script>
-    // --- Configuración Firebase ---
+    // Configuración Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
       authDomain: "site-fullstreamrec.firebaseapp.com",
@@ -396,7 +321,7 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // --- Variables Globales ---
+    // Variables
     let products = [];
     let currentProductId = null;
     let isEditing = false;
@@ -404,757 +329,332 @@
     let ordersUnsubscribe = null;
     const categoryOrder = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
 
-    // --- Elementos DOM ---
+    // DOM
     const tableBody = document.getElementById('products-table-body');
     const searchInput = document.getElementById('search-input');
     const modal = document.getElementById('product-modal');
     const plansContainer = document.getElementById('plans-container');
     const productForm = document.getElementById('product-form');
     const filterContainer = document.getElementById('filter-container');
-
-    // --- Sidebar Mobile Logic ---
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
 
-    // modales de confrimacion
-    // --- SISTEMA DE NOTIFICACIONES (TOASTS) ---
+    // Utils
     function showToast(message, type = 'success') {
         const container = document.getElementById('toast-container');
-        
-        // Configuración según tipo
         const config = {
             success: { icon: 'fa-check-circle', color: 'text-green-500', border: 'border-green-500/20', bg: 'bg-dark-800' },
             error:   { icon: 'fa-times-circle', color: 'text-red-500',   border: 'border-red-500/20',   bg: 'bg-dark-800' },
             warning: { icon: 'fa-exclamation-circle', color: 'text-yellow-500', border: 'border-yellow-500/20', bg: 'bg-dark-800' }
         };
         const style = config[type] || config.success;
-
-        // Crear elemento
         const toast = document.createElement('div');
         toast.className = `pointer-events-auto flex items-center gap-3 p-4 rounded-xl border ${style.border} ${style.bg} shadow-2xl shadow-black/50 min-w-[300px] transform transition-all duration-300 translate-x-full opacity-0`;
-        toast.innerHTML = `
-            <i class="fas ${style.icon} text-xl ${style.color}"></i>
-            <p class="text-sm font-medium text-white">${message}</p>
-        `;
-
+        toast.innerHTML = `<i class="fas ${style.icon} text-xl ${style.color}"></i><p class="text-sm font-medium text-white">${message}</p>`;
         container.appendChild(toast);
-
-        // Animar entrada
-        requestAnimationFrame(() => {
-            toast.classList.remove('translate-x-full', 'opacity-0');
-        });
-
-        // Eliminar después de 3 segundos
-        setTimeout(() => {
-            toast.classList.add('translate-x-full', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
+        setTimeout(() => { toast.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
     }
 
-    // --- SISTEMA DE CONFIRMACIÓN (MODAL) ---
     let confirmCallback = null;
-    
     function showConfirm(title, desc, callback) {
         document.getElementById('confirm-title').innerText = title;
         document.getElementById('confirm-desc').innerText = desc;
         document.getElementById('confirm-modal').classList.remove('hidden');
         confirmCallback = callback;
     }
+    document.getElementById('btn-confirm-cancel').onclick = () => { document.getElementById('confirm-modal').classList.add('hidden'); confirmCallback = null; };
+    document.getElementById('btn-confirm-yes').onclick = () => { if (confirmCallback) confirmCallback(); document.getElementById('confirm-modal').classList.add('hidden'); };
 
-    // Eventos del modal de confirmación
-    document.getElementById('btn-confirm-cancel').onclick = () => {
-        document.getElementById('confirm-modal').classList.add('hidden');
-        confirmCallback = null;
-    };
-    document.getElementById('btn-confirm-yes').onclick = () => {
-        if (confirmCallback) confirmCallback();
-        document.getElementById('confirm-modal').classList.add('hidden');
-    };
-
-
-
-    function toggleSidebar() {
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-    }
-
+    function toggleSidebar() { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); }
     mobileMenuBtn.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
-    // --- Lógica de Filtrado Unificada ---
+    // EmailJS Init
+    (function() { emailjs.init("5tNGraAK_s0gjLTmU"); })();
+
+    // --- Lógica Productos ---
     function applyFilters() {
         const searchTerm = searchInput.value.toLowerCase();
-        
         let filtered = products.filter(p => {
-            const matchesSearch = p.name.toLowerCase().includes(searchTerm) || 
-                                  p.category.toLowerCase().includes(searchTerm);
-            
+            const matchesSearch = p.name.toLowerCase().includes(searchTerm) || p.category.toLowerCase().includes(searchTerm);
             let matchesStatus = true;
             if (currentFilter === 'visible') matchesStatus = p.visible !== false; 
             if (currentFilter === 'hidden') matchesStatus = p.visible === false;
-
             return matchesSearch && matchesStatus;
         });
-
         renderTable(filtered);
     }
 
-    // --- Renderizado de Tabla ---
     function renderTable(data) {
         data.sort((a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category));
-
         tableBody.innerHTML = '';
-
-        if (data.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-500">No se encontraron productos</td></tr>`;
-            return;
-        }
+        if (data.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-500">No se encontraron productos</td></tr>`; return; }
 
         data.forEach(p => {
             const isHidden = p.visible === false;
             const row = document.createElement('tr');
             row.className = `group hover:bg-white/5 transition-colors border-b border-white/5 ${isHidden ? 'bg-red-900/10' : ''}`;
-            
             row.innerHTML = `
-                <td class="p-4">
-                    <div class="w-12 h-12 rounded-lg bg-dark-800 border border-white/10 flex items-center justify-center overflow-hidden p-1">
-                        <img src="${p.logo}" class="w-full h-full object-contain ${isHidden ? 'grayscale opacity-50' : ''}" onerror="this.src='https://fakeimg.pl/50x50?text=Error'">
-                    </div>
-                </td>
-                <td class="p-4">
-                    <p class="font-bold text-white text-sm ${isHidden ? 'text-zinc-500 line-through' : ''}">${p.name}</p>
-                    <p class="text-xs text-zinc-500">${p.subtitle || ''}</p>
-                </td>
-                <td class="p-4 text-center">
-                    ${p.isPopular ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20"><i class="fas fa-star mr-1"></i>Popular</span>' : '<span class="text-zinc-600">-</span>'}
-                </td>
-                <td class="p-4 text-center">
-                    <span class="text-sm font-bold text-brand">${p.plans ? p.plans.length : 0}</span>
-                </td>
-                <td class="p-4 text-center">
-                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${isHidden ? 'bg-zinc-800 text-zinc-500 border border-zinc-700' : 'bg-green-500/10 text-green-400 border border-green-500/20'}">
-                        ${isHidden ? 'Oculto' : 'Visible'}
-                    </span>
-                </td>
-                <td class="p-4 text-right">
-                    <div class="flex items-center justify-end gap-2">
-                        <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-blue-500/20 hover:text-blue-400 text-zinc-400 transition-colors flex items-center justify-center" title="Editar">
-                            <i class="fas fa-pen text-xs"></i>
-                        </button>
-                        <button onclick="toggleVisibility('${p.id}', ${isHidden})" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-yellow-500/20 hover:text-yellow-400 text-zinc-400 transition-colors flex items-center justify-center" title="${isHidden ? 'Mostrar' : 'Ocultar'}">
-                            <i class="fas ${isHidden ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i>
-                        </button>
-                        <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 transition-colors flex items-center justify-center" title="Eliminar">
-                            <i class="fas fa-trash text-xs"></i>
-                        </button>
-                    </div>
-                </td>
+                <td class="p-4"><div class="w-12 h-12 rounded-lg bg-dark-800 border border-white/10 flex items-center justify-center overflow-hidden p-1"><img src="${p.logo}" class="w-full h-full object-contain ${isHidden ? 'grayscale opacity-50' : ''}" onerror="this.src='https://fakeimg.pl/50x50?text=Error'"></div></td>
+                <td class="p-4"><p class="font-bold text-white text-sm ${isHidden ? 'text-zinc-500 line-through' : ''}">${p.name}</p><p class="text-xs text-zinc-500">${p.subtitle || ''}</p></td>
+                <td class="p-4 text-center">${p.isPopular ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20"><i class="fas fa-star mr-1"></i>Popular</span>' : '<span class="text-zinc-600">-</span>'}</td>
+                <td class="p-4 text-center"><span class="text-sm font-bold text-brand">${p.plans ? p.plans.length : 0}</span></td>
+                <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${isHidden ? 'bg-zinc-800 text-zinc-500 border border-zinc-700' : 'bg-green-500/10 text-green-400 border border-green-500/20'}">${isHidden ? 'Oculto' : 'Visible'}</span></td>
+                <td class="p-4 text-right"><div class="flex items-center justify-end gap-2">
+                    <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-blue-500/20 hover:text-blue-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>
+                    <button onclick="toggleVisibility('${p.id}', ${isHidden})" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-yellow-500/20 hover:text-yellow-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas ${isHidden ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i></button>
+                    <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button>
+                </div></td>
             `;
             tableBody.appendChild(row);
         });
     }
 
-    // --- Inicialización Filtros ---
     function initFilterButtons() {
         filterContainer.innerHTML = '';
-        const filters = [
-            { id: 'all', label: 'Todos' },
-            { id: 'visible', label: 'Visibles' },
-            { id: 'hidden', label: 'Ocultos' }
-        ];
-
+        const filters = [{ id: 'all', label: 'Todos' }, { id: 'visible', label: 'Visibles' }, { id: 'hidden', label: 'Ocultos' }];
         filters.forEach(f => {
             const btn = document.createElement('button');
             let baseClass = 'flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-medium transition-all border border-transparent ';
-            if (currentFilter === f.id) {
-                baseClass += 'bg-brand text-white shadow-lg shadow-brand/20 border-brand';
-            } else {
-                baseClass += 'text-zinc-400 hover:text-white hover:bg-dark-700 border-zinc-800';
-            }
-            
-            btn.className = baseClass;
-            btn.textContent = f.label;
-            
-            btn.onclick = () => {
-                currentFilter = f.id;
-                initFilterButtons();
-                applyFilters();
-            };
+            if (currentFilter === f.id) baseClass += 'bg-brand text-white shadow-lg shadow-brand/20 border-brand'; else baseClass += 'text-zinc-400 hover:text-white hover:bg-dark-700 border-zinc-800';
+            btn.className = baseClass; btn.textContent = f.label;
+            btn.onclick = () => { currentFilter = f.id; initFilterButtons(); applyFilters(); };
             filterContainer.appendChild(btn);
         });
     }
 
-    // --- Carga de Datos ---
     async function loadProducts() {
         try {
-            if(products.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td></tr>';
-            }
-            
+            if(products.length === 0) tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td></tr>';
             const snap = await db.collection("products").get();
-            products = snap.docs.map(doc => ({ 
-                id: doc.id, 
-                visible: doc.data().visible !== false, 
-                ...doc.data() 
-            }));
-            
-            applyFilters();
-            initFilterButtons();
-        } catch (e) {
-            console.error("Error:", e);
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-red-500 p-4">Error al cargar</td></tr>';
-        }
+            products = snap.docs.map(doc => ({ id: doc.id, visible: doc.data().visible !== false, ...doc.data() }));
+            applyFilters(); initFilterButtons();
+        } catch (e) { console.error(e); showToast("Error al cargar productos", "error"); }
     }
 
-    // --- Acciones CRUD ---
     window.toggleVisibility = async (id, newState) => {
         const pIndex = products.findIndex(p => p.id === id);
-        
-        try {
-            // Optimismo UI: cambiamos visualmente primero
-            if(pIndex !== -1) {
-                products[pIndex].visible = newState;
-                applyFilters();
-            }
-            await db.collection("products").doc(id).update({ visible: newState });
-            
-            // Notificación sutil
-            showToast(newState ? 'Producto visible' : 'Producto oculto', 'success');
-            
-        } catch(e) {
-            showToast("Error al actualizar estado", "error");
-            // Revertir si falla
-            if(pIndex !== -1) {
-                products[pIndex].visible = !newState;
-                applyFilters();
-            }
-        }
+        if(pIndex !== -1) { products[pIndex].visible = newState; applyFilters(); }
+        try { await db.collection("products").doc(id).update({ visible: newState }); showToast(newState ? 'Producto visible' : 'Producto oculto', 'success'); }
+        catch(e) { showToast("Error al actualizar", "error"); if(pIndex !== -1) { products[pIndex].visible = !newState; applyFilters(); } }
     };
 
     window.deleteProduct = (id) => {
-        showConfirm(
-            "¿Eliminar producto?", 
-            "Se borrará permanentemente del catálogo.", 
-            async () => {
-                try {
-                    await db.collection("products").doc(id).delete();
-                    products = products.filter(p => p.id !== id);
-                    applyFilters();
-                    showToast("Producto eliminado correctamente", "success");
-                } catch (e) {
-                    showToast("Error al eliminar: " + e.message, "error");
-                }
-            }
-        );
+        showConfirm("¿Eliminar producto?", "Se borrará permanentemente.", async () => {
+            try { await db.collection("products").doc(id).delete(); products = products.filter(p => p.id !== id); applyFilters(); showToast("Producto eliminado", "success"); } 
+            catch (e) { showToast("Error: " + e.message, "error"); }
+        });
     };
 
     window.editProduct = (id) => {
-        const p = products.find(x => x.id === id);
-        if(!p) return;
-        
-        isEditing = true;
-        currentProductId = id;
-        document.getElementById('product-name').value = p.name;
-        document.getElementById('product-category').value = p.category;
-        document.getElementById('product-logo').value = p.logo;
-        
-        // NUEVOS CAMPOS
-        document.getElementById('product-subtitle').value = p.subtitle || '';
-        document.getElementById('product-popular').checked = p.isPopular || false;
-        
+        const p = products.find(x => x.id === id); if(!p) return;
+        isEditing = true; currentProductId = id;
+        document.getElementById('product-name').value = p.name; document.getElementById('product-category').value = p.category; document.getElementById('product-logo').value = p.logo;
+        document.getElementById('product-subtitle').value = p.subtitle || ''; document.getElementById('product-popular').checked = p.isPopular || false;
         document.getElementById('product-logo').dispatchEvent(new Event('input'));
-
         plansContainer.innerHTML = '';
-        if(p.plans) {
-            p.plans.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(plan => {
-                addPlanToForm(plan.name, plan.price, plan.image);
-            });
-        }
-        
-        showModal(true);
-        new Sortable(plansContainer, { animation: 150, handle: '.drag-handle' });
+        if(p.plans) p.plans.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(plan => addPlanToForm(plan.name, plan.price, plan.image));
+        showModal(true); new Sortable(plansContainer, { animation: 150, handle: '.drag-handle' });
     };
 
-    // --- Formularios ---
     function addPlanToForm(name = '', price = '', image = '') {
         const div = document.createElement('div');
         div.className = 'plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors';
-        div.innerHTML = `
-            <div class="flex items-center gap-3">
-                <div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2">
-                    <i class="fas fa-grip-vertical"></i>
-                </div>
-                <div class="flex-1 grid grid-cols-2 gap-3">
-                    <input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre del Plan" value="${name}" required>
-                    <input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required>
-                </div>
-                <button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2 rounded-lg hover:bg-red-500/10 transition-colors">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="flex items-center gap-3 pl-8">
-                <div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
-                    <img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'">
-                    <i class="fas fa-image text-xs text-zinc-600 ${image ? 'hidden' : ''}"></i>
-                </div>
-                <input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen del Plan (Opcional)" value="${image}">
-            </div>
-        `;
-
-        const urlInput = div.querySelector('.plan-image');
-        const imgPreview = div.querySelector('.plan-img-preview');
-        const iconPlaceholder = div.querySelector('.fa-image');
-        
-        urlInput.addEventListener('input', (e) => {
-            if(e.target.value) {
-                imgPreview.src = e.target.value;
-                imgPreview.style.display = 'block';
-                iconPlaceholder.classList.add('hidden');
-            } else {
-                imgPreview.style.display = 'none';
-                iconPlaceholder.classList.remove('hidden');
-            }
-        });
-
+        div.innerHTML = `<div class="flex items-center gap-3"><div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2"><i class="fas fa-grip-vertical"></i></div><div class="flex-1 grid grid-cols-2 gap-3"><input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre" value="${name}" required><input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required></div><button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button></div><div class="flex items-center gap-3 pl-8"><div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0"><img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'"><i class="fas fa-image text-xs text-zinc-600 ${image ? 'hidden' : ''}"></i></div><input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen" value="${image}"></div>`;
+        div.querySelector('.plan-image').addEventListener('input', (e) => { const img = div.querySelector('.plan-img-preview'); const icon = div.querySelector('.fa-image'); if(e.target.value) { img.src = e.target.value; img.style.display = 'block'; icon.classList.add('hidden'); } else { img.style.display = 'none'; icon.classList.remove('hidden'); } });
         div.querySelector('.remove-plan').onclick = () => div.remove();
         plansContainer.appendChild(div);
     }
 
     document.getElementById('save-btn').onclick = async (e) => {
         e.preventDefault();
-        if(!productForm.checkValidity()) {
-            productForm.reportValidity();
-            return;
-        }
-
-        const plans = [];
-        document.querySelectorAll('.plan-item').forEach((el, index) => {
-            plans.push({
-                name: el.querySelector('.plan-name').value,
-                price: el.querySelector('.plan-price').value,
-                image: el.querySelector('.plan-image').value,
-                order: index
-            });
-        });
-
-        if(plans.length === 0) {
-            showToast("Agrega al menos un plan", "warning"); // <-- CAMBIO AQUÍ
-            return;
-        }
-
-        const data = {
-            name: document.getElementById('product-name').value,
-            subtitle: document.getElementById('product-subtitle').value, // NUEVO
-            isPopular: document.getElementById('product-popular').checked, // NUEVO
-            category: document.getElementById('product-category').value,
-            logo: document.getElementById('product-logo').value,
-            plans: plans,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        try {
-            if(isEditing) {
-                const oldP = products.find(p => p.id === currentProductId);
-                data.visible = oldP ? oldP.visible : true;
-                await db.collection("products").doc(currentProductId).update(data);
-                showToast("Producto actualizado correctamente", "success"); // <-- NUEVO
-            } else {
-                data.visible = true;
-                await db.collection("products").add(data);
-                showToast("Producto creado correctamente", "success"); // <-- NUEVO
-            }
-            hideModal();
-            loadProducts();
-        } catch(e) {
-           showToast("Error al guardar: " + e.message, "error"); // <-- CAMBIO AQUÍ
-        }
+        if(!productForm.checkValidity()) { productForm.reportValidity(); return; }
+        const plans = []; document.querySelectorAll('.plan-item').forEach((el, index) => { plans.push({ name: el.querySelector('.plan-name').value, price: el.querySelector('.plan-price').value, image: el.querySelector('.plan-image').value, order: index }); });
+        if(plans.length === 0) { showToast("Agrega al menos un plan", "warning"); return; }
+        const data = { name: document.getElementById('product-name').value, subtitle: document.getElementById('product-subtitle').value, isPopular: document.getElementById('product-popular').checked, category: document.getElementById('product-category').value, logo: document.getElementById('product-logo').value, plans: plans, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+        try { if(isEditing) { const oldP = products.find(p => p.id === currentProductId); data.visible = oldP ? oldP.visible : true; await db.collection("products").doc(currentProductId).update(data); showToast("Producto actualizado", "success"); } else { data.visible = true; await db.collection("products").add(data); showToast("Producto creado", "success"); } hideModal(); loadProducts(); } catch(e) { showToast("Error al guardar", "error"); }
     };
 
-    function showModal(edit = false) {
-        modal.classList.remove('hidden');
-        document.getElementById('modal-title').textContent = edit ? 'Editar Producto' : 'Agregar Producto';
-        document.getElementById('logo-preview').style.display = 'none';
-        document.getElementById('logo-placeholder').style.display = 'block';
+    function showModal(edit = false) { modal.classList.remove('hidden'); document.getElementById('modal-title').textContent = edit ? 'Editar Producto' : 'Agregar Producto'; document.getElementById('logo-preview').style.display = 'none'; document.getElementById('logo-placeholder').style.display = 'block'; }
+    function hideModal() { modal.classList.add('hidden'); productForm.reset(); plansContainer.innerHTML = ''; currentProductId = null; isEditing = false; }
+    document.getElementById('add-plan-btn').onclick = () => addPlanToForm(); document.getElementById('close-modal').onclick = hideModal; document.getElementById('cancel-btn').onclick = hideModal; document.getElementById('modal-backdrop').onclick = hideModal; document.getElementById('product-logo').addEventListener('input', function() { const img = document.getElementById('logo-preview'); const ph = document.getElementById('logo-placeholder'); if(this.value) { img.src = this.value; img.style.display = 'block'; ph.style.display = 'none'; } else { img.style.display = 'none'; ph.style.display = 'block'; } });
+
+    // --- Lógica Pedidos ---
+    function switchView(viewName) {
+        const pv = document.getElementById('view-products'), ov = document.getElementById('view-orders'), np = document.getElementById('nav-products'), no = document.getElementById('nav-orders');
+        const ac = "bg-brand/10 text-brand border-brand/10 font-medium", ic = "text-zinc-400 hover:text-white hover:bg-white/5 border-transparent";
+        if (viewName === 'products') { pv.classList.remove('hidden'); ov.classList.add('hidden'); np.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ac}`; no.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ic}`; }
+        else { pv.classList.add('hidden'); ov.classList.remove('hidden'); np.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ic}`; no.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ac}`; if (!ordersUnsubscribe) loadOrdersRealTime(); }
     }
 
-    function hideModal() {
-        modal.classList.add('hidden');
-        productForm.reset();
-        plansContainer.innerHTML = '';
-        currentProductId = null;
-        isEditing = false;
-    }
-
-    // Listeners
-    searchInput.addEventListener('input', applyFilters);
-    document.getElementById('add-product-btn').onclick = () => {
-        isEditing = false;
-        plansContainer.innerHTML = '';
-        showModal(false);
-        new Sortable(plansContainer, { animation: 150, handle: '.drag-handle' });
-    };
-    document.getElementById('add-plan-btn').onclick = () => addPlanToForm();
-    document.getElementById('close-modal').onclick = hideModal;
-    document.getElementById('cancel-btn').onclick = hideModal;
-    document.getElementById('modal-backdrop').onclick = hideModal;
-    
-    document.getElementById('product-logo').addEventListener('input', function() {
-        const url = this.value;
-        const img = document.getElementById('logo-preview');
-        const placeholder = document.getElementById('logo-placeholder');
-        if(url) { img.src = url; img.style.display = 'block'; placeholder.style.display = 'none'; } 
-        else { img.style.display = 'none'; placeholder.style.display = 'block'; }
-    });
-
-   // Auth - Lógica de Protección de Admin con Modal
-    auth.onAuthStateChanged(user => {
-        // ⚠️ Tu correo de administrador
-        const ADMIN_EMAIL = "luisavilez333@gmail.com"; 
-
-        if (user) {
-            // 1. Verificamos si es el administrador
-            if (user.email === ADMIN_EMAIL) {
-                // EXITO: Es el admin, cargamos el panel
-                document.getElementById('user-email').textContent = user.email;
-                document.getElementById('user-avatar').textContent = user.email.charAt(0).toUpperCase();
-                loadProducts();
-                loadOrdersRealTime();
-            } else {
-                // 2. Es un cliente normal (se equivocó de URL)
-                // Mostramos el Modal Bonito en lugar del alert
-                const modal = document.getElementById('access-denied-modal');
-                modal.classList.remove('hidden');
-                
-                // Opcional: Redirigir automáticamente después de 4 segundos
-                // si el usuario no hace clic en el botón
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 4000);
-            }
-        } else {
-            // 3. No hay nadie logueado, mandar al login
-            window.location.href = 'login.html';
-        }
-    });
-
-   // --- Función de Tiempo Híbrida (Relativo + Exacto) ---
-    function timeAgo(dateInput) {
-        const date = new Date(dateInput);
-        const now = new Date();
-        const seconds = Math.floor((now - date) / 1000);
-
-        // Validación básica
-        if (seconds < 0 || isNaN(seconds)) return "Reciente";
-
-        // Definimos el límite de 1 semana en segundos (7 días * 24h * 60m * 60s)
-        const ONE_WEEK = 604800;
-
-        // CASO 1: Si pasó más de una semana, mostramos el formato exacto
-        if (seconds > ONE_WEEK) {
-            // Formatear hora (HH:MM:SS)
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            const sec = date.getSeconds().toString().padStart(2, '0');
-            
-            // Formatear fecha (DD-MM-YYYY)
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses van de 0-11
-            const year = date.getFullYear();
-
-            return `[${hours}:${minutes}:${sec}] [${day}-${month}-${year}]`;
-        }
-
-        // CASO 2: Si es reciente (menos de una semana), usamos estilo Facebook
-        
-        if (seconds < 60) return "hace un momento";
-
-        const intervals = [
-            { label: 'día', seconds: 86400 },
-            { label: 'hora', seconds: 3600 },
-            { label: 'minuto', seconds: 60 }
-        ];
-
-        for (const interval of intervals) {
-            const count = Math.floor(seconds / interval.seconds);
-            
-            if (count >= 1) {
-                let label = interval.label;
-                // Pluralización simple (día->días, hora->horas)
-                if (count > 1) label += 's'; 
-                return `hace ${count} ${label}`;
-            }
-        }
-        
+    function timeAgo(date) {
+        const s = Math.floor((new Date() - date) / 1000);
+        if (s < 0 || isNaN(s)) return "Reciente";
+        if (s > 604800) return date.toLocaleDateString('es-ES', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+        if (s < 60) return "hace un momento";
+        const i = [{l:'día',s:86400}, {l:'hora',s:3600}, {l:'minuto',s:60}];
+        for (const v of i) { const c = Math.floor(s / v.s); if (c >= 1) return `hace ${c} ${v.l}${c>1?'s':''}`; }
         return "hace un momento";
     }
 
-    //pedidos
-    // --- Lógica de Vistas (Tabs) ---
-    function switchView(viewName) {
-        const productsView = document.getElementById('view-products');
-        const ordersView = document.getElementById('view-orders');
-        const navProducts = document.getElementById('nav-products');
-        const navOrders = document.getElementById('nav-orders');
-
-        // Estilos base para activo e inactivo
-        const activeClass = "bg-brand/10 text-brand border-brand/10 font-medium";
-        const inactiveClass = "text-zinc-400 hover:text-white hover:bg-white/5 border-transparent";
-
-        if (viewName === 'products') {
-            productsView.classList.remove('hidden');
-            ordersView.classList.add('hidden');
-            
-            navProducts.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${activeClass}`;
-            navOrders.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${inactiveClass}`;
-        } else {
-            productsView.classList.add('hidden');
-            ordersView.classList.remove('hidden');
-            
-            navProducts.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${inactiveClass}`;
-            navOrders.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${activeClass}`;
-            
-            loadOrders(); // Cargar pedidos al entrar
-        }
-        if (!ordersUnsubscribe) {
-                loadOrdersRealTime(); 
-            }
-    }
-
-    // --- Lógica de Pedidos ---
-    // --- Lógica de Pedidos Actualizada ---
-   // --- Lógica de Pedidos en Tiempo Real ---
-   function loadOrdersRealTime() {
+    function loadOrdersRealTime() {
         const table = document.getElementById('orders-table-body');
-        
-        // Loader inicial solo si la tabla está vacía
-        if(!table.innerHTML.trim() || table.innerHTML.includes('Cargando')) {
-             table.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Conectando pedidos en vivo...</td></tr>';
-        }
-
-        // Escuchamos cambios en tiempo real
-        ordersUnsubscribe = db.collection('orders')
-            .orderBy('date', 'desc')
-            .limit(50)
-            .onSnapshot((snapshot) => {
+        if(!table.innerHTML.trim() || table.innerHTML.includes('Cargando')) table.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Conectando...</td></tr>';
+        ordersUnsubscribe = db.collection('orders').orderBy('date', 'desc').limit(50).onSnapshot((snapshot) => {
+            let pending = 0;
+            snapshot.forEach(doc => { if (doc.data().status === 'Pendiente') pending++; });
+            const badge = document.getElementById('orders-badge');
+            if (badge) { if (pending > 0) { badge.textContent = pending; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); } }
+            
+            if (snapshot.empty) { table.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Sin pedidos.</td></tr>'; return; }
+            table.innerHTML = '';
+            
+            snapshot.forEach(doc => {
+                const o = doc.data();
+                const date = o.date ? o.date.toDate() : new Date();
+                let stClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+                if (o.status === 'Completado') stClass = 'bg-green-500/10 text-green-500 border-green-500/20';
+                else if (o.status === 'Cancelado') stClass = 'bg-red-500/10 text-red-500 border-red-500/20';
+                else if (o.status === 'Verificando') stClass = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
                 
-                // 1. LÓGICA DEL NOTIFICADOR (BADGE)
-                let pendingCount = 0;
-                
-                // Primero recorremos para contar los pendientes
-                snapshot.forEach(doc => {
-                    if (doc.data().status === 'Pendiente') {
-                        pendingCount++;
-                    }
-                });
-
-                // Actualizamos el circulito
-                const badge = document.getElementById('orders-badge');
-                if (badge) {
-                    if (pendingCount > 0) {
-                        badge.textContent = pendingCount;
-                        badge.classList.remove('hidden'); // Mostrar si hay pendientes
-                    } else {
-                        badge.classList.add('hidden'); // Ocultar si no hay nada
-                    }
-                }
-
-                // 2. LÓGICA DE LA TABLA (Igual que antes)
-                if (snapshot.empty) {
-                    table.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">No hay pedidos registrados aún.</td></tr>';
-                    return;
-                }
-
-                table.innerHTML = ''; 
-                
-                snapshot.forEach(doc => {
-                    const order = doc.data();
-                    const dateObj = order.date ? order.date.toDate() : new Date();
-                    const relativeTime = order.date ? timeAgo(dateObj) : 'Reciente';
-                    const fullDate = order.date ? dateObj.toLocaleString() : '';
-
-                    let statusColor = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-                    if (order.status === 'Completado') statusColor = 'bg-green-500/10 text-green-500 border-green-500/20';
-                    if (order.status === 'Cancelado') statusColor = 'bg-red-500/10 text-red-500 border-red-500/20';
-
-                    const row = document.createElement('tr');
-                    row.className = "hover:bg-white/5 transition-colors border-b border-white/5 group animate-fade-in";
-                    
-                    row.innerHTML = `
-                        <td class="p-4 text-sm text-zinc-400 whitespace-nowrap" title="${fullDate}">
-                            <i class="far fa-clock mr-1 text-xs"></i> ${relativeTime}
-                        </td>
-                        <td class="p-4">
-                            <div class="font-bold text-white text-sm">${order.userName}</div>
-                            <div class="text-xs text-zinc-500">${order.userEmail}</div>
-                        </td>
-                        <td class="p-4 text-sm text-zinc-400">
-                            ${order.items ? order.items.length : 0} producto(s)
-                        </td>
-                        <td class="p-4 font-bold text-brand">${order.totalFormatted}</td>
-                        <td class="p-4">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${statusColor}">
-                                ${order.status}
-                            </span>
-                        </td>
-                        <td class="p-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button onclick="openOrderModal('${doc.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-brand/20 hover:text-brand text-zinc-400 transition-colors flex items-center justify-center border border-white/5" title="Ver Detalle">
-                                    <i class="fas fa-eye text-xs"></i>
-                                </button>
-
-                                <select onchange="updateOrderStatus('${doc.id}', this.value)" class="bg-dark-950 border border-zinc-700 text-zinc-300 text-xs rounded-lg px-2 py-1 focus:border-brand focus:outline-none h-8 cursor-pointer">
-                                    <option value="Pendiente" ${order.status === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-                                    <option value="Completado" ${order.status === 'Completado' ? 'selected' : ''}>Completado</option>
-                                    <option value="Cancelado" ${order.status === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
-                                </select>
-                            </div>
-                        </td>
-                    `;
-                    table.appendChild(row);
-                });
-
-            }, (error) => {
-                console.error("Error cargando pedidos:", error);
+                const row = document.createElement('tr');
+                row.className = "hover:bg-white/5 transition-colors border-b border-white/5 group";
+                row.innerHTML = `
+                    <td class="p-4 text-sm text-zinc-400 whitespace-nowrap"><span class="block font-mono text-white text-xs mb-1">#${doc.id.slice(0,6)}</span><i class="far fa-clock mr-1 text-xs"></i> ${timeAgo(date)}</td>
+                    <td class="p-4"><div class="font-bold text-white text-sm">${o.userName}</div><div class="text-xs text-zinc-500">${o.userEmail}</div></td>
+                    <td class="p-4 text-sm text-zinc-400">${o.items ? o.items.length : 0} items</td>
+                    <td class="p-4 font-bold text-brand">${o.totalFormatted}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${stClass}">${o.status}</span></td>
+                    <td class="p-4 text-right">
+                        <button onclick="openOrderModal('${doc.id}')" class="bg-brand/10 hover:bg-brand hover:text-white text-brand font-bold py-1.5 px-4 rounded-lg text-xs transition-all border border-brand/20">Gestionar</button>
+                    </td>
+                `;
+                table.appendChild(row);
             });
+        });
     }
 
-    // --- CONFIGURACIÓN DE CORREO ---
-    // Inicializar EmailJS (¡Haz esto solo una vez al principio del script!)
-    (function() {
-        // ⚠️ PEGA AQUÍ TU PUBLIC KEY
-        emailjs.init("5tNGraAK_s0gjLTmU"); 
-    })();
-
-    async function updateOrderStatus(orderId, newStatus) {
-        // ⚠️ TUS IDs DE EMAILJS
-        const SERVICE_ID = "service_xdg8iho"; 
-        const TEMPLATE_ID = "template_n9he98z";
-
-        const selectElement = event.target; 
-        const originalValue = selectElement.value;
-        
-        // Bloquear para evitar doble clic y mostrar espera
-        selectElement.disabled = true;
-        document.body.style.cursor = 'wait';
-
-        try {
-            // 1. Obtener datos del pedido
-            const orderRef = db.collection('orders').doc(orderId);
-            const doc = await orderRef.get();
-            
-            if (!doc.exists) throw new Error("Pedido no encontrado");
-            const order = doc.data();
-
-            // 2. Actualizar estado en Firebase
-            // (Al hacer esto, el listener en tiempo real actualizará la tabla solo)
-            await orderRef.update({ status: newStatus });
-
-            // 3. Enviar Correo (Solo si es Completado o Cancelado)
-            if (newStatus === 'Completado' || newStatus === 'Cancelado') {
-                
-                const templateParams = {
-                    to_email: order.userEmail,
-                    to_name: order.userName,
-                    new_status: newStatus,
-                    items_list: order.items.map(i => `<b>• ${i.productName}</b> (${i.planName})`).join('<br>'),
-                    total: order.totalFormatted
-                };
-
-                // Enviar el correo
-                await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
-                
-                // ✅ Notificación de Éxito con Correo
-                showToast(`Estado actualizado a "${newStatus}" y correo enviado`, 'success');
-
-            } else {
-                // Si lo regresas a Pendiente (sin correo)
-                // ✅ Notificación de Éxito simple
-                showToast("Estado cambiado a Pendiente", "success");
-            }
-
-        } catch (error) {
-            console.error("Error:", error);
-            
-            // ❌ Notificación de Error
-            // Usamos un mensaje un poco más corto para que quepa bien en el toast
-            showToast("Error al actualizar: " + error.message, "error");
-            
-            selectElement.value = originalValue; // Regresar al valor anterior si falla
-        } finally {
-            if(selectElement) selectElement.disabled = false;
-            document.body.style.cursor = 'default';
-        }
-    }
-    // --- Funciones del Modal de Pedidos ---
-    
     async function openOrderModal(orderId) {
         const modal = document.getElementById('order-modal');
         modal.classList.remove('hidden');
-        
-        // Limpiar datos anteriores / Mostrar carga
-        document.getElementById('modal-order-items').innerHTML = '<div class="text-center p-8 text-zinc-500"><i class="fas fa-spinner fa-spin mb-2"></i><br>Cargando datos...</div>';
-        
-        try {
-            // Obtener datos frescos de Firebase
-            const doc = await db.collection('orders').doc(orderId).get();
-            if(!doc.exists) { alert("Pedido no encontrado"); closeOrderModal(); return; }
-            
-            const order = doc.data();
-            
-            // 1. Llenar Datos Básicos
-            document.getElementById('modal-order-id').textContent = 'ID: ' + doc.id;
-            document.getElementById('modal-order-date').textContent = order.date ? order.date.toDate().toLocaleString() : 'Sin fecha';
-            document.getElementById('modal-order-total').textContent = order.totalFormatted;
-            document.getElementById('modal-customer-name').textContent = order.userName;
-            document.getElementById('modal-customer-email').textContent = order.userEmail;
-            document.getElementById('modal-customer-avatar').textContent = order.userName.charAt(0).toUpperCase();
-            
-            // 2. Configurar Badge de Estado
-            const badge = document.getElementById('modal-order-status-badge');
-            badge.textContent = order.status;
-            badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase border'; // Reset clases base
-            
-            if (order.status === 'Completado') badge.classList.add('bg-green-500/10', 'text-green-500', 'border-green-500/20');
-            else if (order.status === 'Cancelado') badge.classList.add('bg-red-500/10', 'text-red-500', 'border-red-500/20');
-            else badge.classList.add('bg-yellow-500/10', 'text-yellow-500', 'border-yellow-500/20');
-            
-            // 3. Generar Lista de Productos con Imágenes
-            const itemsContainer = document.getElementById('modal-order-items');
-            itemsContainer.innerHTML = '';
-            
-            order.items.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center gap-4 p-4 bg-dark-950 rounded-xl border border-white/5 hover:border-white/10 transition-colors';
-                
-                // Usamos la imagen del producto si existe
-                const imgHtml = item.productImage 
-                    ? `<img src="${item.productImage}" class="w-full h-full object-contain">`
-                    : `<i class="fas fa-box text-zinc-600"></i>`;
+        const container = document.getElementById('modal-order-items');
+        container.innerHTML = '<div class="text-center p-8 text-zinc-500"><i class="fas fa-spinner fa-spin mb-2"></i><br>Cargando...</div>';
+        const existingNote = document.getElementById('delivery-note-container'); if(existingNote) existingNote.remove();
+        const existingPayment = document.getElementById('payment-info-container'); if(existingPayment) existingPayment.remove();
 
+        try {
+            const doc = await db.collection('orders').doc(orderId).get();
+            if(!doc.exists) { showToast("Pedido no encontrado", "error"); closeOrderModal(); return; }
+            const o = doc.data();
+            
+            document.getElementById('modal-order-id').innerText = 'ID: ' + doc.id;
+            document.getElementById('modal-order-date').innerText = o.date ? o.date.toDate().toLocaleString() : '-';
+            document.getElementById('modal-order-total').innerText = o.totalFormatted;
+            document.getElementById('modal-customer-name').innerText = o.userName || 'Cliente';
+            document.getElementById('modal-customer-email').innerText = o.userEmail || '-';
+            document.getElementById('modal-customer-avatar').innerText = (o.userName || 'C').charAt(0).toUpperCase();
+            
+            const badge = document.getElementById('modal-order-status-badge');
+            badge.textContent = o.status;
+            badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase border';
+            if (o.status === 'Completado') badge.classList.add('bg-green-500/10', 'text-green-500', 'border-green-500/20');
+            else if (o.status === 'Cancelado') badge.classList.add('bg-red-500/10', 'text-red-500', 'border-red-500/20');
+            else if (o.status === 'Verificando') badge.classList.add('bg-blue-500/10', 'text-blue-400', 'border-blue-500/20');
+            else badge.classList.add('bg-yellow-500/10', 'text-yellow-500', 'border-yellow-500/20');
+
+            if (o.paymentData) {
+                const payHtml = `
+                    <div id="payment-info-container" class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl mb-4">
+                        <h4 class="text-blue-400 font-bold text-sm mb-2 flex items-center gap-2"><i class="fas fa-receipt"></i> Pago Reportado</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><p class="text-xs text-zinc-500 uppercase">Banco</p><p class="text-white font-medium">${o.paymentData.bank}</p></div>
+                            <div><p class="text-xs text-zinc-500 uppercase">Ref</p><p class="text-white font-mono font-bold">${o.paymentData.refCode}</p></div>
+                        </div>
+                    </div>`;
+                container.insertAdjacentHTML('beforebegin', payHtml);
+            }
+
+            container.innerHTML = '';
+            o.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-4 p-3 bg-dark-950 rounded-xl border border-white/5';
                 div.innerHTML = `
-                    <div class="w-12 h-12 bg-dark-800 rounded-lg flex items-center justify-center shrink-0 overflow-hidden p-1 border border-white/5">
-                        ${imgHtml}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-white font-bold text-sm truncate">${item.productName}</p>
-                        <p class="text-zinc-400 text-xs truncate">${item.planName}</p>
-                    </div>
+                    <div class="w-12 h-12 bg-dark-800 rounded-lg flex items-center justify-center shrink-0 overflow-hidden p-1 border border-white/5"><img src="${item.productImage || ''}" onerror="this.style.display='none'" class="w-full h-full object-contain"></div>
+                    <div class="flex-1 min-w-0"><p class="text-white font-bold text-sm truncate">${item.productName}</p><p class="text-zinc-400 text-xs truncate">${item.planName}</p></div>
                     <div class="text-brand font-bold text-base">${item.planPrice}</div>
                 `;
-                itemsContainer.appendChild(div);
+                container.appendChild(div);
             });
-            
-        } catch(e) {
-            console.error(e);
-            alert('Error al cargar los detalles del pedido.');
-            closeOrderModal();
-        }
+
+            const note = o.deliveryData ? o.deliveryData.credentials : '';
+            const delHtml = `
+                <div id="delivery-note-container" class="mt-6 border-t border-white/10 pt-6">
+                    <label class="block text-sm font-bold text-brand mb-2 flex items-center gap-2"><i class="fas fa-key"></i> Datos de Entrega / Nota</label>
+                    <textarea id="admin-delivery-note" rows="4" class="w-full bg-dark-950 border border-zinc-700 rounded-xl p-4 text-white text-sm font-mono focus:border-brand focus:outline-none transition-all placeholder-zinc-600" placeholder="Usuario: ... Clave: ...">${note}</textarea>
+                    <div class="mt-4 flex gap-3">
+                        <select id="modal-status-select" class="bg-dark-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 focus:border-brand focus:outline-none flex-1">
+                            <option value="Pendiente" ${o.status === 'Pendiente'?'selected':''}>🟡 Pendiente</option>
+                            <option value="Verificando" ${o.status === 'Verificando'?'selected':''}>🔵 Verificando</option>
+                            <option value="Completado" ${o.status === 'Completado'?'selected':''}>🟢 Completado</option>
+                            <option value="Cancelado" ${o.status === 'Cancelado'?'selected':''}>🔴 Cancelado</option>
+                        </select>
+                        <button onclick="saveOrderChanges('${orderId}')" class="bg-brand hover:bg-brand-hover text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-brand/20">Guardar</button>
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('afterend', delHtml);
+
+        } catch(e) { console.error(e); showToast("Error al abrir pedido", "error"); closeOrderModal(); }
     }
 
-    function closeOrderModal() {
-        document.getElementById('order-modal').classList.add('hidden');
+    async function saveOrderChanges(orderId) {
+        const status = document.getElementById('modal-status-select').value;
+        const note = document.getElementById('admin-delivery-note').value;
+        
+        if (status === 'Completado' && (!note || note.trim().length < 3)) {
+            if(!confirm("¿Seguro de completar sin poner credenciales?")) return;
+        }
+
+        try {
+            const update = { status: status };
+            if (note) update['deliveryData'] = { credentials: note, deliveredAt: firebase.firestore.FieldValue.serverTimestamp() };
+            
+            await db.collection('orders').doc(orderId).update(update);
+            
+            // Enviar correo si se completa
+            if (status === 'Completado' || status === 'Cancelado') {
+                const doc = await db.collection('orders').doc(orderId).get(); const o = doc.data();
+                emailjs.send("service_xdg8iho", "template_n9he98z", {
+                    to_email: o.userEmail, to_name: o.userName, new_status: status,
+                    items_list: o.items.map(i => `<b>${i.productName}</b> ${i.planName}`).join('<br>'), total: o.totalFormatted,
+                    delivery_note: note // Asegúrate que tu template tenga esta variable si quieres enviarla
+                });
+            }
+            
+            showToast("Pedido actualizado correctamente", "success");
+            closeOrderModal();
+        } catch (e) { console.error(e); showToast("Error al guardar", "error"); }
     }
+    
+    function closeOrderModal() { document.getElementById('order-modal').classList.add('hidden'); }
+
+    // Auth Check for Admin
+    auth.onAuthStateChanged(user => {
+        const ADMIN_EMAIL = "luisavilez333@gmail.com";
+        if (user) {
+            if (user.email === ADMIN_EMAIL) {
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('user-avatar').textContent = user.email.charAt(0).toUpperCase();
+                loadProducts(); loadOrdersRealTime();
+            } else {
+                // No es admin, fuera
+                auth.signOut().then(() => window.location.href = 'index.html');
+            }
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
   </script>
 </body>
 </html>
