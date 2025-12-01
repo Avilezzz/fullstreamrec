@@ -594,19 +594,58 @@ async function enviarNotificacionTelegram(mensaje) {
     }
 
     function loadProducts() {
+        const CACHE_KEY = 'fullstream_products_cache';
+        
+        // 1. INTENTO DE CARGA RÁPIDA (CACHÉ LOCAL)
+        // Esto hace que el usuario vea productos en milisegundos
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+            try {
+                const parsed = JSON.parse(cachedData);
+                // (Opcional) Podrías verificar parsed.timestamp si quisieras expirar el caché
+                if (parsed.products && parsed.products.length > 0) {
+                    console.log("⚡ Cargando desde caché local...");
+                    productsCache = parsed.products;
+                    renderCatalog(productsCache);
+                }
+            } catch (e) {
+                console.error("Error leyendo caché local:", e);
+                localStorage.removeItem(CACHE_KEY); // Si está corrupto, lo borramos
+            }
+        }
+
+        // 2. CONEXIÓN A FIREBASE (FUENTE DE VERDAD)
+        // Mantenemos onSnapshot para actualizaciones en tiempo real
         db.collection("products")
           .where("visible", "in", [true, null])
           .onSnapshot((snapshot) => {
-                productsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const freshProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Comparamos si los datos realmente cambiaron para evitar parpadeos innecesarios
+                // (Una comparación simple de longitud o IDs suele bastar, pero aquí actualizamos siempre por seguridad)
+                
+                productsCache = freshProducts;
                 renderCatalog(productsCache); 
                 
+                // 3. ACTUALIZAR EL CACHÉ LOCAL
+                // Guardamos los datos frescos para la próxima visita
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    timestamp: Date.now(),
+                    products: freshProducts
+                }));
+                
+                // Re-aplicar filtro de búsqueda si el usuario ya escribió algo
                 const searchVal = document.getElementById('searchInput').value;
                 if(searchVal.trim() !== '') {
                     const event = new Event('input');
                     document.getElementById('searchInput').dispatchEvent(event);
                 }
+                
+                console.log("☁️ Catálogo sincronizado con Firebase");
+
           }, (error) => {
-              console.error("Error obteniendo productos:", error);
+              console.error("Error obteniendo productos de Firebase:", error);
+              // Si falla internet, el usuario al menos ya vio la versión en caché del paso 1
           });
     }
 
