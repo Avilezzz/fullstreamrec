@@ -1,571 +1,1183 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Admin Panel - FullStreamRec</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin Panel - FullStreamRec</title>
 
-  <link rel="icon" type="image/x-icon" href="logo.ico">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="logo.ico" />
 
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: {
-              DEFAULT: '#ff5e66',
-              hover: '#ff444d',
-              dark: '#cc4b52'
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: {
+                DEFAULT: "#ff5e66",
+                hover: "#ff444d",
+                dark: "#cc4b52",
+              },
+              dark: {
+                950: "#09090b",
+                900: "#121214",
+                800: "#1c1c1f",
+                700: "#27272a",
+                600: "#3f3f46",
+              },
             },
-            dark: {
-              950: '#09090b',
-              900: '#121214',
-              800: '#1c1c1f',
-              700: '#27272a',
-              600: '#3f3f46'
-            }
-          }
-        }
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #09090b;
       }
-    }
-  </script>
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #18181b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3f3f46;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #52525b;
+      }
+      .toggle-checkbox:checked {
+        right: 0;
+        border-color: #ff5e66;
+      }
+      .toggle-checkbox:checked + .toggle-label {
+        background-color: #ff5e66;
+      }
+    </style>
+  </head>
+  <body
+    class="text-zinc-100 antialiased h-screen flex overflow-hidden bg-dark-950"
+  >
+    <div
+      id="sidebar-overlay"
+      class="fixed inset-0 bg-black/80 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"
+    ></div>
 
-  <style>
-    body { background-color: #09090b; }
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #18181b; }
-    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #52525b; }
-    .toggle-checkbox:checked { right: 0; border-color: #ff5e66; }
-    .toggle-checkbox:checked + .toggle-label { background-color: #ff5e66; }
-  </style>
-</head>
-<body class="text-zinc-100 antialiased h-screen flex overflow-hidden bg-dark-950">
-
-  <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
-
-  <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-72 bg-dark-900 border-r border-white/5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50 flex flex-col">
-    <div class="h-20 flex items-center px-8 border-b border-white/5">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold shadow-lg shadow-brand/20">
-          <i class="fas fa-stream"></i>
+    <aside
+      id="sidebar"
+      class="fixed lg:static inset-y-0 left-0 w-72 bg-dark-900 border-r border-white/5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50 flex flex-col"
+    >
+      <div class="h-20 flex items-center px-8 border-b border-white/5">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold shadow-lg shadow-brand/20"
+          >
+            <i class="fas fa-stream"></i>
+          </div>
+          <span class="text-xl font-bold tracking-tight"
+            >FullStream<span class="text-brand">Rec</span></span
+          >
         </div>
-        <span class="text-xl font-bold tracking-tight">FullStream<span class="text-brand">Rec</span></span>
       </div>
-    </div>
 
-    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-      <a href="#" onclick="switchView('products')" id="nav-products" class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-brand/10 text-brand font-medium border border-brand/10 transition-all">
-        <i class="fas fa-box w-5 text-center"></i>
-        <span>Productos</span>
-      </a>
+      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <a
+          href="#"
+          onclick="switchView('products')"
+          id="nav-products"
+          class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-brand/10 text-brand font-medium border border-brand/10 transition-all"
+        >
+          <i class="fas fa-box w-5 text-center"></i>
+          <span>Productos</span>
+        </a>
 
-      <a href="#" onclick="switchView('orders')" id="nav-orders" class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all">
-        <i class="fas fa-shopping-bag w-5 text-center"></i>
-        <span class="flex-1">Pedidos</span>
-        <span id="orders-badge" class="hidden bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse">0</span>
-      </a>
-    </nav>
+        <a
+          href="#"
+          onclick="switchView('orders')"
+          id="nav-orders"
+          class="flex items-center gap-4 px-4 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all"
+        >
+          <i class="fas fa-shopping-bag w-5 text-center"></i>
+          <span class="flex-1">Pedidos</span>
+          <span
+            id="orders-badge"
+            class="hidden bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse"
+            >0</span
+          >
+        </a>
+      </nav>
 
-    <div class="p-4 border-t border-white/5 bg-dark-800/30">
-      <div class="flex items-center gap-3 mb-4 px-2">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center text-white font-bold border border-white/10" id="user-avatar">A</div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-white truncate">Admin</p>
-          <p class="text-xs text-zinc-500 truncate" id="user-email">admin@fullstreamrec.com</p>
+      <div class="p-4 border-t border-white/5 bg-dark-800/30">
+        <div class="flex items-center gap-3 mb-4 px-2">
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center text-white font-bold border border-white/10"
+            id="user-avatar"
+          >
+            A
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-white truncate">Admin</p>
+            <p class="text-xs text-zinc-500 truncate" id="user-email">
+              admin@fullstreamrec.com
+            </p>
+          </div>
         </div>
-      </div>
-      <button id="logout-btn" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-dark-800 hover:text-white hover:border-zinc-600 transition-all text-sm font-medium">
-        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-      </button>
-    </div>
-  </aside>
-
-  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-    
-    <header class="h-20 bg-dark-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 lg:px-8 z-30">
-      <div class="flex items-center gap-4">
-        <button id="mobile-menu-btn" class="lg:hidden p-2 text-zinc-400 hover:text-white rounded-lg">
-          <i class="fas fa-bars text-xl"></i>
+        <button
+          id="logout-btn"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-dark-800 hover:text-white hover:border-zinc-600 transition-all text-sm font-medium"
+        >
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
         </button>
-        <h1 class="text-2xl font-bold text-white hidden sm:block">Panel de Control</h1>
       </div>
-      
-      <div class="flex items-center gap-4">
-        <button id="add-product-btn" class="bg-brand hover:bg-brand-hover text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-brand/20 flex items-center gap-2 transition-all active:scale-95">
-          <i class="fas fa-plus"></i>
-          <span class="hidden sm:inline">Nuevo Producto</span>
-        </button>
-      </div>
-    </header>
+    </aside>
 
-   <main class="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
-      
-      <div id="view-products" class="max-w-7xl mx-auto fade-in">
-        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-8 bg-dark-900/50 p-2 rounded-2xl border border-white/5">
-          <div class="relative w-full sm:max-w-md">
-            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-            <input type="text" id="search-input" placeholder="Buscar productos..." 
-                   class="w-full bg-dark-800 border border-zinc-700 text-white text-sm rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand placeholder-zinc-600 transition-all">
-          </div>
-          <div class="flex bg-dark-800 p-1 rounded-xl w-full sm:w-auto filter-buttons" id="filter-container"></div>
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <header
+        class="h-20 bg-dark-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 lg:px-8 z-30"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            id="mobile-menu-btn"
+            class="lg:hidden p-2 text-zinc-400 hover:text-white rounded-lg"
+          >
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+          <h1 class="text-2xl font-bold text-white hidden sm:block">
+            Panel de Control
+          </h1>
         </div>
 
-        <div class="bg-dark-900 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-dark-800/50 border-b border-white/5 text-zinc-400 text-xs uppercase tracking-wider">
-                  <th class="p-5 font-semibold">Logo</th>
-                  <th class="p-5 font-semibold">Producto</th>
-                  <th class="p-5 font-semibold text-center">Info Extra</th>
-                  <th class="p-5 font-semibold text-center">Planes</th>
-                  <th class="p-5 font-semibold text-center">Estado</th>
-                  <th class="p-5 font-semibold text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="products-table-body" class="divide-y divide-white/5">
-                <tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div id="view-orders" class="max-w-7xl mx-auto hidden fade-in">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-bold text-white">Gestión de Pedidos</h2>
-        </div>
-
-        <div class="bg-dark-900 border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-dark-800/50 border-b border-white/5 text-zinc-400 text-xs uppercase tracking-wider">
-                  <th class="p-5 font-semibold">ID / Fecha</th>
-                  <th class="p-5 font-semibold">Cliente</th>
-                  <th class="p-5 font-semibold">Items</th>
-                  <th class="p-5 font-semibold">Total</th>
-                  <th class="p-5 font-semibold">Estado</th>
-                  <th class="p-5 font-semibold text-right">Gestionar</th>
-                </tr>
-              </thead>
-              <tbody id="orders-table-body" class="divide-y divide-white/5">
-                <tr><td colspan="6" class="p-8 text-center text-zinc-500">Cargando pedidos...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </main>
-  </div>
-
-  <div id="product-modal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="modal-backdrop"></div>
-    <div class="relative w-full h-full flex items-center justify-center p-4">
-      <div class="bg-dark-900 border border-zinc-700 w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-        <div class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50">
-          <h3 class="text-xl font-bold text-white" id="modal-title">Agregar Producto</h3>
-          <button id="close-modal" class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-red-500/20 hover:text-red-500 p-2 rounded-lg transition-colors">
-            <i class="fas fa-times text-lg"></i>
+        <div class="flex items-center gap-4">
+          <button
+            id="add-product-btn"
+            class="bg-brand hover:bg-brand-hover text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-brand/20 flex items-center gap-2 transition-all active:scale-95"
+          >
+            <i class="fas fa-plus"></i>
+            <span class="hidden sm:inline">Nuevo Producto</span>
           </button>
         </div>
-        <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
-          <form id="product-form" class="space-y-6">
-            <input type="hidden" id="product-id">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label class="text-sm font-medium text-zinc-400">Nombre</label>
-                <input type="text" id="product-name" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" required>
-              </div>
-              <div class="space-y-2">
-                <label class="text-sm font-medium text-zinc-400">Categoría</label>
-                <select id="product-category" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all appearance-none" required>
-                  <option value="">Seleccionar...</option>
-                  <option value="Streaming de Video">Streaming de Video</option>
-                  <option value="IPTV">IPTV</option>
-                  <option value="Música">Música</option>
-                  <option value="Videojuegos">Videojuegos</option>
-                  <option value="Herramientas Creativas">Herramientas Creativas</option>
-                  <option value="Combos">Combos</option>
-                </select>
-              </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
+        <div id="view-products" class="max-w-7xl mx-auto fade-in">
+          <div
+            class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-8 bg-dark-900/50 p-2 rounded-2xl border border-white/5"
+          >
+            <div class="relative w-full sm:max-w-md">
+              <i
+                class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
+              ></i>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Buscar productos..."
+                class="w-full bg-dark-800 border border-zinc-700 text-white text-sm rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand placeholder-zinc-600 transition-all"
+              />
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="md:col-span-2 space-y-2">
-                <label class="text-sm font-medium text-zinc-400">Subtítulo</label>
-                <input type="text" id="product-subtitle" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" placeholder="Opcional">
-              </div>
-              <div class="space-y-2 flex items-end pb-2">
-                  <label class="flex items-center gap-3 cursor-pointer bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 w-full hover:border-brand/50 transition-all group">
-                      <input type="checkbox" id="product-popular" class="accent-brand w-5 h-5 rounded cursor-pointer">
-                      <span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors select-none flex items-center gap-2">Es Popular <i class="fas fa-star text-yellow-500 text-xs"></i></span>
-                  </label>
-              </div>
+            <div
+              class="flex bg-dark-800 p-1 rounded-xl w-full sm:w-auto filter-buttons"
+              id="filter-container"
+            ></div>
+          </div>
+
+          <div
+            class="bg-dark-900 border border-white/5 rounded-2xl overflow-hidden shadow-xl"
+          >
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-dark-800/50 border-b border-white/5 text-zinc-400 text-xs uppercase tracking-wider"
+                  >
+                    <th class="p-5 font-semibold">Logo</th>
+                    <th class="p-5 font-semibold">Producto</th>
+                    <th class="p-5 font-semibold text-center">Info Extra</th>
+                    <th class="p-5 font-semibold text-center">Planes</th>
+                    <th class="p-5 font-semibold text-center">Estado</th>
+                    <th class="p-5 font-semibold text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="products-table-body" class="divide-y divide-white/5">
+                  <tr>
+                    <td
+                      colspan="6"
+                      class="p-8 text-center text-zinc-500 animate-pulse"
+                    >
+                      Cargando datos...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-zinc-400">URL Logo</label>
-              <div class="flex gap-3">
-                <input type="url" id="product-logo" class="flex-1 bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all" required>
-                <div class="w-12 h-12 bg-dark-800 rounded-lg border border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden">
-                   <img id="logo-preview" src="" onerror="this.style.display='none'" class="w-full h-full object-contain p-1">
-                   <i class="fas fa-image text-zinc-600" id="logo-placeholder"></i>
+          </div>
+        </div>
+
+        <div id="view-orders" class="max-w-7xl mx-auto hidden fade-in">
+          <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-white">Gestión de Pedidos</h2>
+          </div>
+
+          <div
+            class="bg-dark-900 border border-white/5 rounded-2xl overflow-hidden shadow-xl"
+          >
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-dark-800/50 border-b border-white/5 text-zinc-400 text-xs uppercase tracking-wider"
+                  >
+                    <th class="p-5 font-semibold">ID / Fecha</th>
+                    <th class="p-5 font-semibold">Cliente</th>
+                    <th class="p-5 font-semibold">Items</th>
+                    <th class="p-5 font-semibold">Total</th>
+                    <th class="p-5 font-semibold">Estado</th>
+                    <th class="p-5 font-semibold text-right">Gestionar</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body" class="divide-y divide-white/5">
+                  <tr>
+                    <td colspan="6" class="p-8 text-center text-zinc-500">
+                      Cargando pedidos...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div
+      id="product-modal"
+      class="fixed inset-0 z-[60] hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+        id="modal-backdrop"
+      ></div>
+      <div class="relative w-full h-full flex items-center justify-center p-4">
+        <div
+          class="bg-dark-900 border border-zinc-700 w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+        >
+          <div
+            class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50"
+          >
+            <h3 class="text-xl font-bold text-white" id="modal-title">
+              Agregar Producto
+            </h3>
+            <button
+              id="close-modal"
+              class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-red-500/20 hover:text-red-500 p-2 rounded-lg transition-colors"
+            >
+              <i class="fas fa-times text-lg"></i>
+            </button>
+          </div>
+          <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
+            <form id="product-form" class="space-y-6">
+              <input type="hidden" id="product-id" />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-zinc-400"
+                    >Nombre</label
+                  >
+                  <input
+                    type="text"
+                    id="product-name"
+                    class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all"
+                    required
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-zinc-400"
+                    >Categoría</label
+                  >
+                  <select
+                    id="product-category"
+                    class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all appearance-none"
+                    required
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="Streaming de Video">
+                      Streaming de Video
+                    </option>
+                    <option value="IPTV">IPTV</option>
+                    <option value="Música">Música</option>
+                    <option value="Videojuegos">Videojuegos</option>
+                    <option value="Herramientas Creativas">
+                      Herramientas Creativas
+                    </option>
+                    <option value="Combos">Combos</option>
+                  </select>
                 </div>
               </div>
-            </div>
-            <div class="border-t border-white/5 pt-6">
-              <div class="flex justify-between items-center mb-4">
-                <label class="text-sm font-bold text-white uppercase tracking-wider">Planes</label>
-                <button type="button" id="add-plan-btn" class="text-xs bg-dark-800 hover:bg-brand/20 hover:text-brand border border-zinc-700 hover:border-brand text-white px-3 py-1.5 rounded-lg transition-all"><i class="fas fa-plus mr-1"></i> Agregar</button>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 space-y-2">
+                  <label class="text-sm font-medium text-zinc-400"
+                    >Subtítulo</label
+                  >
+                  <input
+                    type="text"
+                    id="product-subtitle"
+                    class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all"
+                    placeholder="Opcional"
+                  />
+                </div>
+                <div class="space-y-2 flex items-end pb-2">
+                  <label
+                    class="flex items-center gap-3 cursor-pointer bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 w-full hover:border-brand/50 transition-all group"
+                  >
+                    <input
+                      type="checkbox"
+                      id="product-popular"
+                      class="accent-brand w-5 h-5 rounded cursor-pointer"
+                    />
+                    <span
+                      class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors select-none flex items-center gap-2"
+                      >Es Popular
+                      <i class="fas fa-star text-yellow-500 text-xs"></i
+                    ></span>
+                  </label>
+                </div>
               </div>
-              <div id="plans-container" class="space-y-3"></div>
-            </div>
-          </form>
-        </div>
-        <div class="p-5 border-t border-white/5 bg-dark-800/50 flex justify-end gap-3">
-          <button id="cancel-btn" class="px-5 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white transition-all font-medium">Cancelar</button>
-          <button id="save-btn" class="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white shadow-lg shadow-brand/20 font-bold transition-all active:scale-95">Guardar</button>
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-zinc-400"
+                  >URL Logo</label
+                >
+                <div class="flex gap-3">
+                  <input
+                    type="url"
+                    id="product-logo"
+                    class="flex-1 bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all"
+                    required
+                  />
+                  <div
+                    class="w-12 h-12 bg-dark-800 rounded-lg border border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden"
+                  >
+                    <img
+                      id="logo-preview"
+                      src=""
+                      onerror="this.style.display='none'"
+                      class="w-full h-full object-contain p-1"
+                    />
+                    <i
+                      class="fas fa-image text-zinc-600"
+                      id="logo-placeholder"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <div class="border-t border-white/5 pt-6">
+                <div class="flex justify-between items-center mb-4">
+                  <label
+                    class="text-sm font-bold text-white uppercase tracking-wider"
+                    >Planes</label
+                  >
+                  <button
+                    type="button"
+                    id="add-plan-btn"
+                    class="text-xs bg-dark-800 hover:bg-brand/20 hover:text-brand border border-zinc-700 hover:border-brand text-white px-3 py-1.5 rounded-lg transition-all"
+                  >
+                    <i class="fas fa-plus mr-1"></i> Agregar
+                  </button>
+                </div>
+                <div id="plans-container" class="space-y-3"></div>
+              </div>
+            </form>
+          </div>
+          <div
+            class="p-5 border-t border-white/5 bg-dark-800/50 flex justify-end gap-3"
+          >
+            <button
+              id="cancel-btn"
+              class="px-5 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white transition-all font-medium"
+            >
+              Cancelar
+            </button>
+            <button
+              id="save-btn"
+              class="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white shadow-lg shadow-brand/20 font-bold transition-all active:scale-95"
+            >
+              Guardar
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="order-modal" class="fixed inset-0 z-[80] hidden" role="dialog" aria-modal="true">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeOrderModal()"></div>
-    <div class="relative w-full h-full flex items-center justify-center p-4">
-        <div class="bg-dark-900 border border-zinc-700 w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
-            <div class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50">
+    <div
+      id="order-modal"
+      class="fixed inset-0 z-[80] hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+        onclick="closeOrderModal()"
+      ></div>
+      <div class="relative w-full h-full flex items-center justify-center p-4">
+        <div
+          class="bg-dark-900 border border-zinc-700 w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in"
+        >
+          <div
+            class="flex items-center justify-between p-6 border-b border-white/5 bg-dark-800/50"
+          >
+            <div>
+              <h3 class="text-xl font-bold text-white">Gestión del Pedido</h3>
+              <p
+                class="text-xs text-zinc-500 mt-1 font-mono"
+                id="modal-order-id"
+              >
+                Cargando...
+              </p>
+            </div>
+            <button
+              onclick="closeOrderModal()"
+              class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-brand/20 hover:text-brand p-2 rounded-lg transition-colors"
+            >
+              <i class="fas fa-times text-lg"></i>
+            </button>
+          </div>
+          <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
+            <div
+              class="flex flex-wrap gap-4 justify-between items-center bg-dark-950 p-4 rounded-xl border border-white/5"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  id="modal-order-status-badge"
+                  class="px-3 py-1 rounded-full text-xs font-bold uppercase border"
+                >
+                  ESTADO
+                </div>
+                <span class="text-zinc-400 text-sm flex items-center gap-2"
+                  ><i class="far fa-clock"></i>
+                  <span id="modal-order-date">...</span></span
+                >
+              </div>
+              <div
+                class="text-2xl font-black text-white"
+                id="modal-order-total"
+              >
+                $0.00
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h4
+                class="text-xs font-bold text-zinc-500 uppercase tracking-wider"
+              >
+                Cliente
+              </h4>
+              <div
+                class="flex items-center gap-4 p-4 bg-dark-950 rounded-xl border border-white/5"
+              >
+                <div
+                  class="w-12 h-12 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 text-white flex items-center justify-center font-bold text-xl shadow-lg"
+                  id="modal-customer-avatar"
+                >
+                  ?
+                </div>
                 <div>
-                    <h3 class="text-xl font-bold text-white">Gestión del Pedido</h3>
-                    <p class="text-xs text-zinc-500 mt-1 font-mono" id="modal-order-id">Cargando...</p>
+                  <p
+                    class="text-white font-bold text-lg"
+                    id="modal-customer-name"
+                  >
+                    ...
+                  </p>
+                  <div class="flex items-center gap-2 text-sm text-zinc-400">
+                    <i class="fas fa-envelope"></i>
+                    <span id="modal-customer-email">...</span>
+                  </div>
                 </div>
-                <button onclick="closeOrderModal()" class="text-zinc-400 hover:text-white bg-dark-700 hover:bg-brand/20 hover:text-brand p-2 rounded-lg transition-colors">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
+              </div>
             </div>
-            <div class="p-6 overflow-y-auto flex-1 space-y-6 scrollbar-hide">
-                <div class="flex flex-wrap gap-4 justify-between items-center bg-dark-950 p-4 rounded-xl border border-white/5">
-                    <div class="flex items-center gap-3">
-                        <div id="modal-order-status-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase border">ESTADO</div>
-                        <span class="text-zinc-400 text-sm flex items-center gap-2"><i class="far fa-clock"></i> <span id="modal-order-date">...</span></span>
-                    </div>
-                    <div class="text-2xl font-black text-white" id="modal-order-total">$0.00</div>
-                </div>
-                
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Cliente</h4>
-                    <div class="flex items-center gap-4 p-4 bg-dark-950 rounded-xl border border-white/5">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-800 text-white flex items-center justify-center font-bold text-xl shadow-lg" id="modal-customer-avatar">?</div>
-                        <div>
-                            <p class="text-white font-bold text-lg" id="modal-customer-name">...</p>
-                            <div class="flex items-center gap-2 text-sm text-zinc-400"><i class="fas fa-envelope"></i> <span id="modal-customer-email">...</span></div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Productos</h4>
-                    <div class="space-y-2" id="modal-order-items"></div>
-                </div>
+            <div class="space-y-3">
+              <h4
+                class="text-xs font-bold text-zinc-500 uppercase tracking-wider"
+              >
+                Productos
+              </h4>
+              <div class="space-y-2" id="modal-order-items"></div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-  </div>
 
-  <div id="toast-container" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
-  <div id="confirm-modal" class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
-    <div class="relative w-full h-full flex items-center justify-center p-4">
-        <div class="bg-dark-900 border border-zinc-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 transform scale-100 transition-all animate-fade-in">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 text-red-500 text-3xl"><i class="fas fa-exclamation-triangle"></i></div>
-                <h3 class="text-xl font-bold text-white mb-2" id="confirm-title">¿Estás seguro?</h3>
-                <p class="text-zinc-400 text-sm" id="confirm-desc">Esta acción no se puede deshacer.</p>
+    <div
+      id="toast-container"
+      class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none"
+    ></div>
+    <div
+      id="confirm-modal"
+      class="fixed inset-0 z-[110] hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+      ></div>
+      <div class="relative w-full h-full flex items-center justify-center p-4">
+        <div
+          class="bg-dark-900 border border-zinc-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 transform scale-100 transition-all animate-fade-in"
+        >
+          <div class="text-center mb-6">
+            <div
+              class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 text-red-500 text-3xl"
+            >
+              <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <div class="flex gap-3">
-                <button id="btn-confirm-cancel" class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white font-medium transition-all">Cancelar</button>
-                <button id="btn-confirm-yes" class="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-900/20 transition-all">Sí, confirmar</button>
-            </div>
+            <h3 class="text-xl font-bold text-white mb-2" id="confirm-title">
+              ¿Estás seguro?
+            </h3>
+            <p class="text-zinc-400 text-sm" id="confirm-desc">
+              Esta acción no se puede deshacer.
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <button
+              id="btn-confirm-cancel"
+              class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-600 text-zinc-300 hover:bg-dark-700 hover:text-white font-medium transition-all"
+            >
+              Cancelar
+            </button>
+            <button
+              id="btn-confirm-yes"
+              class="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-900/20 transition-all"
+            >
+              Sí, confirmar
+            </button>
+          </div>
         </div>
+      </div>
     </div>
-  </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
 
-  <script>
-    // Configuración Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
-      authDomain: "site-fullstreamrec.firebaseapp.com",
-      projectId: "site-fullstreamrec",
-      storageBucket: "site-fullstreamrec.appspot.com",
-      messagingSenderId: "161679433276",
-      appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39"
-    };
+    <script>
+      // Configuración Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyCGhcDEti7CWmFFx1iVU_wyKuqN4q2hYeQ",
+        authDomain: "site-fullstreamrec.firebaseapp.com",
+        projectId: "site-fullstreamrec",
+        storageBucket: "site-fullstreamrec.appspot.com",
+        messagingSenderId: "161679433276",
+        appId: "1:161679433276:web:2ecedce7e76a33ecfe6d39",
+      };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
 
-    // Variables
-    let products = [];
-    let currentProductId = null;
-    let isEditing = false;
-    let currentFilter = 'all';
-    let ordersUnsubscribe = null;
-    const categoryOrder = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
+      // Variables
+      let products = [];
+      let currentProductId = null;
+      let isEditing = false;
+      let currentFilter = "all";
+      let ordersUnsubscribe = null;
+      const categoryOrder = [
+        "Streaming de Video",
+        "IPTV",
+        "Música",
+        "Videojuegos",
+        "Herramientas Creativas",
+        "Combos",
+      ];
 
-    // DOM
-    const tableBody = document.getElementById('products-table-body');
-    const searchInput = document.getElementById('search-input');
-    const modal = document.getElementById('product-modal');
-    const plansContainer = document.getElementById('plans-container');
-    const productForm = document.getElementById('product-form');
-    const filterContainer = document.getElementById('filter-container');
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
+      // DOM
+      const tableBody = document.getElementById("products-table-body");
+      const searchInput = document.getElementById("search-input");
+      const modal = document.getElementById("product-modal");
+      const plansContainer = document.getElementById("plans-container");
+      const productForm = document.getElementById("product-form");
+      const filterContainer = document.getElementById("filter-container");
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
 
-    // Utils
-    function showToast(message, type = 'success') {
-        const container = document.getElementById('toast-container');
+      // Utils
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
         const config = {
-            success: { icon: 'fa-check-circle', color: 'text-green-500', border: 'border-green-500/20', bg: 'bg-dark-800' },
-            error:   { icon: 'fa-times-circle', color: 'text-red-500',   border: 'border-red-500/20',   bg: 'bg-dark-800' },
-            warning: { icon: 'fa-exclamation-circle', color: 'text-yellow-500', border: 'border-yellow-500/20', bg: 'bg-dark-800' }
+          success: {
+            icon: "fa-check-circle",
+            color: "text-green-500",
+            border: "border-green-500/20",
+            bg: "bg-dark-800",
+          },
+          error: {
+            icon: "fa-times-circle",
+            color: "text-red-500",
+            border: "border-red-500/20",
+            bg: "bg-dark-800",
+          },
+          warning: {
+            icon: "fa-exclamation-circle",
+            color: "text-yellow-500",
+            border: "border-yellow-500/20",
+            bg: "bg-dark-800",
+          },
         };
         const style = config[type] || config.success;
-        const toast = document.createElement('div');
+        const toast = document.createElement("div");
         toast.className = `pointer-events-auto flex items-center gap-3 p-4 rounded-xl border ${style.border} ${style.bg} shadow-2xl shadow-black/50 min-w-[300px] transform transition-all duration-300 translate-x-full opacity-0`;
         toast.innerHTML = `<i class="fas ${style.icon} text-xl ${style.color}"></i><p class="text-sm font-medium text-white">${message}</p>`;
         container.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
-        setTimeout(() => { toast.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
-    }
+        requestAnimationFrame(() =>
+          toast.classList.remove("translate-x-full", "opacity-0")
+        );
+        setTimeout(() => {
+          toast.classList.add("translate-x-full", "opacity-0");
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
 
-    let confirmCallback = null;
-    function showConfirm(title, desc, callback) {
-        document.getElementById('confirm-title').innerText = title;
-        document.getElementById('confirm-desc').innerText = desc;
-        document.getElementById('confirm-modal').classList.remove('hidden');
+      let confirmCallback = null;
+      function showConfirm(title, desc, callback) {
+        document.getElementById("confirm-title").innerText = title;
+        document.getElementById("confirm-desc").innerText = desc;
+        document.getElementById("confirm-modal").classList.remove("hidden");
         confirmCallback = callback;
-    }
-    document.getElementById('btn-confirm-cancel').onclick = () => { document.getElementById('confirm-modal').classList.add('hidden'); confirmCallback = null; };
-    document.getElementById('btn-confirm-yes').onclick = () => { if (confirmCallback) confirmCallback(); document.getElementById('confirm-modal').classList.add('hidden'); };
+      }
+      document.getElementById("btn-confirm-cancel").onclick = () => {
+        document.getElementById("confirm-modal").classList.add("hidden");
+        confirmCallback = null;
+      };
+      document.getElementById("btn-confirm-yes").onclick = () => {
+        if (confirmCallback) confirmCallback();
+        document.getElementById("confirm-modal").classList.add("hidden");
+      };
 
-    function toggleSidebar() { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); }
-    mobileMenuBtn.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar);
+      function toggleSidebar() {
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+      mobileMenuBtn.addEventListener("click", toggleSidebar);
+      overlay.addEventListener("click", toggleSidebar);
 
-    // EmailJS Init
-    (function() { emailjs.init("5tNGraAK_s0gjLTmU"); })();
+      // EmailJS Init
+      (function () {
+        emailjs.init("5tNGraAK_s0gjLTmU");
+      })();
 
-    // --- Lógica Productos ---
-    function applyFilters() {
+      // --- Lógica Productos ---
+      function applyFilters() {
         const searchTerm = searchInput.value.toLowerCase();
-        let filtered = products.filter(p => {
-            const matchesSearch = p.name.toLowerCase().includes(searchTerm) || p.category.toLowerCase().includes(searchTerm);
-            let matchesStatus = true;
-            if (currentFilter === 'visible') matchesStatus = p.visible !== false; 
-            if (currentFilter === 'hidden') matchesStatus = p.visible === false;
-            return matchesSearch && matchesStatus;
+        let filtered = products.filter((p) => {
+          const matchesSearch =
+            p.name.toLowerCase().includes(searchTerm) ||
+            p.category.toLowerCase().includes(searchTerm);
+          let matchesStatus = true;
+          if (currentFilter === "visible") matchesStatus = p.visible !== false;
+          if (currentFilter === "hidden") matchesStatus = p.visible === false;
+          return matchesSearch && matchesStatus;
         });
         renderTable(filtered);
-    }
+      }
 
-    function renderTable(data) {
-        data.sort((a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category));
-        tableBody.innerHTML = '';
-        if (data.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-500">No se encontraron productos</td></tr>`; return; }
+      function renderTable(data) {
+        data.sort(
+          (a, b) =>
+            categoryOrder.indexOf(a.category) -
+            categoryOrder.indexOf(b.category)
+        );
+        tableBody.innerHTML = "";
+        if (data.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-500">No se encontraron productos</td></tr>`;
+          return;
+        }
 
-        data.forEach(p => {
-            const isHidden = p.visible === false;
-            const row = document.createElement('tr');
-            row.className = `group hover:bg-white/5 transition-colors border-b border-white/5 ${isHidden ? 'bg-red-900/10' : ''}`;
-            row.innerHTML = `
-                <td class="p-4"><div class="w-12 h-12 rounded-lg bg-dark-800 border border-white/10 flex items-center justify-center overflow-hidden p-1"><img src="${p.logo}" class="w-full h-full object-contain ${isHidden ? 'grayscale opacity-50' : ''}" onerror="this.src='https://fakeimg.pl/50x50?text=Error'"></div></td>
-                <td class="p-4"><p class="font-bold text-white text-sm ${isHidden ? 'text-zinc-500 line-through' : ''}">${p.name}</p><p class="text-xs text-zinc-500">${p.subtitle || ''}</p></td>
-                <td class="p-4 text-center">${p.isPopular ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20"><i class="fas fa-star mr-1"></i>Popular</span>' : '<span class="text-zinc-600">-</span>'}</td>
-                <td class="p-4 text-center"><span class="text-sm font-bold text-white">${p.plans ? p.plans.length : 0}</span></td>
-                <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${isHidden ? 'bg-zinc-800 text-zinc-500 border border-zinc-700' : 'bg-green-500/10 text-green-400 border border-green-500/20'}">${isHidden ? 'Oculto' : 'Visible'}</span></td>
+        data.forEach((p) => {
+          const isHidden = p.visible === false;
+          const row = document.createElement("tr");
+          row.className = `group hover:bg-white/5 transition-colors border-b border-white/5 ${
+            isHidden ? "bg-red-900/10" : ""
+          }`;
+          row.innerHTML = `
+                <td class="p-4"><div class="w-12 h-12 rounded-lg bg-dark-800 border border-white/10 flex items-center justify-center overflow-hidden p-1"><img src="${
+                  p.logo
+                }" class="w-full h-full object-contain ${
+            isHidden ? "grayscale opacity-50" : ""
+          }" onerror="this.src='https://fakeimg.pl/50x50?text=Error'"></div></td>
+                <td class="p-4"><p class="font-bold text-white text-sm ${
+                  isHidden ? "text-zinc-500 line-through" : ""
+                }">${p.name}</p><p class="text-xs text-zinc-500">${
+            p.subtitle || ""
+          }</p></td>
+                <td class="p-4 text-center">${
+                  p.isPopular
+                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20"><i class="fas fa-star mr-1"></i>Popular</span>'
+                    : '<span class="text-zinc-600">-</span>'
+                }</td>
+                <td class="p-4 text-center"><span class="text-sm font-bold text-white">${
+                  p.plans ? p.plans.length : 0
+                }</span></td>
+                <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+                  isHidden
+                    ? "bg-zinc-800 text-zinc-500 border border-zinc-700"
+                    : "bg-green-500/10 text-green-400 border border-green-500/20"
+                }">${isHidden ? "Oculto" : "Visible"}</span></td>
                 <td class="p-4 text-right"><div class="flex items-center justify-end gap-2">
-                    <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-blue-500/20 hover:text-blue-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>
-                    <button onclick="toggleVisibility('${p.id}', ${isHidden})" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-yellow-500/20 hover:text-yellow-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas ${isHidden ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i></button>
-                    <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button>
+                    <button onclick="editProduct('${
+                      p.id
+                    }')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-blue-500/20 hover:text-blue-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>
+                    <button onclick="toggleVisibility('${
+                      p.id
+                    }', ${isHidden})" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-yellow-500/20 hover:text-yellow-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas ${
+            isHidden ? "fa-eye-slash" : "fa-eye"
+          } text-xs"></i></button>
+                    <button onclick="deleteProduct('${
+                      p.id
+                    }')" class="w-8 h-8 rounded-lg bg-dark-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 transition-colors flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button>
                 </div></td>
             `;
-            tableBody.appendChild(row);
+          tableBody.appendChild(row);
         });
-    }
+      }
 
-    function initFilterButtons() {
-        filterContainer.innerHTML = '';
-        const filters = [{ id: 'all', label: 'Todos' }, { id: 'visible', label: 'Visibles' }, { id: 'hidden', label: 'Ocultos' }];
-        filters.forEach(f => {
-            const btn = document.createElement('button');
-            let baseClass = 'flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-medium transition-all border border-transparent ';
-            if (currentFilter === f.id) baseClass += 'bg-brand text-white shadow-lg shadow-brand/20 border-brand'; else baseClass += 'text-zinc-400 hover:text-white hover:bg-dark-700 border-zinc-800';
-            btn.className = baseClass; btn.textContent = f.label;
-            btn.onclick = () => { currentFilter = f.id; initFilterButtons(); applyFilters(); };
-            filterContainer.appendChild(btn);
+      function initFilterButtons() {
+        filterContainer.innerHTML = "";
+        const filters = [
+          { id: "all", label: "Todos" },
+          { id: "visible", label: "Visibles" },
+          { id: "hidden", label: "Ocultos" },
+        ];
+        filters.forEach((f) => {
+          const btn = document.createElement("button");
+          let baseClass =
+            "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-medium transition-all border border-transparent ";
+          if (currentFilter === f.id)
+            baseClass +=
+              "bg-brand text-white shadow-lg shadow-brand/20 border-brand";
+          else
+            baseClass +=
+              "text-zinc-400 hover:text-white hover:bg-dark-700 border-zinc-800";
+          btn.className = baseClass;
+          btn.textContent = f.label;
+          btn.onclick = () => {
+            currentFilter = f.id;
+            initFilterButtons();
+            applyFilters();
+          };
+          filterContainer.appendChild(btn);
         });
-    }
+      }
 
-    async function loadProducts() {
+      async function loadProducts() {
         try {
-            if(products.length === 0) tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td></tr>';
-            const snap = await db.collection("products").get();
-            products = snap.docs.map(doc => ({ id: doc.id, visible: doc.data().visible !== false, ...doc.data() }));
-            applyFilters(); initFilterButtons();
-        } catch (e) { console.error(e); showToast("Error al cargar productos", "error"); }
-    }
+          if (products.length === 0)
+            tableBody.innerHTML =
+              '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Cargando datos...</td></tr>';
+          const snap = await db.collection("products").get();
+          products = snap.docs.map((doc) => ({
+            id: doc.id,
+            visible: doc.data().visible !== false,
+            ...doc.data(),
+          }));
+          applyFilters();
+          initFilterButtons();
+        } catch (e) {
+          console.error(e);
+          showToast("Error al cargar productos", "error");
+        }
+      }
 
-    window.toggleVisibility = async (id, newState) => {
-        const pIndex = products.findIndex(p => p.id === id);
-        if(pIndex !== -1) { products[pIndex].visible = newState; applyFilters(); }
-        try { await db.collection("products").doc(id).update({ visible: newState }); showToast(newState ? 'Producto visible' : 'Producto oculto', 'success'); }
-        catch(e) { showToast("Error al actualizar", "error"); if(pIndex !== -1) { products[pIndex].visible = !newState; applyFilters(); } }
-    };
+      window.toggleVisibility = async (id, newState) => {
+        const pIndex = products.findIndex((p) => p.id === id);
+        if (pIndex !== -1) {
+          products[pIndex].visible = newState;
+          applyFilters();
+        }
+        try {
+          await db.collection("products").doc(id).update({ visible: newState });
+          showToast(
+            newState ? "Producto visible" : "Producto oculto",
+            "success"
+          );
+        } catch (e) {
+          showToast("Error al actualizar", "error");
+          if (pIndex !== -1) {
+            products[pIndex].visible = !newState;
+            applyFilters();
+          }
+        }
+      };
 
-    window.deleteProduct = (id) => {
-        showConfirm("¿Eliminar producto?", "Se borrará permanentemente.", async () => {
-            try { await db.collection("products").doc(id).delete(); products = products.filter(p => p.id !== id); applyFilters(); showToast("Producto eliminado", "success"); } 
-            catch (e) { showToast("Error: " + e.message, "error"); }
+      window.deleteProduct = (id) => {
+        showConfirm(
+          "¿Eliminar producto?",
+          "Se borrará permanentemente.",
+          async () => {
+            try {
+              await db.collection("products").doc(id).delete();
+              products = products.filter((p) => p.id !== id);
+              applyFilters();
+              showToast("Producto eliminado", "success");
+            } catch (e) {
+              showToast("Error: " + e.message, "error");
+            }
+          }
+        );
+      };
+
+      window.editProduct = (id) => {
+        const p = products.find((x) => x.id === id);
+        if (!p) return;
+        isEditing = true;
+        currentProductId = id;
+        document.getElementById("product-name").value = p.name;
+        document.getElementById("product-category").value = p.category;
+        document.getElementById("product-logo").value = p.logo;
+        document.getElementById("product-subtitle").value = p.subtitle || "";
+        document.getElementById("product-popular").checked =
+          p.isPopular || false;
+        document
+          .getElementById("product-logo")
+          .dispatchEvent(new Event("input"));
+        plansContainer.innerHTML = "";
+        if (p.plans)
+          p.plans
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .forEach((plan) =>
+              addPlanToForm(plan.name, plan.price, plan.image)
+            );
+        showModal(true);
+        new Sortable(plansContainer, {
+          animation: 150,
+          handle: ".drag-handle",
         });
-    };
+      };
 
-    window.editProduct = (id) => {
-        const p = products.find(x => x.id === id); if(!p) return;
-        isEditing = true; currentProductId = id;
-        document.getElementById('product-name').value = p.name; document.getElementById('product-category').value = p.category; document.getElementById('product-logo').value = p.logo;
-        document.getElementById('product-subtitle').value = p.subtitle || ''; document.getElementById('product-popular').checked = p.isPopular || false;
-        document.getElementById('product-logo').dispatchEvent(new Event('input'));
-        plansContainer.innerHTML = '';
-        if(p.plans) p.plans.sort((a,b) => (a.order || 0) - (b.order || 0)).forEach(plan => addPlanToForm(plan.name, plan.price, plan.image));
-        showModal(true); new Sortable(plansContainer, { animation: 150, handle: '.drag-handle' });
-    };
-
-    function addPlanToForm(name = '', price = '', image = '') {
-        const div = document.createElement('div');
-        div.className = 'plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors';
-        div.innerHTML = `<div class="flex items-center gap-3"><div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2"><i class="fas fa-grip-vertical"></i></div><div class="flex-1 grid grid-cols-2 gap-3"><input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre" value="${name}" required><input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required></div><button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button></div><div class="flex items-center gap-3 pl-8"><div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0"><img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'"><i class="fas fa-image text-xs text-zinc-600 ${image ? 'hidden' : ''}"></i></div><input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen" value="${image}"></div>`;
-        div.querySelector('.plan-image').addEventListener('input', (e) => { const img = div.querySelector('.plan-img-preview'); const icon = div.querySelector('.fa-image'); if(e.target.value) { img.src = e.target.value; img.style.display = 'block'; icon.classList.add('hidden'); } else { img.style.display = 'none'; icon.classList.remove('hidden'); } });
-        div.querySelector('.remove-plan').onclick = () => div.remove();
+      function addPlanToForm(name = "", price = "", image = "") {
+        const div = document.createElement("div");
+        div.className =
+          "plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors";
+        div.innerHTML = `<div class="flex items-center gap-3"><div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2"><i class="fas fa-grip-vertical"></i></div><div class="flex-1 grid grid-cols-2 gap-3"><input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre" value="${name}" required><input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required></div><button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button></div><div class="flex items-center gap-3 pl-8"><div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0"><img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'"><i class="fas fa-image text-xs text-zinc-600 ${
+          image ? "hidden" : ""
+        }"></i></div><input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen" value="${image}"></div>`;
+        div.querySelector(".plan-image").addEventListener("input", (e) => {
+          const img = div.querySelector(".plan-img-preview");
+          const icon = div.querySelector(".fa-image");
+          if (e.target.value) {
+            img.src = e.target.value;
+            img.style.display = "block";
+            icon.classList.add("hidden");
+          } else {
+            img.style.display = "none";
+            icon.classList.remove("hidden");
+          }
+        });
+        div.querySelector(".remove-plan").onclick = () => div.remove();
         plansContainer.appendChild(div);
-    }
+      }
 
-    document.getElementById('save-btn').onclick = async (e) => {
+      document.getElementById("save-btn").onclick = async (e) => {
         e.preventDefault();
-        if(!productForm.checkValidity()) { productForm.reportValidity(); return; }
-        const plans = []; document.querySelectorAll('.plan-item').forEach((el, index) => { plans.push({ name: el.querySelector('.plan-name').value, price: el.querySelector('.plan-price').value, image: el.querySelector('.plan-image').value, order: index }); });
-        if(plans.length === 0) { showToast("Agrega al menos un plan", "warning"); return; }
-        const data = { name: document.getElementById('product-name').value, subtitle: document.getElementById('product-subtitle').value, isPopular: document.getElementById('product-popular').checked, category: document.getElementById('product-category').value, logo: document.getElementById('product-logo').value, plans: plans, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
-        try { if(isEditing) { const oldP = products.find(p => p.id === currentProductId); data.visible = oldP ? oldP.visible : true; await db.collection("products").doc(currentProductId).update(data); showToast("Producto actualizado", "success"); } else { data.visible = true; await db.collection("products").add(data); showToast("Producto creado", "success"); } hideModal(); loadProducts(); } catch(e) { showToast("Error al guardar", "error"); }
-    };
+        if (!productForm.checkValidity()) {
+          productForm.reportValidity();
+          return;
+        }
+        const plans = [];
+        document.querySelectorAll(".plan-item").forEach((el, index) => {
+          plans.push({
+            name: el.querySelector(".plan-name").value,
+            price: el.querySelector(".plan-price").value,
+            image: el.querySelector(".plan-image").value,
+            order: index,
+          });
+        });
+        if (plans.length === 0) {
+          showToast("Agrega al menos un plan", "warning");
+          return;
+        }
+        const data = {
+          name: document.getElementById("product-name").value,
+          subtitle: document.getElementById("product-subtitle").value,
+          isPopular: document.getElementById("product-popular").checked,
+          category: document.getElementById("product-category").value,
+          logo: document.getElementById("product-logo").value,
+          plans: plans,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        };
+        try {
+          if (isEditing) {
+            const oldP = products.find((p) => p.id === currentProductId);
+            data.visible = oldP ? oldP.visible : true;
+            await db.collection("products").doc(currentProductId).update(data);
+            showToast("Producto actualizado", "success");
+          } else {
+            data.visible = true;
+            await db.collection("products").add(data);
+            showToast("Producto creado", "success");
+          }
+          hideModal();
+          loadProducts();
+        } catch (e) {
+          showToast("Error al guardar", "error");
+        }
+      };
 
-    function showModal(edit = false) { modal.classList.remove('hidden'); document.getElementById('modal-title').textContent = edit ? 'Editar Producto' : 'Agregar Producto'; document.getElementById('logo-preview').style.display = 'none'; document.getElementById('logo-placeholder').style.display = 'block'; }
-    function hideModal() { modal.classList.add('hidden'); productForm.reset(); plansContainer.innerHTML = ''; currentProductId = null; isEditing = false; }
-    document.getElementById('add-plan-btn').onclick = () => addPlanToForm(); document.getElementById('close-modal').onclick = hideModal; document.getElementById('cancel-btn').onclick = hideModal; document.getElementById('modal-backdrop').onclick = hideModal; document.getElementById('product-logo').addEventListener('input', function() { const img = document.getElementById('logo-preview'); const ph = document.getElementById('logo-placeholder'); if(this.value) { img.src = this.value; img.style.display = 'block'; ph.style.display = 'none'; } else { img.style.display = 'none'; ph.style.display = 'block'; } });
+      function showModal(edit = false) {
+        modal.classList.remove("hidden");
+        document.getElementById("modal-title").textContent = edit
+          ? "Editar Producto"
+          : "Agregar Producto";
+        document.getElementById("logo-preview").style.display = "none";
+        document.getElementById("logo-placeholder").style.display = "block";
+      }
+      function hideModal() {
+        modal.classList.add("hidden");
+        productForm.reset();
+        plansContainer.innerHTML = "";
+        currentProductId = null;
+        isEditing = false;
+      }
 
-    // --- Lógica Pedidos ---
-    function switchView(viewName) {
-        const pv = document.getElementById('view-products'), ov = document.getElementById('view-orders'), np = document.getElementById('nav-products'), no = document.getElementById('nav-orders');
-        const ac = "bg-brand/10 text-brand border-brand/10 font-medium", ic = "text-zinc-400 hover:text-white hover:bg-white/5 border-transparent";
-        if (viewName === 'products') { pv.classList.remove('hidden'); ov.classList.add('hidden'); np.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ac}`; no.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ic}`; }
-        else { pv.classList.add('hidden'); ov.classList.remove('hidden'); np.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ic}`; no.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ac}`; if (!ordersUnsubscribe) loadOrdersRealTime(); }
-    }
+      // AÑADIR ESTA LÍNEA PARA ACTIVAR EL BOTÓN "NUEVO PRODUCTO"
+      document.getElementById("add-product-btn").onclick = () => {
+        isEditing = false; // Asegura que el modo sea "Agregar"
+        showModal(false); // Abre el modal para agregar un nuevo producto
+      };
 
-    function timeAgo(date) {
+      document.getElementById("add-plan-btn").onclick = () => addPlanToForm();
+      document.getElementById("close-modal").onclick = hideModal;
+      document.getElementById("cancel-btn").onclick = hideModal;
+      document.getElementById("modal-backdrop").onclick = hideModal;
+      document
+        .getElementById("product-logo")
+        .addEventListener("input", function () {
+          const img = document.getElementById("logo-preview");
+          const ph = document.getElementById("logo-placeholder");
+          if (this.value) {
+            img.src = this.value;
+            img.style.display = "block";
+            ph.style.display = "none";
+          } else {
+            img.style.display = "none";
+            ph.style.display = "block";
+          }
+        });
+
+      // --- Lógica Pedidos ---
+      function switchView(viewName) {
+        const pv = document.getElementById("view-products"),
+          ov = document.getElementById("view-orders"),
+          np = document.getElementById("nav-products"),
+          no = document.getElementById("nav-orders");
+        const ac = "bg-brand/10 text-brand border-brand/10 font-medium",
+          ic =
+            "text-zinc-400 hover:text-white hover:bg-white/5 border-transparent";
+        if (viewName === "products") {
+          pv.classList.remove("hidden");
+          ov.classList.add("hidden");
+          np.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ac}`;
+          no.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ic}`;
+        } else {
+          pv.classList.add("hidden");
+          ov.classList.remove("hidden");
+          np.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ic}`;
+          no.className = `flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all ${ac}`;
+          if (!ordersUnsubscribe) loadOrdersRealTime();
+        }
+      }
+
+      function timeAgo(date) {
         const s = Math.floor((new Date() - date) / 1000);
         if (s < 0 || isNaN(s)) return "Reciente";
-        if (s > 604800) return date.toLocaleDateString('es-ES', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+        if (s > 604800)
+          return date.toLocaleDateString("es-ES", {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
         if (s < 60) return "hace un momento";
-        const i = [{l:'día',s:86400}, {l:'hora',s:3600}, {l:'minuto',s:60}];
-        for (const v of i) { const c = Math.floor(s / v.s); if (c >= 1) return `hace ${c} ${v.l}${c>1?'s':''}`; }
+        const i = [
+          { l: "día", s: 86400 },
+          { l: "hora", s: 3600 },
+          { l: "minuto", s: 60 },
+        ];
+        for (const v of i) {
+          const c = Math.floor(s / v.s);
+          if (c >= 1) return `hace ${c} ${v.l}${c > 1 ? "s" : ""}`;
+        }
         return "hace un momento";
-    }
+      }
 
-    function loadOrdersRealTime() {
-        const table = document.getElementById('orders-table-body');
-        if(!table.innerHTML.trim() || table.innerHTML.includes('Cargando')) table.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Conectando...</td></tr>';
-        ordersUnsubscribe = db.collection('orders').orderBy('date', 'desc').limit(50).onSnapshot((snapshot) => {
+      function loadOrdersRealTime() {
+        const table = document.getElementById("orders-table-body");
+        if (!table.innerHTML.trim() || table.innerHTML.includes("Cargando"))
+          table.innerHTML =
+            '<tr><td colspan="6" class="p-8 text-center text-zinc-500 animate-pulse">Conectando...</td></tr>';
+        ordersUnsubscribe = db
+          .collection("orders")
+          .orderBy("date", "desc")
+          .limit(50)
+          .onSnapshot((snapshot) => {
             let pending = 0;
-            snapshot.forEach(doc => { if (doc.data().status === 'Pendiente') pending++; });
-            const badge = document.getElementById('orders-badge');
-            if (badge) { if (pending > 0) { badge.textContent = pending; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); } }
-            
-            if (snapshot.empty) { table.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Sin pedidos.</td></tr>'; return; }
-            table.innerHTML = '';
-            
-            snapshot.forEach(doc => {
-                const o = doc.data();
-                const date = o.date ? o.date.toDate() : new Date();
-                let stClass = 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-                if (o.status === 'Completado') stClass = 'bg-green-500/10 text-green-500 border-green-500/20';
-                else if (o.status === 'Cancelado') stClass = 'bg-red-500/10 text-red-500 border-red-500/20';
-                else if (o.status === 'Verificando') stClass = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
-                
-                const row = document.createElement('tr');
-                row.className = "hover:bg-white/5 transition-colors border-b border-white/5 group";
-                row.innerHTML = `
-                    <td class="p-4 text-sm text-zinc-400 whitespace-nowrap"><span class="block font-mono text-white text-xs mb-1">#${doc.id.slice(0,6)}</span><i class="far fa-clock mr-1 text-xs"></i> ${timeAgo(date)}</td>
-                    <td class="p-4"><div class="font-bold text-white text-sm">${o.userName}</div><div class="text-xs text-zinc-500">${o.userEmail}</div></td>
-                    <td class="p-4 text-sm text-zinc-400">${o.items ? o.items.length : 0} items</td>
-                    <td class="p-4 font-bold text-green-500">${o.totalFormatted}</td>
-                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${stClass}">${o.status}</span></td>
+            snapshot.forEach((doc) => {
+              if (doc.data().status === "Pendiente") pending++;
+            });
+            const badge = document.getElementById("orders-badge");
+            if (badge) {
+              if (pending > 0) {
+                badge.textContent = pending;
+                badge.classList.remove("hidden");
+              } else {
+                badge.classList.add("hidden");
+              }
+            }
+
+            if (snapshot.empty) {
+              table.innerHTML =
+                '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Sin pedidos.</td></tr>';
+              return;
+            }
+            table.innerHTML = "";
+
+            snapshot.forEach((doc) => {
+              const o = doc.data();
+              const date = o.date ? o.date.toDate() : new Date();
+              let stClass =
+                "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
+              if (o.status === "Completado")
+                stClass = "bg-green-500/10 text-green-500 border-green-500/20";
+              else if (o.status === "Cancelado")
+                stClass = "bg-red-500/10 text-red-500 border-red-500/20";
+              else if (o.status === "Verificando")
+                stClass = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+
+              const row = document.createElement("tr");
+              row.className =
+                "hover:bg-white/5 transition-colors border-b border-white/5 group";
+              row.innerHTML = `
+                    <td class="p-4 text-sm text-zinc-400 whitespace-nowrap"><span class="block font-mono text-white text-xs mb-1">#${doc.id.slice(
+                      0,
+                      6
+                    )}</span><i class="far fa-clock mr-1 text-xs"></i> ${timeAgo(
+                date
+              )}</td>
+                    <td class="p-4"><div class="font-bold text-white text-sm">${
+                      o.userName
+                    }</div><div class="text-xs text-zinc-500">${
+                o.userEmail
+              }</div></td>
+                    <td class="p-4 text-sm text-zinc-400">${
+                      o.items ? o.items.length : 0
+                    } items</td>
+                    <td class="p-4 font-bold text-green-500">${
+                      o.totalFormatted
+                    }</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${stClass}">${
+                o.status
+              }</span></td>
                     <td class="p-4 text-right">
-                        <button onclick="openOrderModal('${doc.id}')" class="bg-black/10 hover:bg-black hover:text-white text-white font-bold py-1.5 px-4 rounded-lg text-xs transition-all border border-white/20">Gestionar</button>
+                        <button onclick="openOrderModal('${
+                          doc.id
+                        }')" class="bg-black/10 hover:bg-black hover:text-white text-white font-bold py-1.5 px-4 rounded-lg text-xs transition-all border border-white/20">Gestionar</button>
                     </td>
                 `;
-                table.appendChild(row);
+              table.appendChild(row);
             });
-        });
-    }
+          });
+      }
 
-    async function openOrderModal(orderId) {
-        const modal = document.getElementById('order-modal');
-        modal.classList.remove('hidden');
-        const container = document.getElementById('modal-order-items');
-        container.innerHTML = '<div class="text-center p-8 text-zinc-500"><i class="fas fa-spinner fa-spin mb-2"></i><br>Cargando...</div>';
-        const existingNote = document.getElementById('delivery-note-container'); if(existingNote) existingNote.remove();
-        const existingPayment = document.getElementById('payment-info-container'); if(existingPayment) existingPayment.remove();
+      async function openOrderModal(orderId) {
+        const modal = document.getElementById("order-modal");
+        modal.classList.remove("hidden");
+        const container = document.getElementById("modal-order-items");
+        container.innerHTML =
+          '<div class="text-center p-8 text-zinc-500"><i class="fas fa-spinner fa-spin mb-2"></i><br>Cargando...</div>';
+        const existingNote = document.getElementById("delivery-note-container");
+        if (existingNote) existingNote.remove();
+        const existingPayment = document.getElementById(
+          "payment-info-container"
+        );
+        if (existingPayment) existingPayment.remove();
 
         try {
-            const doc = await db.collection('orders').doc(orderId).get();
-            if(!doc.exists) { showToast("Pedido no encontrado", "error"); closeOrderModal(); return; }
-            const o = doc.data();
-            
-            document.getElementById('modal-order-id').innerText = 'ID: ' + doc.id;
-            document.getElementById('modal-order-date').innerText = o.date ? o.date.toDate().toLocaleString() : '-';
-            document.getElementById('modal-order-total').innerText = o.totalFormatted;
-            document.getElementById('modal-customer-name').innerText = o.userName || 'Cliente';
-            document.getElementById('modal-customer-email').innerText = o.userEmail || '-';
-            document.getElementById('modal-customer-avatar').innerText = (o.userName || 'C').charAt(0).toUpperCase();
-            
-            const badge = document.getElementById('modal-order-status-badge');
-            badge.textContent = o.status;
-            badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase border';
-            if (o.status === 'Completado') badge.classList.add('bg-green-500/10', 'text-green-500', 'border-green-500/20');
-            else if (o.status === 'Cancelado') badge.classList.add('bg-red-500/10', 'text-red-500', 'border-red-500/20');
-            else if (o.status === 'Verificando') badge.classList.add('bg-blue-500/10', 'text-blue-400', 'border-blue-500/20');
-            else badge.classList.add('bg-yellow-500/10', 'text-yellow-500', 'border-yellow-500/20');
+          const doc = await db.collection("orders").doc(orderId).get();
+          if (!doc.exists) {
+            showToast("Pedido no encontrado", "error");
+            closeOrderModal();
+            return;
+          }
+          const o = doc.data();
 
-            if (o.paymentData) {
-                const payHtml = `
+          document.getElementById("modal-order-id").innerText = "ID: " + doc.id;
+          document.getElementById("modal-order-date").innerText = o.date
+            ? o.date.toDate().toLocaleString()
+            : "-";
+          document.getElementById("modal-order-total").innerText =
+            o.totalFormatted;
+          document.getElementById("modal-customer-name").innerText =
+            o.userName || "Cliente";
+          document.getElementById("modal-customer-email").innerText =
+            o.userEmail || "-";
+          document.getElementById("modal-customer-avatar").innerText = (
+            o.userName || "C"
+          )
+            .charAt(0)
+            .toUpperCase();
+
+          const badge = document.getElementById("modal-order-status-badge");
+          badge.textContent = o.status;
+          badge.className =
+            "px-3 py-1 rounded-full text-xs font-bold uppercase border";
+          if (o.status === "Completado")
+            badge.classList.add(
+              "bg-green-500/10",
+              "text-green-500",
+              "border-green-500/20"
+            );
+          else if (o.status === "Cancelado")
+            badge.classList.add(
+              "bg-red-500/10",
+              "text-red-500",
+              "border-red-500/20"
+            );
+          else if (o.status === "Verificando")
+            badge.classList.add(
+              "bg-blue-500/10",
+              "text-blue-400",
+              "border-blue-500/20"
+            );
+          else
+            badge.classList.add(
+              "bg-yellow-500/10",
+              "text-yellow-500",
+              "border-yellow-500/20"
+            );
+
+          if (o.paymentData) {
+            const payHtml = `
                     <div id="payment-info-container" class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl mb-4">
                         <h4 class="text-blue-400 font-bold text-sm mb-2 flex items-center gap-2"><i class="fas fa-receipt"></i> Pago Reportado</h4>
                         <div class="grid grid-cols-2 gap-4">
@@ -573,88 +1185,126 @@
                             <div><p class="text-xs text-zinc-500 uppercase">Ref</p><p class="text-white font-mono font-bold">${o.paymentData.refCode}</p></div>
                         </div>
                     </div>`;
-                container.insertAdjacentHTML('beforebegin', payHtml);
-            }
+            container.insertAdjacentHTML("beforebegin", payHtml);
+          }
 
-            container.innerHTML = '';
-            o.items.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center gap-4 p-3 bg-dark-950 rounded-xl border border-white/5';
-                div.innerHTML = `
-                    <div class="w-12 h-12 bg-dark-800 rounded-lg flex items-center justify-center shrink-0 overflow-hidden p-1 border border-white/5"><img src="${item.productImage || ''}" onerror="this.style.display='none'" class="w-full h-full object-contain"></div>
-                    <div class="flex-1 min-w-0"><p class="text-white font-bold text-sm truncate">${item.productName}</p><p class="text-zinc-400 text-xs truncate">${item.planName}</p></div>
-                    <div class="text-white font-bold text-base">${item.planPrice}</div>
+          container.innerHTML = "";
+          o.items.forEach((item) => {
+            const div = document.createElement("div");
+            div.className =
+              "flex items-center gap-4 p-3 bg-dark-950 rounded-xl border border-white/5";
+            div.innerHTML = `
+                    <div class="w-12 h-12 bg-dark-800 rounded-lg flex items-center justify-center shrink-0 overflow-hidden p-1 border border-white/5"><img src="${
+                      item.productImage || ""
+                    }" onerror="this.style.display='none'" class="w-full h-full object-contain"></div>
+                    <div class="flex-1 min-w-0"><p class="text-white font-bold text-sm truncate">${
+                      item.productName
+                    }</p><p class="text-zinc-400 text-xs truncate">${
+              item.planName
+            }</p></div>
+                    <div class="text-white font-bold text-base">${
+                      item.planPrice
+                    }</div>
                 `;
-                container.appendChild(div);
-            });
+            container.appendChild(div);
+          });
 
-            const note = o.deliveryData ? o.deliveryData.credentials : '';
-            const delHtml = `
+          const note = o.deliveryData ? o.deliveryData.credentials : "";
+          const delHtml = `
                 <div id="delivery-note-container" class="mt-6 border-t border-white/10 pt-6">
                     <label class="block text-sm font-bold text-white mb-2 flex items-center gap-2"><i class="fas fa-key"></i> Datos de Entrega / Nota</label>
                     <textarea id="admin-delivery-note" rows="4" class="w-full bg-dark-950 border border-zinc-700 rounded-xl p-4 text-white text-sm font-mono focus:border-brand focus:outline-none transition-all placeholder-zinc-600" placeholder="Usuario: ... Clave: ...">${note}</textarea>
                     <div class="mt-4 flex gap-3">
                         <select id="modal-status-select" class="bg-dark-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 focus:border-brand focus:outline-none flex-1">
-                            <option value="Pendiente" ${o.status === 'Pendiente'?'selected':''}>🟡 Pendiente</option>
-                            <option value="Verificando" ${o.status === 'Verificando'?'selected':''}>🔵 Verificando</option>
-                            <option value="Completado" ${o.status === 'Completado'?'selected':''}>🟢 Completado</option>
-                            <option value="Cancelado" ${o.status === 'Cancelado'?'selected':''}>🔴 Cancelado</option>
+                            <option value="Pendiente" ${
+                              o.status === "Pendiente" ? "selected" : ""
+                            }>🟡 Pendiente</option>
+                            <option value="Verificando" ${
+                              o.status === "Verificando" ? "selected" : ""
+                            }>🔵 Verificando</option>
+                            <option value="Completado" ${
+                              o.status === "Completado" ? "selected" : ""
+                            }>🟢 Completado</option>
+                            <option value="Cancelado" ${
+                              o.status === "Cancelado" ? "selected" : ""
+                            }>🔴 Cancelado</option>
                         </select>
                         <button onclick="saveOrderChanges('${orderId}')" class="bg-brand hover:bg-brand-hover text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-brand/20">Guardar</button>
                     </div>
                 </div>`;
-            container.insertAdjacentHTML('afterend', delHtml);
+          container.insertAdjacentHTML("afterend", delHtml);
+        } catch (e) {
+          console.error(e);
+          showToast("Error al abrir pedido", "error");
+          closeOrderModal();
+        }
+      }
 
-        } catch(e) { console.error(e); showToast("Error al abrir pedido", "error"); closeOrderModal(); }
-    }
+      async function saveOrderChanges(orderId) {
+        const status = document.getElementById("modal-status-select").value;
+        const note = document.getElementById("admin-delivery-note").value;
 
-    async function saveOrderChanges(orderId) {
-        const status = document.getElementById('modal-status-select').value;
-        const note = document.getElementById('admin-delivery-note').value;
-        
-        if (status === 'Completado' && (!note || note.trim().length < 3)) {
-            if(!confirm("¿Seguro de completar sin poner credenciales?")) return;
+        if (status === "Completado" && (!note || note.trim().length < 3)) {
+          if (!confirm("¿Seguro de completar sin poner credenciales?")) return;
         }
 
         try {
-            const update = { status: status };
-            if (note) update['deliveryData'] = { credentials: note, deliveredAt: firebase.firestore.FieldValue.serverTimestamp() };
-            
-            await db.collection('orders').doc(orderId).update(update);
-            
-            // Enviar correo si se completa
-            if (status === 'Completado' || status === 'Cancelado') {
-                const doc = await db.collection('orders').doc(orderId).get(); const o = doc.data();
-                emailjs.send("service_xdg8iho", "template_n9he98z", {
-                    to_email: o.userEmail, to_name: o.userName, new_status: status,
-                    items_list: o.items.map(i => `<b>${i.productName}</b> ${i.planName}`).join('<br>'), total: o.totalFormatted,
-                    delivery_note: note // Asegúrate que tu template tenga esta variable si quieres enviarla
-                });
-            }
-            
-            showToast("Pedido actualizado correctamente", "success");
-            closeOrderModal();
-        } catch (e) { console.error(e); showToast("Error al guardar", "error"); }
-    }
-    
-    function closeOrderModal() { document.getElementById('order-modal').classList.add('hidden'); }
+          const update = { status: status };
+          if (note)
+            update["deliveryData"] = {
+              credentials: note,
+              deliveredAt: firebase.firestore.FieldValue.serverTimestamp(),
+            };
 
-    // Auth Check for Admin
-    auth.onAuthStateChanged(user => {
+          await db.collection("orders").doc(orderId).update(update);
+
+          // Enviar correo si se completa
+          if (status === "Completado" || status === "Cancelado") {
+            const doc = await db.collection("orders").doc(orderId).get();
+            const o = doc.data();
+            emailjs.send("service_xdg8iho", "template_n9he98z", {
+              to_email: o.userEmail,
+              to_name: o.userName,
+              new_status: status,
+              items_list: o.items
+                .map((i) => `<b>${i.productName}</b> ${i.planName}`)
+                .join("<br>"),
+              total: o.totalFormatted,
+              delivery_note: note, // Asegúrate que tu template tenga esta variable si quieres enviarla
+            });
+          }
+
+          showToast("Pedido actualizado correctamente", "success");
+          closeOrderModal();
+        } catch (e) {
+          console.error(e);
+          showToast("Error al guardar", "error");
+        }
+      }
+
+      function closeOrderModal() {
+        document.getElementById("order-modal").classList.add("hidden");
+      }
+
+      // Auth Check for Admin
+      auth.onAuthStateChanged((user) => {
         const ADMIN_EMAIL = "luisavilez333@gmail.com";
         if (user) {
-            if (user.email === ADMIN_EMAIL) {
-                document.getElementById('user-email').textContent = user.email;
-                document.getElementById('user-avatar').textContent = user.email.charAt(0).toUpperCase();
-                loadProducts(); loadOrdersRealTime();
-            } else {
-                // No es admin, fuera
-                auth.signOut().then(() => window.location.href = 'index.html');
-            }
+          if (user.email === ADMIN_EMAIL) {
+            document.getElementById("user-email").textContent = user.email;
+            document.getElementById("user-avatar").textContent = user.email
+              .charAt(0)
+              .toUpperCase();
+            loadProducts();
+            loadOrdersRealTime();
+          } else {
+            // No es admin, fuera
+            auth.signOut().then(() => (window.location.href = "index.html"));
+          }
         } else {
-            window.location.href = 'login.html';
+          window.location.href = "login.html";
         }
-    });
-  </script>
-</body>
+      });
+    </script>
+  </body>
 </html>
