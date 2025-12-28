@@ -83,7 +83,7 @@
         <button onclick="switchView('orders')" class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all" data-view="orders">
           <i class="fas fa-shopping-bag w-5 text-center"></i>
           <span class="flex-1">Pedidos</span>
-          <span id="orders-badge" class="hidden bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse">0</span>
+          <span id="orders-badge" class="bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse">0</span>
         </button>
       </nav>
 
@@ -767,12 +767,7 @@
           });
           
           const badge = document.getElementById('orders-badge');
-          if (pending > 0) {
-            badge.textContent = pending;
-            badge.classList.remove('hidden');
-          } else {
-            badge.classList.add('hidden');
-          }
+          badge.textContent = pending > 0 ? pending : '0';
 
           const grid = document.getElementById('orders-grid');
           if (snapshot.empty) {
