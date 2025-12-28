@@ -80,6 +80,78 @@
       50% { opacity: 1; }
       100% { opacity: 0.6; }
     }
+
+    /* Animación de entrada y salida tipo valla publicitaria */
+.hero-ad-transition {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-ad-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(10px);
+}
+
+/* Efecto de transición para valla publicitaria individual */
+.valla-container {
+  perspective: 1000px;
+}
+
+.valla-card {
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Estado cuando el producto está saliendo o entrando */
+.valla-hidden {
+  opacity: 0;
+  transform: rotateX(-15deg) translateY(30px) scale(0.9);
+  filter: blur(8px);
+}
+
+/* Brillo de barrido tipo LED */
+.led-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  animation: led-sweep 3s infinite;
+}
+
+@keyframes led-sweep {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-container::before,
+.marquee-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee-container::before {
+  left: 0;
+  background: linear-gradient(to right, #09090b, transparent);
+}
+
+.marquee-container::after {
+  right: 0;
+  background: linear-gradient(to left, #09090b, transparent);
+}
   </style>
 </head>
 
@@ -160,34 +232,66 @@
   </header>
 
   <!-- Hero -->
-  <section class="relative pt-36 pb-10 lg:pt-48 lg:pb-20 overflow-hidden">
-    <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0 pointer-events-none select-none">
-      <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-brand/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
-      <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
-    </div>
-    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h1 id="hero-title" class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-8 leading-tight">
-        Entretenimiento <br/>
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>
-      </h1>
-      <p id="hero-desc" class="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-zinc-400 mb-12 leading-relaxed font-light">
-        Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.
-      </p>
+<section class="relative pt-36 pb-10 lg:pt-48 lg:pb-20 overflow-hidden">
+  <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0 pointer-events-none select-none">
+    <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-brand/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[150px] opacity-40 mix-blend-screen"></div>
+  </div>
 
-      <div id="hero-buttons" class="flex flex-col sm:flex-row gap-5 justify-center items-center transition-all duration-300">
-        <a href="#products-container" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-brand px-8 font-bold text-white transition-all hover:bg-brand-hover shadow-lg shadow-brand/30 hover:shadow-brand/50 hover:-translate-y-1">
-          <span class="relative flex items-center gap-2">
+  <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Grid: Contenido + Visual -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Contenido Izquierda -->
+      <div class="text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 bg-brand/20 border border-brand/40 rounded-full px-4 py-2 mb-6 lg:justify-start">
+          <i class="fas fa-fire text-brand text-sm"></i>
+          <span class="text-sm font-bold text-brand">Ofertas Limitadas</span>
+        </div>
+
+        <h1 id="hero-title" class="text-5xl md:text-6xl font-black tracking-tighter text-white mb-6 leading-tight">
+          Entretenimiento <br/>
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>
+        </h1>
+
+        <p id="hero-desc" class="text-lg text-zinc-300 mb-8 leading-relaxed">
+          Netflix, Disney+, Spotify, IPTV y más. Acceso inmediato a todos tus servicios favoritos con descuentos exclusivos de hasta 40%.
+        </p>
+
+        <!-- Stats en dos columnas -->
+        <div id="hero-stats" class="grid grid-cols-2 gap-4 mb-8">
+          <div class="bg-dark-800/30 border border-zinc-700/30 rounded-xl p-4">
+            <div class="text-2xl font-black text-brand">2.5K+</div>
+            <p class="text-xs text-zinc-400">Clientes Activos</p>
+          </div>
+          <div class="bg-dark-800/30 border border-zinc-700/30 rounded-xl p-4">
+            <div class="text-2xl font-black text-green-500">&lt; 1 min</div>
+            <p class="text-xs text-zinc-400">Activación</p>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div id="hero-buttons" class="flex flex-col sm:flex-row gap-4 justify-start lg:justify-start">
+          <button onclick="showCatalogModal()" class="group inline-flex h-14 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand to-red-500 px-8 font-bold text-white transition-all hover:brightness-110 shadow-lg shadow-brand/30 hover:-translate-y-1 active:scale-95">
             <i class="fas fa-play text-sm"></i> Ver Catálogo
-          </span>
-        </a>
-        <a href="https://wa.me/593978652638" target="_blank" class="group inline-flex h-14 items-center justify-center rounded-full border-2 border-zinc-700 bg-dark-900/30 px-8 font-bold text-zinc-300 backdrop-blur transition-all hover:border-green-500 hover:text-green-500 hover:-translate-y-1">
-          <span class="flex items-center gap-3">
-            <i class="fab fa-whatsapp text-2xl"></i> Chat Soporte
-          </span>
-        </a>
+          </button>
+
+          <a href="https://wa.me/593978652638" target="_blank" class="group inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-green-500/50 bg-green-500/10 px-8 font-bold text-green-500 hover:bg-green-500/20 transition-all hover:-translate-y-1">
+            <i class="fab fa-whatsapp"></i> Chat
+          </a>
+        </div>
+      </div>
+
+     <!-- Visual Derecha -->
+<div class="mt-8 lg:mt-0 w-full valla-container">
+  <div id="hero-products-container" class="relative h-[140px] w-full max-w-sm mx-auto lg:max-w-none">
+    </div>
+</div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- Main -->
   <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32 relative z-10">
@@ -618,6 +722,102 @@
       }
     }
 
+let heroProductsPool = [];
+let currentHeroIndex = 0;
+
+const loadHeroProducts = async () => {
+  const container = document.getElementById('hero-products-container');
+  if (!container) return;
+
+  try {
+    // Traemos productos de Firebase (limitamos a 10 para rotación)
+    const snapshot = await db.collection('products')
+      .where('visible', '==', true)
+      .limit(10)
+      .get();
+    
+    if (snapshot.empty) return;
+
+    heroProductsPool = [];
+    snapshot.forEach(doc => heroProductsPool.push({ id: doc.id, ...doc.data() }));
+
+    // Iniciar el ciclo
+    rotateValla();
+    setInterval(rotateValla, 6000); // Cambia cada 6 segundos
+
+  } catch (error) {
+    console.error('Error en valla publicitaria:', error);
+  }
+};
+
+function rotateValla() {
+  const container = document.getElementById('hero-products-container');
+  if (heroProductsPool.length === 0) return;
+
+  // Seleccionamos el siguiente producto
+  const product = heroProductsPool[currentHeroIndex];
+  currentHeroIndex = (currentHeroIndex + 1) % heroProductsPool.length;
+
+  // 1. Animación de salida (si ya hay algo)
+  const oldCard = container.querySelector('.valla-card');
+  if (oldCard) {
+    oldCard.classList.add('valla-hidden');
+  }
+
+  // 2. Esperar a que la salida termine y renderizar el nuevo
+  setTimeout(() => {
+    const design = {
+      border: 'border-brand/30',
+      text: 'text-brand',
+      glow: 'shadow-brand/20'
+    };
+
+    const price = (product.plans && product.plans.length > 0) ? product.plans[0].price : '$0.00';
+
+    container.innerHTML = `
+      <div class="valla-card valla-hidden bg-dark-800/60 border ${design.border} rounded-3xl p-5 backdrop-blur-xl shadow-2xl ${design.glow} relative overflow-hidden h-full flex items-center">
+        <div class="led-glow"></div>
+        <div class="flex items-center gap-5 w-full relative z-10">
+          <div class="w-20 h-20 bg-dark-900 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 shadow-inner">
+            <img src="${product.logo}" class="w-14 h-14 object-contain" onerror="this.src='logo.jpg'">
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              
+              <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter">${product.category}</p>
+            </div>
+            <h4 class="font-black text-white text-lg truncate leading-tight uppercase">${product.name}</h4>
+            <div class="flex items-end justify-between mt-2">
+              <p class="${design.text} font-black text-2xl tracking-tighter">${price}</p>
+              <button onclick="showCatalogModal()" class="bg-white text-dark-950 text-[10px] font-black px-4 py-2 rounded-xl hover:scale-105 transition-transform">
+                ADQUIRIR <i class="fas fa-chevron-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 3. Quitar la clase hidden para que entre con la animación CSS
+    setTimeout(() => {
+      container.querySelector('.valla-card').classList.remove('valla-hidden');
+    }, 50);
+  }, 800);
+}
+
+// Función helper para asignar iconos según categoría
+const getIconForProduct = (category) => {
+  const cat = category?.toLowerCase() || '';
+  if (cat.includes('streaming') || cat.includes('video')) return 'play';
+  if (cat.includes('musica') || cat.includes('spotify')) return 'music';
+  if (cat.includes('videojuegos') || cat.includes('gaming') || cat.includes('fire')) return 'gamepad';
+  if (cat.includes('iptv') || cat.includes('tv')) return 'tv';
+  if (cat.includes('herramientas') || cat.includes('creativas')) return 'pen-nib';
+  return 'sparkles';
+};
+
+    
     window.loginWithGoogle = () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
@@ -628,6 +828,70 @@
           alert("Error al iniciar sesión: " + error.message);
         });
     };
+
+    window.showCatalogModal = () => {
+  if (currentUser) {
+    // Ya está logueado, desplazar al catálogo
+    document.getElementById('products-container').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    // No está logueado, mostrar modal
+    const modal = document.createElement('div');
+    modal.id = 'catalog-modal';
+    modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="document.getElementById('catalog-modal').remove()"></div>
+      <div class="relative bg-dark-900 border border-zinc-700 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+        <div class="bg-brand/10 p-6 text-center border-b border-white/5">
+          <div class="w-16 h-16 bg-brand rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg shadow-brand/30">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h3 class="text-2xl font-black text-white">Visualiza el Catálogo</h3>
+          <p class="text-zinc-400 text-sm mt-2">Inicia sesión para explorar todos nuestros productos y precios</p>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <div class="bg-dark-950 p-4 rounded-xl border border-zinc-800 flex items-start gap-3">
+            <i class="fas fa-check-circle text-brand text-lg mt-1 flex-shrink-0"></i>
+            <div>
+              <p class="text-white font-bold text-sm">Ofertas Exclusivas</p>
+              <p class="text-zinc-400 text-xs">Accede a descuentos especiales</p>
+            </div>
+          </div>
+
+          <div class="bg-dark-950 p-4 rounded-xl border border-zinc-800 flex items-start gap-3">
+            <i class="fas fa-check-circle text-brand text-lg mt-1 flex-shrink-0"></i>
+            <div>
+              <p class="text-white font-bold text-sm">Entrega Inmediata</p>
+              <p class="text-zinc-400 text-xs">Recibe tu acceso en segundos</p>
+            </div>
+          </div>
+
+          <div class="bg-dark-950 p-4 rounded-xl border border-zinc-800 flex items-start gap-3">
+            <i class="fas fa-check-circle text-brand text-lg mt-1 flex-shrink-0"></i>
+            <div>
+              <p class="text-white font-bold text-sm">Soporte 24/7</p>
+              <p class="text-zinc-400 text-xs">Estamos siempre disponibles</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 border-t border-white/5 space-y-3">
+          <button onclick="loginWithGoogle(); document.getElementById('catalog-modal').remove();" class="w-full py-3 bg-white hover:bg-zinc-200 text-dark-950 font-bold rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-white/10">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+            <span>Acceder con Google</span>
+          </button>
+
+          <button onclick="document.getElementById('catalog-modal').remove()" class="w-full py-3 bg-dark-800 hover:bg-dark-700 text-zinc-300 font-bold rounded-xl border border-zinc-700 transition-all">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  }
+};
+
 
     window.logout = () => {
       auth.signOut().then(() => {
@@ -652,11 +916,12 @@
       const floatingCart = document.getElementById('floating-cart');
       const heroTitle = document.getElementById('hero-title');
       const heroDesc = document.getElementById('hero-desc');
+      const heroStats = document.getElementById('hero-stats');
 
       if (user) {
         currentUser = user;
         const firstName = user.displayName ? user.displayName.split(' ')[0] : 'Amigo';
-
+        if (heroStats) heroStats.classList.add('hidden');
         if (heroTitle) heroTitle.innerHTML = `Hola, ${firstName} <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Qué bueno verte</span>`;
         if (heroDesc) heroDesc.textContent = "Tu catálogo exclusivo está listo. Explora las mejores ofertas que tenemos para ti hoy.";
 
@@ -686,7 +951,9 @@
 
         renderSkeleton();
         loadProducts();
+        
       } else {
+        if (heroStats) heroStats.classList.remove('hidden');
         if (heroTitle) heroTitle.innerHTML = `Entretenimiento <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>`;
         if (heroDesc) heroDesc.textContent = "Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.";
 
@@ -746,25 +1013,74 @@
         skeletonCategory('Música');
     }
 
-    function renderLockedCatalog() {
-      const container = document.getElementById("products-container");
-      container.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-32 px-4 text-center animate-fade-in">
-          <div class="bg-dark-900/50 border border-white/5 p-8 rounded-3xl max-w-md w-full backdrop-blur-sm relative overflow-hidden group">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand to-transparent opacity-50"></div>
-            <div class="w-20 h-20 bg-dark-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-black/20 group-hover:scale-110 transition-transform duration-500">
-              <i class="fas fa-lock text-4xl text-zinc-500 group-hover:text-brand transition-colors"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-3">Catálogo Exclusivo</h3>
-            <p class="text-zinc-400 mb-8 leading-relaxed">Para ver nuestros precios y productos premium, inicia sesión con Google.</p>
-            <button onclick="loginWithGoogle()" class="w-full py-4 bg-white hover:bg-zinc-200 text-dark-950 font-bold rounded-xl flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 shadow-lg shadow-white/10">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
-              <span>Acceder con Google</span>
-            </button>
-          </div>
+  function renderLockedCatalog() {
+  const container = document.getElementById("products-container");
+  
+  container.innerHTML = `
+    <div class="marquee-container relative overflow-hidden py-12 mb-12 border-y border-white/5 bg-white/[0.01] backdrop-blur-sm animate-fade-in">
+      <div class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-r from-dark-950 via-transparent to-dark-950"></div>
+
+      <div class="animate-marquee flex items-center">
+        <div class="flex items-center gap-16 md:gap-32 px-12">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" 
+               class="h-7 md:h-9 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" 
+               class="h-9 md:h-12 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" 
+               class="h-7 md:h-9 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" 
+               class="h-7 md:h-9 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://logodownload.org/wp-content/uploads/2022/12/hbo-max-logo.png" 
+               class="h-5 md:h-7 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://i.pinimg.com/originals/bb/83/cb/bb83cb10d8f0243da96cb65d3c691381.png" 
+               class="h-9 md:h-12 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
         </div>
-      `;
-    }
+
+        <div class="flex items-center gap-16 md:gap-32 px-12">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" 
+               class="h-7 md:h-9 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" 
+               class="h-9 md:h-12 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" 
+               class="h-7 md:h-9 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" 
+               class="h-7 md:h-9 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://logodownload.org/wp-content/uploads/2022/12/hbo-max-logo.png" 
+               class="h-5 md:h-7 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+          <img src="https://i.pinimg.com/originals/bb/83/cb/bb83cb10d8f0243da96cb65d3c691381.png" 
+               class="h-9 md:h-12 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-all duration-500">
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-16 animate-fade-in">
+      <div class="group p-8 rounded-[2rem] bg-dark-900/50 border border-white/5 flex flex-col items-center text-center hover:border-brand/30 transition-all duration-500">
+        <div class="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center text-brand mb-6 group-hover:scale-110 transition-transform">
+          <i class="fas fa-bolt text-2xl"></i>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-2">Activación Instantánea</h3>
+        <p class="text-zinc-500 text-sm leading-relaxed">Recibe tus credenciales tras confirmar tu pago.</p>
+      </div>
+
+      <div class="group p-8 rounded-[2rem] bg-dark-900/50 border border-white/5 flex flex-col items-center text-center hover:border-blue-500/30 transition-all duration-500">
+        <div class="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
+          <i class="fas fa-shield-alt text-2xl"></i>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-2">Soporte</h3>
+        <p class="text-zinc-500 text-sm leading-relaxed">Asistencia personalizada por WhatsApp para cualquier inconveniente.</p>
+      </div>
+
+      <div class="group p-8 rounded-[2rem] bg-dark-900/50 border border-white/5 flex flex-col items-center text-center hover:border-green-500/30 transition-all duration-500">
+        <div class="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center text-green-500 mb-6 group-hover:scale-110 transition-transform">
+          <i class="fas fa-wallet text-2xl"></i>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-2">Pago Seguro</h3>
+        <p class="text-zinc-500 text-sm leading-relaxed">Aceptamos transferencias de los principales bancos de Ecuador.</p>
+      </div>
+    </div>
+  `;
+}
+
 
     function loadProducts() {
       const CACHE_KEY = 'fullstream_products_cache';
@@ -1056,6 +1372,7 @@ ${itemsResumen}
     }
 
     initCart();
+    loadHeroProducts();
   </script>
 
   <style type="text/tailwindcss">
