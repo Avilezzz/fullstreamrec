@@ -717,31 +717,42 @@
 
       // ============ PEDIDOS ============
       const switchView = (viewName) => {
-        state.currentView = viewName;
-        const pv = document.getElementById('view-products');
-        const ov = document.getElementById('view-orders');
-        const np = document.querySelector('[data-view="products"]');
-        const no = document.querySelector('[data-view="orders"]');
-        const ac = 'bg-brand/10 text-brand font-medium border-brand/10';
-        const ic = 'text-zinc-400 hover:text-white hover:bg-white/5 border-transparent';
+  state.currentView = viewName;
+  const pv = document.getElementById('view-products');
+  const ov = document.getElementById('view-orders');
+  const np = document.querySelector('[data-view="products"]');
+  const no = document.querySelector('[data-view="orders"]');
+  const ac = 'bg-brand/10 text-brand font-medium border-brand/10';
+  const ic = 'text-zinc-400 hover:text-white hover:bg-white/5 border-transparent';
 
-        if (viewName === 'products') {
-          pv.classList.remove('hidden');
-          ov.classList.add('hidden');
-          np.classList.add(...ac.split(' '));
-          np.classList.remove(...ic.split(' '));
-          no.classList.remove(...ac.split(' '));
-          no.classList.add(...ic.split(' '));
-        } else {
-          pv.classList.add('hidden');
-          ov.classList.remove('hidden');
-          np.classList.remove(...ac.split(' '));
-          np.classList.add(...ic.split(' '));
-          no.classList.add(...ac.split(' '));
-          no.classList.remove(...ic.split(' '));
-          if (!state.ordersUnsubscribe) loadOrdersRealTime();
-        }
-      };
+  if (viewName === 'products') {
+    pv.classList.remove('hidden');
+    ov.classList.add('hidden');
+    np.classList.add(...ac.split(' '));
+    np.classList.remove(...ic.split(' '));
+    no.classList.remove(...ac.split(' '));
+    no.classList.add(...ic.split(' '));
+  } else {
+    pv.classList.add('hidden');
+    ov.classList.remove('hidden');
+    np.classList.remove(...ac.split(' '));
+    np.classList.add(...ic.split(' '));
+    no.classList.add(...ac.split(' '));
+    no.classList.remove(...ic.split(' '));
+    if (!state.ordersUnsubscribe) loadOrdersRealTime();
+  }
+
+  // ✨ AGREGAR ESTO: Cerrar sidebar automáticamente en mobile
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (window.innerWidth < 1024) {
+    sidebar.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  }
+
+  
+};
+
 
       const renderOrderCard = (doc, o) => {
         const date = o.date ? o.date.toDate() : new Date();
