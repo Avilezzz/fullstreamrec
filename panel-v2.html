@@ -180,6 +180,14 @@
                     <option value="Herramientas Creativas">Herramientas Creativas</option>
                     <option value="Combos">Combos</option>
                   </select>
+                  <div class="space-y-2">
+  <label class="text-sm font-medium text-zinc-400">Datos Requeridos al Cliente</label>
+  <select id="product-inputType" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none transition-all appearance-none">
+    <option value="none">Ninguno (Entrega automática/manual)</option>
+    <option value="text">Solo ID / Tag / Número</option>
+    <option value="credentials">Credenciales (Correo y Contraseña)</option>
+  </select>
+</div>
                 </div>
               </div>
 
@@ -596,6 +604,8 @@
         state.currentProductId = id;
         document.getElementById('product-name').value = p.name;
         document.getElementById('product-category').value = p.category;
+        // AGREGAR ESTA LÍNEA: Si no tiene inputType, asume 'none'
+  document.getElementById('product-inputType').value = p.inputType || 'none';
         document.getElementById('product-logo').value = p.logo;
         document.getElementById('product-subtitle').value = p.subtitle || '';
         document.getElementById('product-popular').checked = p.isPopular || false;
@@ -677,6 +687,7 @@
           subtitle: document.getElementById('product-subtitle').value,
           isPopular: document.getElementById('product-popular').checked,
           category: document.getElementById('product-category').value,
+          inputType: document.getElementById('product-inputType').value,
           logo: document.getElementById('product-logo').value,
           plans: plans,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),

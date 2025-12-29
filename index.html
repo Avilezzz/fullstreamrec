@@ -1239,59 +1239,118 @@ const getIconForProduct = (category) => {
     };
 
     function showPlans(product) {
-      const modal = document.getElementById('globalModal');
-      const container = document.getElementById('global-plans-container');
-      document.getElementById('global-modal-logo').src = product.logo;
-      document.getElementById('global-modal-title').textContent = product.name;
-      container.innerHTML = '';
+  const modal = document.getElementById('globalModal');
+  const container = document.getElementById('global-plans-container');
+  
+  // Actualizar imagen y título del modal
+  document.getElementById('global-modal-logo').src = product.logo;
+  document.getElementById('global-modal-title').textContent = product.name;
+  container.innerHTML = '';
 
-      if (product.name.toLowerCase().includes('free fire')) {
-        container.innerHTML += `
-          <div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700">
-            <label class="block text-xs font-bold text-zinc-400 uppercase mb-2">ID de Jugador</label>
-            <input type="number" id="ff-id" placeholder="Ingresa tu ID aquí" class="w-full bg-dark-900 border border-zinc-600 rounded p-3 text-white focus:border-brand focus:outline-none">
+  // 1. LÓGICA DE FORMULARIO DINÁMICO
+  // Leemos la configuración del producto (si no tiene, asumimos 'none')
+  const inputType = product.inputType || 'none';
+  let formHtml = '';
+
+  if (product.name.toLowerCase().includes('free fire') || inputType === 'text') {
+    // CASO 1: Pide solo un dato (ID, Tag, Número)
+    // Mantenemos la compatibilidad con tu código anterior de Free Fire
+    formHtml = `
+      <div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700 animate-fade-in">
+        <label class="block text-xs font-bold text-zinc-400 uppercase mb-2">
+            ${product.name.toLowerCase().includes('free fire') ? 'ID de Jugador' : 'ID / Usuario / Tag'}
+        </label>
+        <input type="text" id="req-input-1" placeholder="Ingresa el dato aquí" class="w-full bg-dark-900 border border-zinc-600 rounded p-3 text-white focus:border-brand focus:outline-none">
+      </div>
+    `;
+  } else if (inputType === 'credentials') {
+    // CASO 2: Pide Usuario y Contraseña
+    formHtml = `
+      <div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700 animate-fade-in space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-zinc-400 uppercase mb-1">Correo / Usuario</label>
+          <input type="text" id="req-input-1" placeholder="ejemplo@correo.com" class="w-full bg-dark-900 border border-zinc-600 rounded-xl p-3 text-white focus:border-brand focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-zinc-400 uppercase mb-1">Contraseña</label>
+          <div class="relative">
+            <input type="text" id="req-input-2" placeholder="Tu contraseña" class="w-full bg-dark-900 border border-zinc-600 rounded-xl p-3 text-white focus:border-brand focus:outline-none">
+            <p class="text-[10px] text-zinc-500 mt-1"><i class="fas fa-lock"></i> Datos encriptados.</p>
           </div>
-        `;
+        </div>
+      </div>
+    `;
+  }
+
+  // Insertar el formulario en el contenedor si es necesario
+  if (formHtml) {
+    const formDiv = document.createElement('div');
+    formDiv.innerHTML = formHtml;
+    container.appendChild(formDiv);
+  }
+
+  // 2. RENDERIZAR LOS PLANES
+  product.plans.forEach(plan => {
+    const img = plan.image || product.logo;
+    const btn = document.createElement('button');
+    btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-green-500/50 rounded-xl p-4 flex items-center justify-between group transition-all mb-2";
+    
+    btn.innerHTML = `
+      <div class="flex items-center gap-4">
+        <img src="${img}" class="w-10 h-10 object-contain">
+        <div class="text-left">
+          <p class="font-bold text-white group-hover:text-white transition-colors">${plan.name}</p>
+        </div>
+      </div>
+      <span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>
+    `;
+
+    // 3. LÓGICA DEL CLIC (VALIDACIÓN Y CARRITO)
+    btn.onclick = () => {
+      let finalPlanName = plan.name;
+      let additionalInfo = "";
+
+      // Validamos según el tipo de formulario mostrado
+      if (document.getElementById('req-input-1')) {
+        const val1 = document.getElementById('req-input-1').value.trim();
+        
+        // Si hay un segundo input (contraseña), validamos ambos
+        if (document.getElementById('req-input-2')) {
+           const val2 = document.getElementById('req-input-2').value.trim();
+           if (val1.length < 3 || val2.length < 3) {
+             alert("Por favor completa usuario y contraseña.");
+             return;
+           }
+           additionalInfo = ` (C: ${val1} | P: ${val2})`;
+        } else {
+           // Si solo hay un input (ID)
+           if (val1.length < 3) {
+             const input = document.getElementById('req-input-1');
+             input.classList.add('border-red-500', 'animate-pulse');
+             setTimeout(() => input.classList.remove('border-red-500', 'animate-pulse'), 2000);
+             return;
+           }
+           additionalInfo = ` (ID: ${val1})`;
+        }
       }
 
-      product.plans.forEach(plan => {
-        const img = plan.image || product.logo;
-        const btn = document.createElement('button');
-        btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-green-500/50 rounded-xl p-4 flex items-center justify-between group transition-all";
-        btn.innerHTML = `
-          <div class="flex items-center gap-4">
-            <img src="${img}" class="w-10 h-10 object-contain">
-            <div class="text-left">
-              <p class="font-bold text-white group-hover:text-white transition-colors">${plan.name}</p>
-            </div>
-          </div>
-          <span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>
-        `;
+      // Agregamos la info extra al nombre para que salga en el pedido
+      finalPlanName += additionalInfo;
 
-        btn.onclick = () => {
-          let name = plan.name;
-          if (product.name.toLowerCase().includes('free fire')) {
-            const input = document.getElementById('ff-id');
-            const ffId = (input?.value || '').trim();
-            if (ffId.length < 5) {
-              input.classList.add('border-red-500', 'animate-pulse');
-              setTimeout(() => input.classList.remove('border-red-500', 'animate-pulse'), 2000);
-              return;
-            }
-            name += ` (ID: ${ffId})`;
-          }
+      // Enviamos al carrito
+      addToCart(product.id, product.name, finalPlanName, plan.price, img);
+      
+      // Cerramos modal
+      document.getElementById('globalModal').classList.add('hidden');
+      document.body.classList.remove('no-scroll');
+    };
 
-          addToCart(product.id, product.name, name, plan.price, img);
-          document.getElementById('globalModal').classList.add('hidden');
-          document.body.classList.remove('no-scroll');
-        };
+    container.appendChild(btn);
+  });
 
-        container.appendChild(btn);
-      });
-
-      modal.classList.remove('hidden');
-      document.body.classList.add('no-scroll');
-    }
+  modal.classList.remove('hidden');
+  document.body.classList.add('no-scroll');
+}
 
     async function openPaymentModal() {
       if (cart.length === 0) return alert("El carrito está vacío");
@@ -1373,6 +1432,7 @@ ${itemsResumen}
 
     initCart();
     loadHeroProducts();
+
   </script>
 
   <style type="text/tailwindcss">
