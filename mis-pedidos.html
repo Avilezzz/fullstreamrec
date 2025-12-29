@@ -702,7 +702,7 @@ async function enviarNotificacionTelegram(mensaje, imageUrl = null) {
     });
 
     // 5. Preparación de Notificación para Telegram
-    const itemsResumen = currentOrderData.items.map(i => `  ▫️ <i>${i.productName}</i>`).join('\n');
+    const itemsResumen = currentOrderData.items.map(i => `  ▫️ <i>${i.planName}</i>`).join('\n');
     const waNumber = "593" + currentOrderData.userPhone.slice(1);
     const fechaHora = new Date().toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
 
