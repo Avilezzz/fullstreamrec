@@ -523,27 +523,8 @@
   </button>
 
   <script>
-    // Telegram Config
-    const TELEGRAM_TOKEN = '8583731239:AAGNvj8RXs4HIExAoyBFy7gC-BBT653XRcY';
-    const TELEGRAM_CHAT_ID = '1535760610';
+   
 
-    async function enviarNotificacionTelegram(mensaje) {
-      const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-      try {
-        await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: mensaje,
-            parse_mode: 'HTML'
-          })
-        });
-        console.log("Notificación enviada a Telegram");
-      } catch (error) {
-        console.error("Error enviando a Telegram:", error);
-      }
-    }
 
     // UI
     const hamburger = document.getElementById('hamburger');
