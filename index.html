@@ -946,8 +946,9 @@ const getIconForProduct = (category) => {
             document.getElementById('cartModal').classList.remove('hidden');
             document.body.classList.add('no-scroll');
           };
+          
         }
-
+        initNotificationRealTime();
         renderSkeleton();
         loadProducts();
         
@@ -975,7 +976,8 @@ const getIconForProduct = (category) => {
         if (footer) footer.classList.remove('hidden');
         if (headerCart) headerCart.classList.add('hidden');
         if (floatingCart) floatingCart.classList.add('hidden');
-
+        closePromo();
+    if (countdownInterval) clearInterval(countdownInterval);
         renderLockedCatalog();
       }
     });
@@ -1437,40 +1439,37 @@ ${itemsResumen}
 let countdownInterval = null; // Variable global para el contador
 let notificationListener = null;
 
+
 function initNotificationRealTime() {
+    // Evitar duplicar listeners si la función se llama varias veces
     if (notificationListener) notificationListener(); 
 
     notificationListener = db.collection('settings').doc('notification').onSnapshot((doc) => {
         if (!doc.exists) return;
         const data = doc.data();
-        const modal = document.getElementById('promoModal');
-        const modalCard = document.getElementById('noti-modal-card');
-        const actionBtn = document.getElementById('noti-btn-action');
-
-        if (!data.enabled) {
+        
+        // Si el admin la desactiva o el usuario no está logueado (doble check)
+        if (!data.enabled || !currentUser) {
             closePromo();
             return;
         }
 
-        // --- PUNTO 4: CONFIGURACIÓN DE NIVELES (COLORES E ÍCONOS) ---
+        const modal = document.getElementById('promoModal');
+        const modalCard = document.getElementById('noti-modal-card');
+        const actionBtn = document.getElementById('noti-btn-action');
+
+        // Configuración de niveles
         const levels = {
-            promo: { color: '#ff5e66', icon: 'fa-fire' },         // Rojo Marca
-            info: { color: '#3b82f6', icon: 'fa-info-circle' },   // Azul
-            mantenimiento: { color: '#f59e0b', icon: 'fa-tools' }, // Amarillo
-            urgente: { color: '#ef4444', icon: 'fa-exclamation-triangle' } // Rojo Crítico
+            promo: { color: '#ff5e66', icon: 'fa-fire' },
+            info: { color: '#3b82f6', icon: 'fa-info-circle' },
+            mantenimiento: { color: '#f59e0b', icon: 'fa-tools' },
+            urgente: { color: '#ef4444', icon: 'fa-exclamation-triangle' }
         };
         const config = levels[data.level || 'promo'];
 
-        // Aplicar estilos dinámicos al modal y botón
         modalCard.style.borderColor = config.color;
         actionBtn.style.backgroundColor = config.color;
 
-        const currentNotiId = data.updatedAt ? data.updatedAt.toMillis().toString() : data.title;
-        const lastSeenNoti = sessionStorage.getItem('last_promo_id');
-
-        if (lastSeenNoti === currentNotiId) return;
-
-        // --- RENDERIZADO DINÁMICO ---
         const container = document.getElementById('promo-content');
         if (data.type === 'image') {
             container.innerHTML = `
@@ -1492,24 +1491,21 @@ function initNotificationRealTime() {
             `;
         }
 
-        // --- PUNTO 5: LÓGICA DEL CONTADOR REGRESIVO ---
+        // Lógica del contador
         if (countdownInterval) clearInterval(countdownInterval);
         const timerContainer = document.getElementById('promo-timer');
         
         if (data.expiry) {
             timerContainer.classList.remove('hidden');
             const targetDate = new Date(data.expiry).getTime();
-
             countdownInterval = setInterval(() => {
                 const now = new Date().getTime();
                 const dist = targetDate - now;
-
                 if (dist < 0) {
                     clearInterval(countdownInterval);
                     timerContainer.classList.add('hidden');
                     return;
                 }
-
                 const h = Math.floor(dist / (1000 * 60 * 60));
                 const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((dist % (1000 * 60)) / 1000);
@@ -1520,14 +1516,7 @@ function initNotificationRealTime() {
             timerContainer.classList.add('hidden');
         }
 
-        window.markAsSeenAndClose = () => {
-            sessionStorage.setItem('last_promo_id', currentNotiId);
-            closePromo();
-        };
-
-        const closeButtons = modal.querySelectorAll('[onclick="closePromo()"]');
-        closeButtons.forEach(btn => btn.setAttribute('onclick', 'markAsSeenAndClose()'));
-
+        actionBtn.onclick = () => closePromo();
         modal.classList.remove('hidden');
         document.body.classList.add('no-scroll');
     });
@@ -1535,7 +1524,8 @@ function initNotificationRealTime() {
 
 // Reemplaza el llamado final por este:
 window.addEventListener('load', () => {
-    initNotificationRealTime();
+    initCart();
+    loadHeroProducts();
 });
 
     initCart();

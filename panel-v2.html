@@ -155,6 +155,7 @@
         <div id="view-notifications" class="max-w-3xl mx-auto hidden fade-in">
   <h2 class="text-2xl font-bold text-white mb-8">Sistema de Notificaciones Global</h2>
   <div class="bg-dark-900 border border-white/5 rounded-2xl p-6 space-y-6">
+    
     <div class="flex items-center justify-between p-4 bg-dark-800 rounded-xl">
       <div>
         <p class="font-bold text-white">Notificación Activa</p>
@@ -167,31 +168,32 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-zinc-400">Tipo de Notificación</label>
-        <select id="noti-type" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
-          <option value="text">Solo Texto</option>
-          <option value="image">Imagen + Texto</option>
-        </select>
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-zinc-400">Tipo de Notificación</label>
+          <select id="noti-type" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+            <option value="text">Solo Texto</option>
+            <option value="image">Imagen + Texto</option>
+          </select>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-  <div class="space-y-2">
-    <label class="text-sm font-medium text-zinc-400">Nivel de Alerta (Color)</label>
-    <select id="noti-level" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
-      <option value="promo">🔥 Promoción (Rojo/Marca)</option>
-      <option value="info">🔵 Informativo (Azul)</option>
-      <option value="mantenimiento">⚠️ Mantenimiento (Amarillo)</option>
-      <option value="urgente">🚨 Crítico (Rojo Intenso)</option>
-    </select>
-  </div>
-  <div class="space-y-2">
-    <label class="text-sm font-medium text-zinc-400">Fecha de Expiración (Countdown)</label>
-    <input type="datetime-local" id="noti-expiry" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
-    <p class="text-[10px] text-zinc-500">Deja vacío si no quieres mostrar un contador.</p>
-  </div>
-</div>
-
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-zinc-400">Nivel de Alerta</label>
+            <select id="noti-level" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+              <option value="promo">🔥 Promoción</option>
+              <option value="info">🔵 Informativo</option>
+              <option value="mantenimiento">⚠️ Mantenimiento</option>
+              <option value="urgente">🚨 Crítico</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-zinc-400">Expiración</label>
+            <input type="datetime-local" id="noti-expiry" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+          </div>
+        </div>
       </div>
+
       <div class="space-y-2">
         <label class="text-sm font-medium text-zinc-400">Título</label>
         <input type="text" id="noti-title" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
@@ -212,13 +214,26 @@
           <span class="text-zinc-600 text-xs">Sin imagen seleccionada</span>
         </div>
       </div>
-    </div>
-
-    <button onclick="saveNotificationSettings()" id="btn-save-noti" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">
+    </div> <button onclick="saveNotificationSettings()" id="btn-save-noti" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">
       Actualizar Notificación
     </button>
-  </div>
-</div>
+
+    <div class="mt-12 border-t border-white/10 pt-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fas fa-history text-brand"></i> Plantillas Guardadas
+        </h3>
+        <button onclick="saveAsTemplate()" class="text-xs bg-dark-800 hover:bg-white/10 text-zinc-300 px-4 py-2 rounded-lg border border-zinc-700 transition-all">
+          <i class="fas fa-save mr-1"></i> Guardar actual como plantilla
+        </button>
+      </div>
+      
+      <div id="saved-notifications-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <p class="col-span-full text-center text-zinc-500 py-8 italic">No tienes plantillas guardadas.</p>
+      </div>
+    </div>
+
+  </div> </div>
       </main>
     </div>
 
@@ -838,7 +853,8 @@
   if (viewName === 'orders') {
     if (!state.ordersUnsubscribe) loadOrdersRealTime();
   } else if (viewName === 'notifications') {
-    loadNotificationSettings(); // IMPORTANTE: Llama a la función que trae los datos de Firebase
+    loadNotificationSettings();
+    loadSavedTemplates(); // IMPORTANTE: Llama a la función que trae los datos de Firebase
   }
 
   // ✨ Mantener: Cerrar sidebar automáticamente en mobile
@@ -1068,6 +1084,97 @@ const loadNotificationSettings = async () => {
         document.getElementById('noti-type').dispatchEvent(new Event('change'));
     }
 };
+
+// 1. Guardar la configuración actual como una nueva plantilla
+async function saveAsTemplate() {
+    const title = document.getElementById('noti-title').value;
+    if (!title) return showToast('Ponle un título a la notificación para guardarla', 'warning');
+
+    try {
+        const data = {
+            title: title,
+            message: document.getElementById('noti-message').value,
+            type: document.getElementById('noti-type').value,
+            level: document.getElementById('noti-level').value,
+            expiry: document.getElementById('noti-expiry').value,
+            imageUrl: document.getElementById('noti-image-url').value,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        await db.collection('saved_notifications').add(data);
+        showToast('Plantilla guardada con éxito');
+        loadSavedTemplates(); // Recargar lista
+    } catch (e) {
+        showToast('Error al guardar plantilla', 'error');
+    }
+}
+
+// 2. Cargar y mostrar las plantillas
+async function loadSavedTemplates() {
+    const container = document.getElementById('saved-notifications-list');
+    try {
+        const snap = await db.collection('saved_notifications').orderBy('createdAt', 'desc').get();
+        if (snap.empty) {
+            container.innerHTML = '<p class="col-span-full text-center text-zinc-500 py-8 italic">No tienes plantillas guardadas.</p>';
+            return;
+        }
+
+        container.innerHTML = snap.docs.map(doc => {
+            const d = doc.data();
+            const colors = { promo: 'text-brand', info: 'text-blue-400', mantenimiento: 'text-yellow-500', urgente: 'text-red-500' };
+            return `
+                <div class="bg-dark-800 border border-white/5 p-4 rounded-2xl hover:border-brand/30 transition-all group">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest ${colors[d.level] || 'text-zinc-500'}">${d.level}</span>
+                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="deleteTemplate('${doc.id}')" class="text-zinc-500 hover:text-red-500 text-xs"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <h4 class="text-white font-bold truncate">${d.title}</h4>
+                    <p class="text-zinc-500 text-xs line-clamp-2 mt-1 mb-4">${d.message}</p>
+                    <button onclick="applyTemplate('${doc.id}')" class="w-full py-2 bg-dark-950 hover:bg-brand text-zinc-300 hover:text-white text-xs font-bold rounded-xl border border-zinc-700 hover:border-brand transition-all">
+                        Cargar Plantilla
+                    </button>
+                </div>
+            `;
+        }).join('');
+    } catch (e) { console.error(e); }
+}
+
+// 3. Aplicar una plantilla al formulario y activarla
+async function applyTemplate(id) {
+    try {
+        const doc = await db.collection('saved_notifications').doc(id).get();
+        const d = doc.data();
+        
+        // Llenar el formulario del panel
+        document.getElementById('noti-title').value = d.title;
+        document.getElementById('noti-message').value = d.message;
+        document.getElementById('noti-type').value = d.type;
+        document.getElementById('noti-level').value = d.level || 'promo';
+        document.getElementById('noti-expiry').value = d.expiry || '';
+        document.getElementById('noti-image-url').value = d.imageUrl || '';
+        
+        // Actualizar preview de imagen si existe
+        if(d.imageUrl) {
+            document.getElementById('noti-img-preview').innerHTML = `<img src="${d.imageUrl}" class="h-full object-contain">`;
+        }
+        
+        document.getElementById('noti-type').dispatchEvent(new Event('change'));
+        showToast('Plantilla cargada. No olvides presionar "Actualizar" para publicarla.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) { showToast('Error al aplicar plantilla', 'error'); }
+}
+
+// 4. Eliminar plantilla
+async function deleteTemplate(id) {
+    if(!confirm('¿Eliminar esta plantilla definitivamente?')) return;
+    try {
+        await db.collection('saved_notifications').doc(id).delete();
+        loadSavedTemplates();
+        showToast('Plantilla eliminada');
+    } catch (e) { showToast('Error al eliminar', 'error'); }
+}
 
 // Subida a ImgBB y Guardar en Firebase
 async function saveNotificationSettings() {
