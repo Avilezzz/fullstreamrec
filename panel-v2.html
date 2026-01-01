@@ -85,6 +85,11 @@
           <span class="flex-1">Pedidos</span>
           <span id="orders-badge" class="bg-brand text-white text-[10px] font-bold h-5 min-w-[1.25rem] px-1.5 flex items-center justify-center rounded-full shadow-glow animate-pulse">0</span>
         </button>
+
+        <button onclick="switchView('notifications')" class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent transition-all" data-view="notifications">
+  <i class="fas fa-bell w-5 text-center"></i>
+  <span>Notificaciones</span>
+</button>
       </nav>
 
       <div class="p-4 border-t border-white/5 bg-dark-800/30">
@@ -146,6 +151,74 @@
             </div>
           </div>
         </div>
+
+        <div id="view-notifications" class="max-w-3xl mx-auto hidden fade-in">
+  <h2 class="text-2xl font-bold text-white mb-8">Sistema de Notificaciones Global</h2>
+  <div class="bg-dark-900 border border-white/5 rounded-2xl p-6 space-y-6">
+    <div class="flex items-center justify-between p-4 bg-dark-800 rounded-xl">
+      <div>
+        <p class="font-bold text-white">Notificación Activa</p>
+        <p class="text-xs text-zinc-500">Muestra u oculta el modal en el index</p>
+      </div>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="noti-enabled" class="sr-only peer">
+        <div class="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+      </label>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-zinc-400">Tipo de Notificación</label>
+        <select id="noti-type" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+          <option value="text">Solo Texto</option>
+          <option value="image">Imagen + Texto</option>
+        </select>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="space-y-2">
+    <label class="text-sm font-medium text-zinc-400">Nivel de Alerta (Color)</label>
+    <select id="noti-level" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+      <option value="promo">🔥 Promoción (Rojo/Marca)</option>
+      <option value="info">🔵 Informativo (Azul)</option>
+      <option value="mantenimiento">⚠️ Mantenimiento (Amarillo)</option>
+      <option value="urgente">🚨 Crítico (Rojo Intenso)</option>
+    </select>
+  </div>
+  <div class="space-y-2">
+    <label class="text-sm font-medium text-zinc-400">Fecha de Expiración (Countdown)</label>
+    <input type="datetime-local" id="noti-expiry" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+    <p class="text-[10px] text-zinc-500">Deja vacío si no quieres mostrar un contador.</p>
+  </div>
+</div>
+
+      </div>
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-zinc-400">Título</label>
+        <input type="text" id="noti-title" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label class="text-sm font-medium text-zinc-400">Mensaje / Descripción</label>
+      <textarea id="noti-message" rows="3" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none"></textarea>
+    </div>
+
+    <div id="noti-image-container" class="space-y-2 hidden">
+      <label class="text-sm font-medium text-zinc-400">Imagen (ImgBB)</label>
+      <div class="flex flex-col gap-4">
+        <input type="file" id="noti-file-input" accept="image/*" class="text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20">
+        <input type="hidden" id="noti-image-url">
+        <div id="noti-img-preview" class="w-full h-48 bg-dark-950 rounded-xl border border-zinc-800 flex items-center justify-center overflow-hidden">
+          <span class="text-zinc-600 text-xs">Sin imagen seleccionada</span>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="saveNotificationSettings()" id="btn-save-noti" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">
+      Actualizar Notificación
+    </button>
+  </div>
+</div>
       </main>
     </div>
 
@@ -726,42 +799,55 @@
 
       document.getElementById('search-input').addEventListener('input', applyFilters);
 
-      // ============ PEDIDOS ============
-      const switchView = (viewName) => {
+     const switchView = (viewName) => {
   state.currentView = viewName;
-  const pv = document.getElementById('view-products');
-  const ov = document.getElementById('view-orders');
-  const np = document.querySelector('[data-view="products"]');
-  const no = document.querySelector('[data-view="orders"]');
+
+  // 1. Definimos todos los contenedores y botones
+  const views = {
+    'products': document.getElementById('view-products'),
+    'orders': document.getElementById('view-orders'),
+    'notifications': document.getElementById('view-notifications')
+  };
+
+  const btns = {
+    'products': document.querySelector('[data-view="products"]'),
+    'orders': document.querySelector('[data-view="orders"]'),
+    'notifications': document.querySelector('[data-view="notifications"]')
+  };
+
   const ac = 'bg-brand/10 text-brand font-medium border-brand/10';
   const ic = 'text-zinc-400 hover:text-white hover:bg-white/5 border-transparent';
 
-  if (viewName === 'products') {
-    pv.classList.remove('hidden');
-    ov.classList.add('hidden');
-    np.classList.add(...ac.split(' '));
-    np.classList.remove(...ic.split(' '));
-    no.classList.remove(...ac.split(' '));
-    no.classList.add(...ic.split(' '));
-  } else {
-    pv.classList.add('hidden');
-    ov.classList.remove('hidden');
-    np.classList.remove(...ac.split(' '));
-    np.classList.add(...ic.split(' '));
-    no.classList.add(...ac.split(' '));
-    no.classList.remove(...ic.split(' '));
-    if (!state.ordersUnsubscribe) loadOrdersRealTime();
+  // 2. Ocultamos TODO primero y reseteamos estilos
+  Object.keys(views).forEach(key => {
+    if (views[key]) views[key].classList.add('hidden');
+    if (btns[key]) {
+      btns[key].classList.remove(...ac.split(' '));
+      btns[key].classList.add(...ic.split(' '));
+    }
+  });
+
+  // 3. Mostramos solo la vista activa y su botón
+  if (views[viewName]) views[viewName].classList.remove('hidden');
+  if (btns[viewName]) {
+    btns[viewName].classList.add(...ac.split(' '));
+    btns[viewName].classList.remove(...ic.split(' '));
   }
 
-  // ✨ AGREGAR ESTO: Cerrar sidebar automáticamente en mobile
+  // 4. Lógica de carga de datos según la vista
+  if (viewName === 'orders') {
+    if (!state.ordersUnsubscribe) loadOrdersRealTime();
+  } else if (viewName === 'notifications') {
+    loadNotificationSettings(); // IMPORTANTE: Llama a la función que trae los datos de Firebase
+  }
+
+  // ✨ Mantener: Cerrar sidebar automáticamente en mobile
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
   if (window.innerWidth < 1024) {
     sidebar.classList.add('-translate-x-full');
     overlay.classList.add('hidden');
   }
-
-  
 };
 
 
@@ -955,6 +1041,81 @@
           showToast('Error al guardar', 'error');
         }
       };
+
+
+      // Manejo de visibilidad de campos segun tipo
+document.getElementById('noti-type').onchange = (e) => {
+    const container = document.getElementById('noti-image-container');
+    e.target.value === 'image' ? container.classList.remove('hidden') : container.classList.add('hidden');
+};
+
+// Cargar ajustes actuales
+const loadNotificationSettings = async () => {
+    const doc = await db.collection('settings').doc('notification').get();
+    if (doc.exists) {
+        const data = doc.data();
+        document.getElementById('noti-enabled').checked = data.enabled;
+        document.getElementById('noti-type').value = data.type;
+        document.getElementById('noti-title').value = data.title;
+        document.getElementById('noti-level').value = data.level || 'promo';
+        document.getElementById('noti-expiry').value = data.expiry || '';
+        document.getElementById('noti-message').value = data.message;
+        document.getElementById('noti-image-url').value = data.imageUrl || '';
+        
+        if(data.imageUrl) {
+            document.getElementById('noti-img-preview').innerHTML = `<img src="${data.imageUrl}" class="h-full object-contain">`;
+        }
+        document.getElementById('noti-type').dispatchEvent(new Event('change'));
+    }
+};
+
+// Subida a ImgBB y Guardar en Firebase
+async function saveNotificationSettings() {
+    const btn = document.getElementById('btn-save-noti');
+    const fileInput = document.getElementById('noti-file-input');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+    let finalImageUrl = document.getElementById('noti-image-url').value;
+
+    // Si hay archivo nuevo, subir a ImgBB
+    if (fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        
+        try {
+            // REEMPLAZA CON TU API KEY DE IMGBB
+            const resp = await fetch('https://api.imgbb.com/1/upload?key=a173d6df7c491256729ddec9161765e3', {
+                method: 'POST',
+                body: formData
+            });
+            const resData = await resp.json();
+            finalImageUrl = resData.data.url;
+        } catch (e) {
+            showToast('Error al subir imagen a ImgBB', 'error');
+            btn.disabled = false; return;
+        }
+    }
+
+    try {
+        await db.collection('settings').doc('notification').set({
+            enabled: document.getElementById('noti-enabled').checked,
+            type: document.getElementById('noti-type').value,
+            title: document.getElementById('noti-title').value,
+            level: document.getElementById('noti-level').value, // Nuevo
+            expiry: document.getElementById('noti-expiry').value, // Nuevo
+            message: document.getElementById('noti-message').value,
+            imageUrl: finalImageUrl,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('Notificación actualizada correctamente');
+    } catch (e) {
+        showToast('Error al guardar en Firebase', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerText = 'Actualizar Notificación';
+    }
+}
 
       const closeOrderModal = () => {
         document.getElementById('order-modal').classList.add('hidden');

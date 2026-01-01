@@ -522,6 +522,24 @@
     </div>
   </button>
 
+  <div id="promoModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="closePromo()"></div>
+  <div id="noti-modal-card" class="relative bg-dark-900 border-2 border-brand w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-fade-in">
+    
+    <div id="promo-content"></div>
+
+    <div id="promo-timer" class="px-6 mb-4 hidden">
+        <div class="bg-black/40 rounded-2xl p-4 border border-white/5 text-center">
+            <p class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">La oferta termina en</p>
+            <div id="timer-display" class="text-2xl font-black font-mono text-white">00:00:00</div>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <button id="noti-btn-action" onclick="markAsSeenAndClose()" class="w-full py-4 bg-brand text-white font-bold rounded-2xl shadow-lg">Entendido</button>
+    </div>
+  </div>
+</div>
   <script>
    
 
@@ -1410,6 +1428,115 @@ ${itemsResumen}
         btn.innerText = "Intentar de nuevo";
       }
     }
+
+    function closePromo() {
+    document.getElementById('promoModal').classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+}
+
+let countdownInterval = null; // Variable global para el contador
+let notificationListener = null;
+
+function initNotificationRealTime() {
+    if (notificationListener) notificationListener(); 
+
+    notificationListener = db.collection('settings').doc('notification').onSnapshot((doc) => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        const modal = document.getElementById('promoModal');
+        const modalCard = document.getElementById('noti-modal-card');
+        const actionBtn = document.getElementById('noti-btn-action');
+
+        if (!data.enabled) {
+            closePromo();
+            return;
+        }
+
+        // --- PUNTO 4: CONFIGURACIÓN DE NIVELES (COLORES E ÍCONOS) ---
+        const levels = {
+            promo: { color: '#ff5e66', icon: 'fa-fire' },         // Rojo Marca
+            info: { color: '#3b82f6', icon: 'fa-info-circle' },   // Azul
+            mantenimiento: { color: '#f59e0b', icon: 'fa-tools' }, // Amarillo
+            urgente: { color: '#ef4444', icon: 'fa-exclamation-triangle' } // Rojo Crítico
+        };
+        const config = levels[data.level || 'promo'];
+
+        // Aplicar estilos dinámicos al modal y botón
+        modalCard.style.borderColor = config.color;
+        actionBtn.style.backgroundColor = config.color;
+
+        const currentNotiId = data.updatedAt ? data.updatedAt.toMillis().toString() : data.title;
+        const lastSeenNoti = sessionStorage.getItem('last_promo_id');
+
+        if (lastSeenNoti === currentNotiId) return;
+
+        // --- RENDERIZADO DINÁMICO ---
+        const container = document.getElementById('promo-content');
+        if (data.type === 'image') {
+            container.innerHTML = `
+                <img src="${data.imageUrl}" class="w-full h-64 object-cover" onerror="this.src='logo.jpg'">
+                <div class="p-6 pb-2">
+                    <h3 class="text-2xl font-black text-white mb-2">${data.title}</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed">${data.message}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="p-8 pt-12 text-center">
+                    <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl" style="background-color: ${config.color}20; color: ${config.color}">
+                        <i class="fas ${config.icon}"></i>
+                    </div>
+                    <h3 class="text-3xl font-black text-white mb-4">${data.title}</h3>
+                    <p class="text-zinc-400 text-base leading-relaxed">${data.message}</p>
+                </div>
+            `;
+        }
+
+        // --- PUNTO 5: LÓGICA DEL CONTADOR REGRESIVO ---
+        if (countdownInterval) clearInterval(countdownInterval);
+        const timerContainer = document.getElementById('promo-timer');
+        
+        if (data.expiry) {
+            timerContainer.classList.remove('hidden');
+            const targetDate = new Date(data.expiry).getTime();
+
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const dist = targetDate - now;
+
+                if (dist < 0) {
+                    clearInterval(countdownInterval);
+                    timerContainer.classList.add('hidden');
+                    return;
+                }
+
+                const h = Math.floor(dist / (1000 * 60 * 60));
+                const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((dist % (1000 * 60)) / 1000);
+                document.getElementById('timer-display').innerText = 
+                    `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }, 1000);
+        } else {
+            timerContainer.classList.add('hidden');
+        }
+
+        window.markAsSeenAndClose = () => {
+            sessionStorage.setItem('last_promo_id', currentNotiId);
+            closePromo();
+        };
+
+        const closeButtons = modal.querySelectorAll('[onclick="closePromo()"]');
+        closeButtons.forEach(btn => btn.setAttribute('onclick', 'markAsSeenAndClose()'));
+
+        modal.classList.remove('hidden');
+        document.body.classList.add('no-scroll');
+    });
+}
+
+// Reemplaza el llamado final por este:
+window.addEventListener('load', () => {
+    initNotificationRealTime();
+});
 
     initCart();
     loadHeroProducts();
