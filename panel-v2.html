@@ -177,6 +177,14 @@
           </select>
         </div>
 
+        <div class="space-y-2">
+  <label class="text-sm font-medium text-zinc-400">Formato de Visualización</label>
+  <select id="noti-display-type" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none">
+    <option value="modal">🔲 Modal Central</option>
+    <option value="banner">🔝 Banner Superior</option>
+  </select>
+</div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <label class="text-sm font-medium text-zinc-400">Nivel de Alerta</label>
@@ -193,6 +201,30 @@
           </div>
         </div>
       </div>
+
+     <div class="space-y-3">
+  <label class="text-sm font-medium text-zinc-400">Acción de la Notificación</label>
+  
+  <select id="noti-action-mode" onchange="toggleActionInputs()" class="w-full bg-dark-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:border-brand focus:outline-none text-sm">
+    <option value="none">Sin acción (Solo cerrar)</option>
+    <option value="all_offers">🔥 Mostrar TODAS las Ofertas</option>
+    <option value="specific">🎯 Vincular Producto Específico</option>
+  </select>
+
+  <div id="specific-product-container" class="hidden space-y-2 animate-fade-in">
+    <div id="linked-product-badge" class="hidden items-center gap-3 p-3 bg-brand/10 border border-brand/20 rounded-xl mb-2">
+      <img id="linked-logo" src="" class="w-8 h-8 object-contain rounded bg-dark-900">
+      <div class="flex-1">
+        <p id="linked-name" class="text-white text-xs font-bold"></p>
+        <input type="hidden" id="noti-linked-id">
+      </div>
+      <button onclick="unlinkProduct()" class="text-zinc-500 hover:text-red-500"><i class="fas fa-times-circle"></i></button>
+    </div>
+    <button onclick="openProductPicker()" class="w-full bg-dark-800 hover:bg-zinc-700 text-white px-4 py-3 rounded-xl border border-zinc-700 text-xs font-bold flex items-center justify-center gap-2">
+      <i class="fas fa-search"></i> Buscar Producto
+    </button>
+  </div>
+</div>
 
       <div class="space-y-2">
         <label class="text-sm font-medium text-zinc-400">Título</label>
@@ -1104,9 +1136,31 @@ const loadNotificationSettings = async () => {
         document.getElementById('noti-title').value = data.title;
         document.getElementById('noti-level').value = data.level || 'promo';
         document.getElementById('noti-expiry').value = data.expiry || '';
+        document.getElementById('noti-display-type').value = data.displayType || 'modal';
         document.getElementById('noti-message').value = data.message;
         document.getElementById('noti-image-url').value = data.imageUrl || '';
         
+        // Cargar el modo de acción
+        const actionId = data.linkedProductId;
+        if (actionId === 'ALL_OFFERS') {
+            document.getElementById('noti-action-mode').value = 'all_offers';
+        } else if (actionId && actionId !== '') {
+            document.getElementById('noti-action-mode').value = 'specific';
+            document.getElementById('noti-linked-id').value = actionId;
+            // Intentamos buscar el nombre en el estado actual de productos
+            const p = state.products.find(x => x.id === actionId);
+            if (p) {
+                document.getElementById('linked-name').innerText = p.name;
+                document.getElementById('linked-logo').src = p.logo;
+                document.getElementById('linked-product-badge').classList.replace('hidden', 'flex');
+                document.getElementById('btn-open-picker').classList.add('hidden');
+            }
+        } else {
+            document.getElementById('noti-action-mode').value = 'none';
+        }
+        
+        toggleActionInputs(); // Ajustar visibilidad de los contenedores
+
         if(data.imageUrl) {
             document.getElementById('noti-img-preview').innerHTML = `<img src="${data.imageUrl}" class="h-full object-contain">`;
         }
@@ -1204,11 +1258,91 @@ async function deleteTemplate(id) {
         showToast('Plantilla eliminada');
     } catch (e) { showToast('Error al eliminar', 'error'); }
 }
+// Función para filtrar en tiempo real dentro del picker
+function filterPicker() {
+    const term = document.getElementById('picker-search').value.toLowerCase();
+    const items = document.querySelectorAll('.picker-item');
+    items.forEach(item => {
+        const name = item.dataset.name.toLowerCase();
+        item.style.display = name.includes(term) ? 'flex' : 'none';
+    });
+}
+
+function openProductPicker() {
+    const list = document.getElementById('picker-list');
+    list.innerHTML = '';
+    document.getElementById('picker-search').value = '';
+    
+    state.products.forEach(p => {
+        const hasDiscount = p.plans && p.plans.some(plan => plan.oldPrice && plan.oldPrice.trim() !== "");
+        
+        const div = document.createElement('div');
+        div.className = "picker-item flex items-center justify-between p-3 bg-dark-800 hover:bg-brand/10 border border-zinc-700 rounded-xl cursor-pointer transition-all group";
+        div.dataset.name = p.name;
+        div.onclick = () => selectProductForNoti(p);
+        
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <img src="${p.logo}" class="w-8 h-8 object-contain rounded bg-dark-900">
+                <div>
+                    <p class="text-white text-xs font-bold group-hover:text-brand">${p.name}</p>
+                    ${hasDiscount ? '<span class="text-[8px] bg-red-600 text-white px-1 rounded font-black">OFERTA</span>' : ''}
+                </div>
+            </div>
+            <i class="fas fa-plus text-zinc-700 group-hover:text-brand text-xs"></i>
+        `;
+        list.appendChild(div);
+    });
+    
+    document.getElementById('picker-modal').classList.remove('hidden');
+}
+
+function selectProductForNoti(product) {
+    // Guardar ID y actualizar UI
+    document.getElementById('noti-linked-id').value = product.id;
+    document.getElementById('linked-name').innerText = product.name;
+    document.getElementById('linked-logo').src = product.logo;
+    
+    // Mostrar el badge y ocultar el botón de búsqueda
+    document.getElementById('linked-product-badge').classList.replace('hidden', 'flex');
+    document.getElementById('btn-open-picker').classList.add('hidden');
+    
+    // Auto-completar título si está vacío
+    const titleInput = document.getElementById('noti-title');
+    if(!titleInput.value) titleInput.value = "🔥 ¡OFERTA EN " + product.name.toUpperCase() + "!";
+    
+    closeProductPicker();
+    showToast("Producto vinculado: " + product.name);
+}
+
+function unlinkProduct() {
+    document.getElementById('noti-linked-id').value = '';
+    document.getElementById('linked-product-badge').classList.replace('flex', 'hidden');
+    document.getElementById('btn-open-picker').classList.remove('hidden');
+    showToast("Vínculo eliminado", "warning");
+}
+
+function closeProductPicker() {
+    document.getElementById('picker-modal').classList.add('hidden');
+}
+
+function toggleActionInputs() {
+    const mode = document.getElementById('noti-action-mode').value;
+    const specificContainer = document.getElementById('specific-product-container');
+    
+    if (mode === 'specific') {
+        specificContainer.classList.remove('hidden');
+    } else {
+        specificContainer.classList.add('hidden');
+        unlinkProduct(); // Limpia si cambia a 'all_offers'
+    }
+}
 
 // Subida a ImgBB y Guardar en Firebase
 async function saveNotificationSettings() {
     const btn = document.getElementById('btn-save-noti');
     const fileInput = document.getElementById('noti-file-input');
+    const mode = document.getElementById('noti-action-mode').value;
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
@@ -1237,14 +1371,21 @@ async function saveNotificationSettings() {
         await db.collection('settings').doc('notification').set({
             enabled: document.getElementById('noti-enabled').checked,
             type: document.getElementById('noti-type').value,
+            displayType: document.getElementById('noti-display-type').value, // <--- Nueva línea
             title: document.getElementById('noti-title').value,
             level: document.getElementById('noti-level').value, // Nuevo
             expiry: document.getElementById('noti-expiry').value, // Nuevo
             message: document.getElementById('noti-message').value,
+            linkedProductId: mode === 'all_offers' ? 'ALL_OFFERS' : document.getElementById('noti-linked-id').value,
+            linkedProductId: mode === 'all_offers' ? 'ALL_OFFERS' : (mode === 'specific' ? document.getElementById('noti-linked-id').value : ''),
             imageUrl: finalImageUrl,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         showToast('Notificación actualizada correctamente');
+        if (document.getElementById('noti-enabled').checked === false) {
+    unlinkProduct(); // Si la apagas, sugerimos limpiar el vínculo
+}
+
     } catch (e) {
         showToast('Error al guardar en Firebase', 'error');
     } finally {

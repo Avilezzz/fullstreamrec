@@ -19,6 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -155,7 +156,20 @@
   </style>
 </head>
 
-<body class="text-zinc-100 antialiased selection:bg-brand/30 selection:text-white">
+<div id="top-banner" class="hidden fixed top-16 md:top-20 left-0 w-full z-[45] bg-brand text-white py-2.5 px-4 shadow-2xl border-b border-white/10 animate-fade-in">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 overflow-hidden">
+      <div id="banner-icon-bg" class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+        <i id="banner-icon" class="fas fa-fire text-sm animate-pulse"></i>
+      </div>
+      <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 overflow-hidden">
+        <p id="banner-text" class="text-[11px] md:text-sm font-bold truncate tracking-tight"></p>
+        <span id="banner-timer" class="text-[10px] font-black font-mono bg-black/30 px-2 py-0.5 rounded-md w-fit"></span>
+      </div>
+    </div>
+    <button onclick="closeBanner()" class="text-white/60 hover:text-white transition-colors p-1"><i class="fas fa-times"></i></button>
+  </div>
+</div>
   <!-- Header -->
   <header class="fixed top-0 w-full z-50 bg-dark-950/80 backdrop-blur-xl border-b border-white/5 transition-all duration-300 supports-[backdrop-filter]:bg-dark-950/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -256,6 +270,12 @@
         <p id="hero-desc" class="text-lg text-zinc-300 mb-8 leading-relaxed">
           Netflix, Disney+, Spotify, IPTV y más. Acceso inmediato a todos tus servicios favoritos con descuentos exclusivos de hasta 40%.
         </p>
+        <div id="hero-logged-actions" class="hidden animate-fade-in flex flex-wrap gap-4 mt-6">
+  <button onclick="showOnlyPromotions()" class="flex items-center gap-2 bg-brand/20 border border-brand/40 text-brand px-6 py-3 rounded-2xl font-bold hover:bg-brand hover:text-white transition-all shadow-glow active:scale-95">
+    <i class="fas fa-percent"></i> Ver Ofertas de Hoy
+  </button>
+  
+</div>
 
         <!-- Stats en dos columnas -->
         <div id="hero-stats" class="grid grid-cols-2 gap-4 mb-8">
@@ -275,6 +295,10 @@
             <i class="fas fa-play text-sm"></i> Ver Catálogo
           </button>
 
+          <button onclick="showOnlyPromotions()" class="group inline-flex h-14 items-center justify-center gap-2 rounded-full bg-dark-800 border-2 border-brand/50 px-8 font-bold text-brand hover:bg-brand/10 transition-all hover:-translate-y-1 active:scale-95">
+    <i class="fas fa-percent"></i> Ver Ofertas
+  </button>
+
           <a href="https://wa.me/593978652638" target="_blank" class="group inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-green-500/50 bg-green-500/10 px-8 font-bold text-green-500 hover:bg-green-500/20 transition-all hover:-translate-y-1">
             <i class="fab fa-whatsapp"></i> Chat
           </a>
@@ -283,6 +307,20 @@
 
      <!-- Visual Derecha -->
 <div class="mt-8 lg:mt-0 w-full valla-container">
+ <div id="filter-active-notice" class="hidden max-w-2xl mx-auto mb-12 flex items-center justify-between bg-brand/10 border border-brand/20 p-5 rounded-[2rem] animate-fade-in shadow-xl shadow-brand/5">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 bg-brand rounded-2xl flex items-center justify-center text-white shadow-glow">
+      <i class="fas fa-percent animate-bounce text-xl"></i>
+    </div>
+    <div>
+      <p class="text-white font-black text-base leading-tight uppercase tracking-tight">¡Modo Ofertas Activado!</p>
+      <p class="text-zinc-500 text-[10px] uppercase tracking-widest font-bold mt-1">Solo precios especiales para ti</p>
+    </div>
+  </div>
+  <button onclick="resetCatalog()" class="bg-white text-dark-950 px-6 py-3 rounded-2xl text-xs font-black transition-all active:scale-95 flex items-center gap-2 shadow-lg">
+    <i class="fas fa-th-large"></i> VER TODO
+  </button>
+</div>
   <div id="hero-products-container" class="relative h-[140px] w-full max-w-sm mx-auto lg:max-w-none">
     </div>
 </div>
@@ -920,6 +958,8 @@ const getIconForProduct = (category) => {
       if (user) {
         currentUser = user;
         const firstName = user.displayName ? user.displayName.split(' ')[0] : 'Amigo';
+        const loggedActions = document.getElementById('hero-logged-actions');
+        if (loggedActions) loggedActions.classList.remove('hidden');
         if (heroStats) heroStats.classList.add('hidden');
         if (heroTitle) heroTitle.innerHTML = `Hola, ${firstName} <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Qué bueno verte</span>`;
         if (heroDesc) heroDesc.textContent = "Tu catálogo exclusivo está listo. Explora las mejores ofertas que tenemos para ti hoy.";
@@ -954,6 +994,8 @@ const getIconForProduct = (category) => {
         
       } else {
         if (heroStats) heroStats.classList.remove('hidden');
+        const loggedActions = document.getElementById('hero-logged-actions');
+        if (loggedActions) loggedActions.classList.add('hidden');
         if (heroTitle) heroTitle.innerHTML = `Entretenimiento <br/> <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand via-brand-light to-orange-400">Al Mejor Precio</span>`;
         if (heroDesc) heroDesc.textContent = "Accede a Netflix, Disney+, Spotify, IPTV y recargas gamer en segundos.";
 
@@ -1236,6 +1278,7 @@ function createProductCard(p, isFeatured) {
 }
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
+      document.getElementById('filter-active-notice').classList.add('hidden');
       const term = e.target.value.toLowerCase();
       if (term.trim() === '') { renderCarouselCatalog(productsCache); return; }
       const filtered = productsCache.filter(p =>
@@ -1518,29 +1561,67 @@ ${itemsResumen}
     document.body.classList.remove('no-scroll');
 }
 
+// Función para resetear el filtro y mostrar TODO
+function resetCatalog() {
+    // 1. Ocultar el aviso de filtro
+    document.getElementById('filter-active-notice').classList.add('hidden');
+    
+    // 2. Restaurar el buscador
+    const searchInput = document.getElementById('searchInput');
+    searchInput.placeholder = "¿Qué estás buscando hoy? (Ej: Netflix, Free Fire...)";
+    searchInput.value = "";
+    
+    // 3. Renderizar el catálogo completo desde el caché
+    renderCarouselCatalog(productsCache);
+    
+    // 4. Scroll suave al inicio del catálogo
+    document.getElementById('products-container').scrollIntoView({ behavior: 'smooth' });
+}
+function launchCelebration() {
+    confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff5e66', '#ffffff']
+    });
+}
+
+// Modificar la función existente para mostrar el aviso
+function showOnlyPromotions() {
+    const productsInOffer = productsCache.filter(p => 
+        p.plans && p.plans.some(plan => plan.oldPrice && plan.oldPrice.trim() !== "")
+    );
+
+    if (productsInOffer.length > 0) {
+        launchCelebration(); // Efecto 🎉
+        document.getElementById('filter-active-notice').classList.remove('hidden');
+        renderCarouselCatalog(productsInOffer);
+        document.getElementById('filter-active-notice').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        alert("¡Por el momento no hay ofertas activas!");
+    }
+}
+
 let countdownInterval = null; // Variable global para el contador
 let notificationListener = null;
 
 
 function initNotificationRealTime() {
-    // Evitar duplicar listeners si la función se llama varias veces
     if (notificationListener) notificationListener(); 
 
     notificationListener = db.collection('settings').doc('notification').onSnapshot((doc) => {
         if (!doc.exists) return;
         const data = doc.data();
         
-        // Si el admin la desactiva o el usuario no está logueado (doble check)
+        const banner = document.getElementById('top-banner');
+        const modal = document.getElementById('promoModal');
+
         if (!data.enabled || !currentUser) {
             closePromo();
+            banner.classList.add('hidden');
             return;
         }
 
-        const modal = document.getElementById('promoModal');
-        const modalCard = document.getElementById('noti-modal-card');
-        const actionBtn = document.getElementById('noti-btn-action');
-
-        // Configuración de niveles
         const levels = {
             promo: { color: '#ff5e66', icon: 'fa-fire' },
             info: { color: '#3b82f6', icon: 'fa-info-circle' },
@@ -1549,60 +1630,99 @@ function initNotificationRealTime() {
         };
         const config = levels[data.level || 'promo'];
 
-        modalCard.style.borderColor = config.color;
-        actionBtn.style.backgroundColor = config.color;
+        const updateAllTimers = () => {
+            if (!data.expiry) return "";
+            const now = new Date().getTime();
+            const dist = new Date(data.expiry).getTime() - now;
+            if (dist < 0) return "OFERTA FINALIZADA";
+            const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((dist % (1000 * 60)) / 1000);
+            return `${d > 0 ? d + 'd ' : ''}${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        };
 
-        const container = document.getElementById('promo-content');
-        if (data.type === 'image') {
-            container.innerHTML = `
-                <img src="${data.imageUrl}" class="w-full h-64 object-cover" onerror="this.src='logo.jpg'">
-                <div class="p-6 pb-2">
-                    <h3 class="text-2xl font-black text-white mb-2">${data.title}</h3>
-                    <p class="text-zinc-400 text-sm leading-relaxed">${data.message}</p>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="p-8 pt-12 text-center">
-                    <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl" style="background-color: ${config.color}20; color: ${config.color}">
-                        <i class="fas ${config.icon}"></i>
-                    </div>
-                    <h3 class="text-3xl font-black text-white mb-4">${data.title}</h3>
-                    <p class="text-zinc-400 text-base leading-relaxed">${data.message}</p>
-                </div>
-            `;
-        }
-
-        // Lógica del contador
         if (countdownInterval) clearInterval(countdownInterval);
-        const timerContainer = document.getElementById('promo-timer');
-        
-        if (data.expiry) {
-            timerContainer.classList.remove('hidden');
-            const targetDate = new Date(data.expiry).getTime();
+
+        if (data.displayType === 'banner') {
+            closePromo(); 
+            banner.classList.remove('hidden');
+            banner.style.backgroundColor = config.color;
+            document.getElementById('banner-icon').className = `fas ${config.icon} text-sm animate-pulse`;
+            document.getElementById('banner-text').innerText = `${data.title}: ${data.message}`;
             countdownInterval = setInterval(() => {
-                const now = new Date().getTime();
-                const dist = targetDate - now;
-                if (dist < 0) {
-                    clearInterval(countdownInterval);
-                    timerContainer.classList.add('hidden');
-                    return;
-                }
-                const h = Math.floor(dist / (1000 * 60 * 60));
-                const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((dist % (1000 * 60)) / 1000);
-                document.getElementById('timer-display').innerText = 
-                    `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                document.getElementById('banner-timer').innerText = updateAllTimers();
             }, 1000);
         } else {
-            timerContainer.classList.add('hidden');
-        }
+            banner.classList.add('hidden');
+            const modalCard = document.getElementById('noti-modal-card');
+            const actionBtn = document.getElementById('noti-btn-action');
+            const container = document.getElementById('promo-content');
+            const timerContainer = document.getElementById('promo-timer');
 
-        actionBtn.onclick = () => closePromo();
-        modal.classList.remove('hidden');
-        document.body.classList.add('no-scroll');
+            modalCard.style.borderColor = config.color;
+            actionBtn.style.backgroundColor = config.color;
+
+            if (data.type === 'image') {
+                container.innerHTML = `
+                    <img src="${data.imageUrl}" class="w-full h-64 object-cover" onerror="this.src='logo.jpg'">
+                    <div class="p-6 pb-2">
+                        <h3 class="text-2xl font-black text-white mb-2">${data.title}</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">${data.message}</p>
+                    </div>`;
+            } else {
+                container.innerHTML = `
+                    <div class="p-8 pt-12 text-center">
+                        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl" style="background-color: ${config.color}20; color: ${config.color}">
+                            <i class="fas ${config.icon}"></i>
+                        </div>
+                        <h3 class="text-3xl font-black text-white mb-4">${data.title}</h3>
+                        <p class="text-zinc-400 text-base leading-relaxed">${data.message}</p>
+                    </div>`;
+            }
+
+            if (data.expiry) {
+                timerContainer.classList.remove('hidden');
+                countdownInterval = setInterval(() => {
+                    document.getElementById('timer-display').innerText = updateAllTimers();
+                }, 1000);
+            } else {
+                timerContainer.classList.add('hidden');
+            }
+
+            // LÓGICA DE ACCIÓN ROBUSTA
+            const actionId = data.linkedProductId;
+            if (actionId) {
+                actionBtn.innerText = (actionId === 'ALL_OFFERS') ? "Ver Todas las Ofertas" : "Ver Oferta";
+                actionBtn.onclick = () => {
+                    if (actionId === 'ALL_OFFERS') {
+                        closePromo();
+                        showOnlyPromotions();
+                    } else {
+                        const product = productsCache.find(p => p.id === actionId);
+                        if (product) {
+                            closePromo();
+                            showPlans(product);
+                        } else {
+                            closePromo();
+                        }
+                    }
+                };
+            } else {
+                actionBtn.innerText = "Entendido";
+                actionBtn.onclick = () => closePromo();
+            }
+
+            modal.classList.remove('hidden');
+            document.body.classList.add('no-scroll');
+        }
     });
 }
+
+// Función para cerrar el banner manualmente
+window.closeBanner = () => {
+    document.getElementById('top-banner').classList.add('hidden');
+};
 
 // Reemplaza el llamado final por este:
 window.addEventListener('load', () => {
