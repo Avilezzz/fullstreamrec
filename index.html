@@ -1123,56 +1123,117 @@ const getIconForProduct = (category) => {
         });
     }
 
-    function renderCarouselCatalog(productsList) {
-      const container = document.getElementById("products-container");
-      container.innerHTML = '';
-      if (productsList.length === 0) {
-        container.innerHTML = `<div class="text-center py-20 text-zinc-500 text-xl">No se encontraron productos.</div>`;
-        return;
-      }
+   function renderCarouselCatalog(productsList) {
+  const container = document.getElementById("products-container");
+  container.innerHTML = '';
+  
+  if (productsList.length === 0) {
+    container.innerHTML = `<div class="text-center py-20 text-zinc-500 text-xl">No se encontraron productos.</div>`;
+    return;
+  }
 
-      const categories = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
-
-      categories.forEach((catName) => {
-        const products = productsList.filter(p => p.category === catName);
-        if (products.length === 0) return;
-
-        const section = document.createElement('div');
-        section.className = 'mb-16 animate-fade-in';
-        section.innerHTML = `
-          <div class="flex items-center justify-between mb-6 px-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
-              <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">${catName}</span>
-            </h2>
+  // 1. SECCIÓN DESTACADA: LOS MÁS VENDIDOS (Duplicados aquí)
+  const popularProducts = productsList.filter(p => p.isPopular === true);
+  
+  if (popularProducts.length > 0) {
+    const popularSection = document.createElement('div');
+    popularSection.className = 'mb-16 animate-fade-in px-2';
+    popularSection.innerHTML = `
+      <div class="flex items-center justify-between mb-8 px-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-brand/20 flex items-center justify-center text-brand shadow-glow">
+            <i class="fas fa-fire text-xl"></i>
           </div>
-          <div class="carousel-container" id="carousel-${catName.replace(/\s+/g, '-')}"></div>
-        `;
+          <div>
+            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tighter">
+              LOS MÁS <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand to-rose-400">VENDIDOS</span>
+            </h2>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Favoritos de la comunidad</p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-container" id="carousel-popular"></div>
+    `;
+    container.appendChild(popularSection);
+    const popularCarousel = popularSection.querySelector('#carousel-popular');
+    
+    popularProducts.forEach(p => {
+      popularCarousel.appendChild(createProductCard(p, true)); // true indica que es la versión destacada
+    });
+  }
 
-        const carousel = section.querySelector('.carousel-container');
+  // 2. SECCIONES POR CATEGORÍA (Se mantienen todos aquí)
+  const categories = ["Streaming de Video", "IPTV", "Música", "Videojuegos", "Herramientas Creativas", "Combos"];
 
-        products.forEach(p => {
-          const card = document.createElement('div');
-          card.className = "carousel-card";
-          card.innerHTML = `
-            <div class="bg-dark-900/60 backdrop-blur-md border border-white/5 rounded-2xl p-4 hover:border-brand/40 shadow-xl hover:shadow-brand/20 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col group cursor-pointer relative">
-              ${p.isPopular ? `<div class="absolute top-2 right-2 bg-brand text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10 flex items-center gap-1"><i class="fas fa-star text-[8px]"></i> Popular</div>` : ''}
-              <div class="relative h-28 mb-4 flex items-center justify-center bg-dark-800 rounded-xl p-3 group-hover:bg-dark-700 transition-all">
-                <img src="${p.logo}" alt="${p.name}" class="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-300" onerror="this.src='https://fakeimg.pl/200x200?text=No+Img'">
-              </div>
-              <h3 class="text-lg font-bold text-white mb-1 text-center leading-tight">${p.name}</h3>
-              <p class="text-zinc-400 text-xs text-center mb-4 line-clamp-2">${p.subtitle || '&nbsp;'}</p>
-              <button class="mt-auto w-full py-2.5 rounded-xl bg-gradient-to-r from-brand to-brand-light text-white text-sm font-bold hover:shadow-lg hover:shadow-brand/40 transition-all active:scale-95 flex items-center justify-center gap-2">
-                <i class="fas fa-tags text-xs"></i> Ver Planes
-              </button>
+  categories.forEach((catName) => {
+    // IMPORTANTE: Aquí NO filtramos por !p.isPopular para que se queden en su sitio
+    const products = productsList.filter(p => p.category === catName);
+    
+    if (products.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'mb-16 animate-fade-in';
+    section.innerHTML = `
+      <div class="flex items-center justify-between mb-6 px-6">
+        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+          <span class="w-1 h-6 bg-brand rounded-full"></span>
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-500">${catName}</span>
+        </h2>
+      </div>
+      <div class="carousel-container" id="carousel-${catName.replace(/\s+/g, '-')}"></div>
+    `;
+
+    const carousel = section.querySelector('.carousel-container');
+    products.forEach(p => {
+      carousel.appendChild(createProductCard(p, false));
+    });
+
+    container.appendChild(section);
+  });
+}
+
+/**
+ * Función Auxiliar para crear la tarjeta
+ * Centralizamos el diseño para que sea uniforme
+ */
+function createProductCard(p, isFeatured) {
+  const hasAnyDiscount = p.plans && p.plans.some(plan => plan.oldPrice && plan.oldPrice.trim() !== "");
+  
+  const card = document.createElement('div');
+  card.className = "carousel-card";
+  
+  // Diseño de la tarjeta mejorado
+  card.innerHTML = `
+    <div class="bg-dark-900/60 backdrop-blur-md border ${isFeatured ? 'border-brand/20' : 'border-white/5'} rounded-2xl p-4 hover:border-brand/40 shadow-xl hover:shadow-brand/20 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col group cursor-pointer relative">
+      
+      <div class="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
+        <div>
+          ${hasAnyDiscount ? `
+            <div class="bg-red-600 text-white text-[9px] font-black px-2 py-1 rounded-lg animate-pulse shadow-lg">
+              OFERTA
             </div>
-          `;
-          card.onclick = () => showPlans(p);
-          carousel.appendChild(card);
-        });
+          ` : ''}
+        </div>
+       
+      </div>
 
-        container.appendChild(section);
-      });
-    }
+      <div class="relative h-28 mb-4 flex items-center justify-center bg-dark-800/50 rounded-xl p-3 group-hover:bg-dark-700/50 transition-all overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-900/20 to-transparent"></div>
+        <img src="${p.logo}" alt="${p.name}" class="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-500 relative z-10" onerror="this.src='logo.jpg'">
+      </div>
+      
+      <h3 class="text-base font-bold text-white mb-1 text-center leading-tight uppercase tracking-tight">${p.name}</h3>
+      <p class="text-zinc-500 text-[11px] text-center mb-4 line-clamp-2 italic">${p.subtitle || '&nbsp;'}</p>
+      
+      <button class="mt-auto w-full py-2.5 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-white text-xs font-black uppercase tracking-wider hover:shadow-lg hover:shadow-brand/40 transition-all active:scale-95 flex items-center justify-center gap-2">
+        Ver Planes
+      </button>
+    </div>
+  `;
+
+  card.onclick = () => showPlans(p);
+  return card;
+}
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
@@ -1304,19 +1365,36 @@ const getIconForProduct = (category) => {
 
   // 3. RENDERIZAR SOLO LOS PLANES FILTRADOS (plansToShow)
   plansToShow.forEach(plan => {
+    const hasDiscount = plan.oldPrice && plan.oldPrice.trim() !== "";
+    let discountBadge = "";
     const img = plan.image || product.logo;
     const btn = document.createElement('button');
     btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-green-500/50 rounded-xl p-4 flex items-center justify-between group transition-all mb-2";
     
+    if (hasDiscount) {
+    // Calculamos el ahorro para mostrar un badge de %
+    const pActual = parsePrice(plan.price);
+    const pViejo = parsePrice(plan.oldPrice);
+    if (pViejo > pActual) {
+        const ahorro = Math.round(((pViejo - pActual) / pViejo) * 100);
+        discountBadge = `<span class="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-md">-${ahorro}%</span>`;
+    }
+}
+
     btn.innerHTML = `
-      <div class="flex items-center gap-4">
-        <img src="${img}" class="w-10 h-10 object-contain">
-        <div class="text-left">
-          <p class="font-bold text-white group-hover:text-white transition-colors">${plan.name}</p>
-        </div>
-      </div>
-      <span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>
-    `;
+  <div class="flex items-center gap-4">
+    <img src="${img}" class="w-10 h-10 object-contain">
+    <div class="text-left">
+      <p class="font-bold text-white group-hover:text-white transition-colors">
+        ${plan.name} ${discountBadge}
+      </p>
+    </div>
+  </div>
+  <div class="text-right">
+    ${hasDiscount ? `<p class="text-[14px] text-zinc-500 line-through leading-none mb-1">${plan.oldPrice}</p>` : ''}
+    <p class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg leading-none">${plan.price}</p>
+  </div>
+`;
 
     btn.onclick = () => {
       let finalPlanName = plan.name;

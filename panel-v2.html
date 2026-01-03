@@ -702,7 +702,7 @@
         document.getElementById('plans-container').innerHTML = '';
         if (p.plans) {
           p.plans.sort((a, b) => (a.order || 0) - (b.order || 0)).forEach(plan => {
-           addPlanToForm(plan.name, plan.price, plan.image, plan.visible !== false);
+          addPlanToForm(plan.name, plan.price, plan.image, plan.visible !== false, plan.oldPrice || '');
           });
         }
         
@@ -711,7 +711,7 @@
         new Sortable(document.getElementById('plans-container'), { animation: 150, handle: '.drag-handle' });
       };
 
-      const addPlanToForm = (name = '', price = '', image = '', visible = true) => {
+      const addPlanToForm = (name = '', price = '', image = '', visible = true, oldPrice = '') => {
   const div = document.createElement('div');
   // Agregamos una clase condicional para opacidad si está oculto
   div.className = `plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors ${!visible ? 'opacity-50' : ''}`;
@@ -725,7 +725,7 @@
       <div class="flex-1 grid grid-cols-2 gap-3">
         <input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre" value="${name}" required>
         <input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required>
-        
+        <input type="text" class="plan-old-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-500 focus:border-brand focus:outline-none" placeholder="Precio Anterior (Opcional)" value="${oldPrice}">
       </div>
       <div class="flex gap-1">
         <button type="button" class="toggle-plan-btn text-zinc-500 hover:text-yellow-500 p-2 transition-colors" title="Ocultar/Mostrar Plan">
@@ -787,6 +787,7 @@
           plans.push({
             name: el.querySelector('.plan-name').value,
             price: el.querySelector('.plan-price').value,
+            oldPrice: el.querySelector('.plan-old-price').value,
             image: el.querySelector('.plan-image').value,
             order: index,
             visible: el.dataset.visible !== 'false'
