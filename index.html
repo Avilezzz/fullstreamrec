@@ -1243,19 +1243,33 @@ const getIconForProduct = (category) => {
   const modal = document.getElementById('globalModal');
   const container = document.getElementById('global-plans-container');
   
+  // 1. FILTRAR PLANES: Solo los que no están marcados como ocultos
+  const plansToShow = product.plans.filter(plan => plan.visible !== false);
+  
   // Actualizar imagen y título del modal
   document.getElementById('global-modal-logo').src = product.logo;
   document.getElementById('global-modal-title').textContent = product.name;
   container.innerHTML = '';
 
-  // 1. LÓGICA DE FORMULARIO DINÁMICO
-  // Leemos la configuración del producto (si no tiene, asumimos 'none')
+  // VALIDACIÓN DE STOCK: Si no hay planes visibles, mostramos un mensaje amigable
+  if (plansToShow.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-10 animate-fade-in">
+        <i class="fas fa-box-open text-4xl text-zinc-600 mb-4"></i>
+        <p class="text-zinc-400 font-medium">Lo sentimos, por el momento no hay stock disponible de este servicio.</p>
+        <p class="text-zinc-500 text-xs mt-2">Vuelve a revisar más tarde.</p>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+    return; // Detenemos la ejecución aquí
+  }
+
+  // 2. LÓGICA DE FORMULARIO DINÁMICO
   const inputType = product.inputType || 'none';
   let formHtml = '';
 
   if (product.name.toLowerCase().includes('free fire') || inputType === 'text') {
-    // CASO 1: Pide solo un dato (ID, Tag, Número)
-    // Mantenemos la compatibilidad con tu código anterior de Free Fire
     formHtml = `
       <div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700 animate-fade-in">
         <label class="block text-xs font-bold text-zinc-400 uppercase mb-2">
@@ -1265,7 +1279,6 @@ const getIconForProduct = (category) => {
       </div>
     `;
   } else if (inputType === 'credentials') {
-    // CASO 2: Pide Usuario y Contraseña
     formHtml = `
       <div class="mb-4 bg-dark-800 p-4 rounded-lg border border-zinc-700 animate-fade-in space-y-3">
         <div>
@@ -1283,15 +1296,14 @@ const getIconForProduct = (category) => {
     `;
   }
 
-  // Insertar el formulario en el contenedor si es necesario
   if (formHtml) {
     const formDiv = document.createElement('div');
     formDiv.innerHTML = formHtml;
     container.appendChild(formDiv);
   }
 
-  // 2. RENDERIZAR LOS PLANES
-  product.plans.forEach(plan => {
+  // 3. RENDERIZAR SOLO LOS PLANES FILTRADOS (plansToShow)
+  plansToShow.forEach(plan => {
     const img = plan.image || product.logo;
     const btn = document.createElement('button');
     btn.className = "w-full bg-dark-800 hover:bg-dark-700 border border-zinc-700 hover:border-green-500/50 rounded-xl p-4 flex items-center justify-between group transition-all mb-2";
@@ -1306,16 +1318,13 @@ const getIconForProduct = (category) => {
       <span class="font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-lg">${plan.price}</span>
     `;
 
-    // 3. LÓGICA DEL CLIC (VALIDACIÓN Y CARRITO)
     btn.onclick = () => {
       let finalPlanName = plan.name;
       let additionalInfo = "";
 
-      // Validamos según el tipo de formulario mostrado
       if (document.getElementById('req-input-1')) {
         const val1 = document.getElementById('req-input-1').value.trim();
         
-        // Si hay un segundo input (contraseña), validamos ambos
         if (document.getElementById('req-input-2')) {
            const val2 = document.getElementById('req-input-2').value.trim();
            if (val1.length < 3 || val2.length < 3) {
@@ -1324,7 +1333,6 @@ const getIconForProduct = (category) => {
            }
            additionalInfo = ` (C: ${val1} | P: ${val2})`;
         } else {
-           // Si solo hay un input (ID)
            if (val1.length < 3) {
              const input = document.getElementById('req-input-1');
              input.classList.add('border-red-500', 'animate-pulse');
@@ -1335,13 +1343,9 @@ const getIconForProduct = (category) => {
         }
       }
 
-      // Agregamos la info extra al nombre para que salga en el pedido
       finalPlanName += additionalInfo;
-
-      // Enviamos al carrito
       addToCart(product.id, product.name, finalPlanName, plan.price, img);
       
-      // Cerramos modal
       document.getElementById('globalModal').classList.add('hidden');
       document.body.classList.remove('no-scroll');
     };

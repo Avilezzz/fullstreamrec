@@ -702,7 +702,7 @@
         document.getElementById('plans-container').innerHTML = '';
         if (p.plans) {
           p.plans.sort((a, b) => (a.order || 0) - (b.order || 0)).forEach(plan => {
-            addPlanToForm(plan.name, plan.price, plan.image);
+           addPlanToForm(plan.name, plan.price, plan.image, plan.visible !== false);
           });
         }
         
@@ -711,42 +711,69 @@
         new Sortable(document.getElementById('plans-container'), { animation: 150, handle: '.drag-handle' });
       };
 
-      const addPlanToForm = (name = '', price = '', image = '') => {
-        const div = document.createElement('div');
-        div.className = 'plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors';
-        div.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2"><i class="fas fa-grip-vertical"></i></div>
-            <div class="flex-1 grid grid-cols-2 gap-3">
-              <input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre" value="${name}" required>
-              <input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required>
-            </div>
-            <button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button>
-          </div>
-          <div class="flex items-center gap-3 pl-8">
-            <div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
-              <img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'" style="${image ? '' : 'display:none;'}">
-              <i class="fas fa-image text-xs text-zinc-600 ${image ? 'hidden' : ''}"></i>
-            </div>
-            <input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen" value="${image}">
-          </div>
-        `;
+      const addPlanToForm = (name = '', price = '', image = '', visible = true) => {
+  const div = document.createElement('div');
+  // Agregamos una clase condicional para opacidad si está oculto
+  div.className = `plan-item bg-dark-950 border border-zinc-800 p-3 rounded-xl flex flex-col gap-3 relative group hover:border-zinc-700 transition-colors ${!visible ? 'opacity-50' : ''}`;
+  
+  // Guardamos el estado en un atributo de datos
+  div.dataset.visible = visible;
+
+  div.innerHTML = `
+    <div class="flex items-center gap-3">
+      <div class="drag-handle cursor-move text-zinc-600 hover:text-zinc-400 p-2"><i class="fas fa-grip-vertical"></i></div>
+      <div class="flex-1 grid grid-cols-2 gap-3">
+        <input type="text" class="plan-name bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Nombre" value="${name}" required>
+        <input type="text" class="plan-price bg-dark-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-brand focus:outline-none" placeholder="Precio" value="${price}" required>
         
-        div.querySelector('.plan-image').addEventListener('input', (e) => {
-          const img = div.querySelector('.plan-img-preview');
-          const icon = div.querySelector('.fa-image');
-          if (e.target.value) {
-            img.src = e.target.value;
-            img.style.display = 'block';
-            icon.classList.add('hidden');
-          } else {
-            img.style.display = 'none';
-            icon.classList.remove('hidden');
-          }
-        });
-        div.querySelector('.remove-plan').onclick = () => div.remove();
-        document.getElementById('plans-container').appendChild(div);
-      };
+      </div>
+      <div class="flex gap-1">
+        <button type="button" class="toggle-plan-btn text-zinc-500 hover:text-yellow-500 p-2 transition-colors" title="Ocultar/Mostrar Plan">
+          <i class="fas ${visible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+        </button>
+        <button type="button" class="remove-plan text-zinc-500 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 pl-8">
+      <div class="w-8 h-8 bg-dark-900 rounded border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
+        <img src="${image}" class="plan-img-preview w-full h-full object-contain" onerror="this.style.display='none'" style="${image ? '' : 'display:none;'}">
+        <i class="fas fa-image text-xs text-zinc-600 ${image ? 'hidden' : ''}"></i>
+      </div>
+      <input type="url" class="plan-image flex-1 bg-dark-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-300 focus:border-brand focus:outline-none" placeholder="URL Imagen" value="${image}">
+    </div>
+  `;
+  
+  // Lógica para el botón de ocultar/mostrar
+  div.querySelector('.toggle-plan-btn').onclick = (e) => {
+    const icon = e.currentTarget.querySelector('i');
+    const isNowVisible = div.dataset.visible === 'false'; // Invertimos el estado actual
+    div.dataset.visible = isNowVisible;
+    
+    if (isNowVisible) {
+      div.classList.remove('opacity-50');
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    } else {
+      div.classList.add('opacity-50');
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    }
+  };
+
+  div.querySelector('.plan-image').addEventListener('input', (e) => {
+    const img = div.querySelector('.plan-img-preview');
+    const icon = div.querySelector('.fa-image');
+    if (e.target.value) {
+      img.src = e.target.value;
+      img.style.display = 'block';
+      icon.classList.add('hidden');
+    } else {
+      img.style.display = 'none';
+      icon.classList.remove('hidden');
+    }
+  });
+
+  div.querySelector('.remove-plan').onclick = () => div.remove();
+  document.getElementById('plans-container').appendChild(div);
+};
 
       const saveProduct = async () => {
         const form = document.getElementById('product-form');
@@ -762,6 +789,7 @@
             price: el.querySelector('.plan-price').value,
             image: el.querySelector('.plan-image').value,
             order: index,
+            visible: el.dataset.visible !== 'false'
           });
         });
 
@@ -817,7 +845,7 @@
      const switchView = (viewName) => {
   state.currentView = viewName;
 
-  // 1. Definimos todos los contenedores y botones
+  // 1. Definimos todos los contevisible: el.dataset.visible !== 'false'nedores y botones
   const views = {
     'products': document.getElementById('view-products'),
     'orders': document.getElementById('view-orders'),
